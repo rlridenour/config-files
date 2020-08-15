@@ -1,0 +1,12 @@
+configstore/
+enchant/
+git/
+gtk*
+omf/
+xm1/
+ranger/
+karabiner/
+nvim
+
+fish_history
+fishd*
