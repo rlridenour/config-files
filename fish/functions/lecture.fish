@@ -2,7 +2,7 @@ function lecture
     mkdir {$argv}
     cd {$argv}
     touch {$argv}.org
-    echo -e '#+startup: beamer' \n'#+TITLE: ' \n'#+AUTHOR: Dr. Ridenour' \n'#+DATE: ' >>{$argv}.org
+    echo -e '#+startup: beamer' \n'#+TITLE: ' \n'#+AUTHOR: Dr. Ridenour' \n'#+DATE: ddate' >>{$argv}.org
     touch {$argv}-beamer.org
     cat /Users/rlridenour/Dropbox/emacs/beamer/lecture-beamer.org >{$argv}-beamer.org
     echo -e '#+include: "'{$argv}'.org" :minlevel 1' >>{$argv}-beamer.org
