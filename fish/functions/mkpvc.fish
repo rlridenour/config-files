@@ -1,3 +1,3 @@
 function mkpvc
-   latexmk -pdf -pvc $argv
+    latexmk -pdf -pvc -halt-on-error $argv
 end
