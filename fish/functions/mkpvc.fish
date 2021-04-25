@@ -1,3 +1,3 @@
 function mkpvc
-    latexmk -pdf -pvc -halt-on-error $argv
+    latexmk -pdf -pvc -interaction=nonstopmode -synctex=1 -quiet $argv
 end
