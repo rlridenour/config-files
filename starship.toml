@@ -7,6 +7,11 @@ disabled = true
 # [character]      # The name of the module we are configuring is "character"
 # symbol = "➜"     # The "symbol" segment is being set to "➜"
 
+[directory]
+fish_style_pwd_dir_length = 1
+truncation_length = 2
+
+
 # Disable the package module, hiding it from the prompt completely
 [package]
 disabled = true
