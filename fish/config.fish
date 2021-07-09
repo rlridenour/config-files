@@ -7,7 +7,7 @@ end
 
 # /Users/rlridenour/anaconda/bin  removed from Darwin path for homebrew
 # /usr/local/sbin /usr/texbin
-source ~/.config/fish/functions/z.fish
+
 
 set normal (set_color normal)
 set magenta (set_color magenta)
@@ -17,10 +17,10 @@ set red (set_color red)
 set gray (set_color -o black)
 
 # Fish git prompt
-set __fish_git_prompt_showdirtystate 'yes'
-set __fish_git_prompt_showstashstate 'yes'
-set __fish_git_prompt_showuntrackedfiles 'yes'
-set __fish_git_prompt_showupstream 'yes'
+set __fish_git_prompt_showdirtystate yes
+set __fish_git_prompt_showstashstate yes
+set __fish_git_prompt_showuntrackedfiles yes
+set __fish_git_prompt_showupstream yes
 set __fish_git_prompt_color_branch yellow
 set __fish_git_prompt_color_upstream_ahead green
 set __fish_git_prompt_color_upstream_behind red
@@ -31,24 +31,22 @@ set __fish_git_prompt_char_stagedstate '→'
 set __fish_git_prompt_char_untrackedfiles '☡'
 set __fish_git_prompt_char_stashstate '↩'
 set __fish_git_prompt_char_upstream_ahead '+'
-set __fish_git_prompt_char_upstream_behind '-'
+set __fish_git_prompt_char_upstream_behind -
 
-# function fish_prompt
-#     set last_status $status
+function fish_prompt
+    set last_status $status
 
-#     set_color $fish_color_cwd
-#     printf '%s' (hostname -s)
-#     printf /
-#     printf '%s' (prompt_pwd)
-#     set_color normal
-#     printf '%s ' (__fish_git_prompt)
+    set_color $fish_color_cwd
+    printf '%s' (hostname -s)
+    printf /
+    printf '%s' (prompt_pwd)
+    set_color normal
+    printf '%s ' (__fish_git_prompt)
 
-#     set_color normal
-# end
+    set_color normal
+end
 
 set fish_greeting
 test -e {$HOME}/.iterm2_shell_integration.fish; and source {$HOME}/.iterm2_shell_integration.fish
 set -g fish_user_paths "/usr/local/opt/node@10/bin" $fish_user_paths
 set -g fish_user_paths "/usr/local/opt/node@8/bin" $fish_user_paths
-
-starship init fish | source
