@@ -12,122 +12,112 @@
 (use-package! modus-themes
   :init
   (setq modus-themes-slanted-constructs t
-      modus-themes-bold-constructs t
-      modus-themes-fringes 'intense ; {nil,'subtle,'intense}
-      modus-themes-mode-line '3d ; {nil,'3d,'moody}
-      modus-themes-syntax 'faint ; Lots of options---continue reading the manual
-      modus-themes-intense-hl-line nil
-      modus-themes-paren-match 'subtle-bold ; {nil,'subtle-bold,'intense,'intense-bold}
-      modus-themes-links 'faint-neutral-underline ; Lots of options---continue reading the manual
-      modus-themes-no-mixed-fonts t
-      modus-themes-prompts 'intense ; {nil,'subtle,'intense}
-      modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
-      modus-themes-region 'bg-only-no-extend ; {nil,'no-extend,'bg-only,'bg-only-no-extend}
-      modus-themes-diffs nil ; {nil,'desaturated,'fg-only,'bg-only}
-      modus-themes-org-blocks nil ; {nil,'grayscale,'rainbow}
-      modus-themes-variable-pitch-headings nil
-      modus-themes-scale-headings t
-      modus-themes-scale-1 1.1
-      modus-themes-scale-2 1.15
-      modus-themes-scale-3 1.21
-      modus-themes-scale-4 1.27
-      modus-themes-scale-5 1.33)
-:config
-(setq doom-theme 'modus-operandi))
+        modus-themes-bold-constructs t
+        modus-themes-fringes 'intense ; {nil,'subtle,'intense}
+        modus-themes-mode-line '3d ; {nil,'3d,'moody}
+        modus-themes-syntax 'faint ; Lots of options---continue reading the manual
+        modus-themes-intense-hl-line nil
+        modus-themes-paren-match 'subtle-bold ; {nil,'subtle-bold,'intense,'intense-bold}
+        modus-themes-links 'faint-neutral-underline ; Lots of options---continue reading the manual
+        modus-themes-no-mixed-fonts t
+        modus-themes-prompts 'intense ; {nil,'subtle,'intense}
+        modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
+        modus-themes-region 'bg-only-no-extend ; {nil,'no-extend,'bg-only,'bg-only-no-extend}
+        modus-themes-diffs nil ; {nil,'desaturated,'fg-only,'bg-only}
+        modus-themes-org-blocks nil ; {nil,'grayscale,'rainbow}
+        modus-themes-variable-pitch-headings nil
+        modus-themes-scale-headings t
+        modus-themes-scale-1 1.1
+        modus-themes-scale-2 1.15
+        modus-themes-scale-3 1.21
+        modus-themes-scale-4 1.27
+        modus-themes-scale-5 1.33)
+  :config
+  (setq doom-theme 'modus-operandi))
 
 (setq-default
- uniquify-buffer-name-style 'forward) ; Uniquify buffer names
-(display-time-mode 1)      ; Enable time in the mode-line
-(display-battery-mode 1)   ; Show battery level in the mode-line
-
+ uniquify-buffer-name-style 'forward)
+(display-time-mode 1)
+(display-battery-mode 1)
 (show-smartparens-global-mode t)
 (global-visual-line-mode t)
 
-(advice-add #'doom-highlight-non-default-indentation-h :override #'ignore)
-
 (setq confirm-kill-processes nil)
 
-  (require 'dired-x)
-  (setq-default dired-omit-files-p t) ; this is buffer-local variable
-  (setq dired-omit-files
-		(concat dired-omit-files "\\|^\\..+$"))
-  (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "bcf" "run.xml"  "DS_Store"))
-  (setq dired-dwim-target t)
+(require 'dired-x)
+(setq-default dired-omit-files-p t) ; this is buffer-local variable
+(setq dired-omit-files
+      (concat dired-omit-files "\\|^\\..+$"))
+(setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "bcf" "run.xml"  "DS_Store"))
+(setq dired-dwim-target t)
 
 (load "~/Dropbox/emacs/my-emacs-abbrev")
 
 (setq default-input-method 'TeX)
-(add-hook 'text-mode-hook 'toggle-input-method)
-(add-hook 'markdown-mode-hook 'toggle-input-method)
-(add-hook 'org-mode-hook 'toggle-input-method)
 
 (after! yasnippet
   (setq yas-snippet-dirs (append yas-snippet-dirs
-        '("~/.config/doom/snippets"))))
+                                 '("~/.config/doom/snippets"))))
 
-  (defun insert-date-string ()
-	"Insert current date yyyymmdd."
-	(interactive)
-	(insert (format-time-string "%Y%m%d")))
+(defun insert-date-string ()
+  "Insert current date yyyymmdd."
+  (interactive)
+  (insert (format-time-string "%Y%m%d")))
 
-  (defun insert-standard-date ()
-	"Inserts standard date time string."
-	(interactive)
-	(insert (format-time-string "%B %e, %Y")))
-  (global-set-key (kbd "<f8>") 'insert-standard-date)
-  (global-set-key (kbd "C-c d") 'insert-date-string)
+(defun insert-standard-date ()
+  "Inserts standard date time string."
+  (interactive)
+  (insert (format-time-string "%B %e, %Y")))
+(global-set-key (kbd "<f8>") 'insert-standard-date)
+(global-set-key (kbd "C-c d") 'insert-date-string)
 
 (setq ispell-program-name "/usr/local/bin/aspell")
 (setq ispell-extra-args '("--sug-mode=ultra"))
 (setq ispell-personal-dictionary "/Users/rlridenour/Dropbox/emacs/spelling/.aspell.en.pws")
 (setq ispell-silently-savep t)
 
-  (defun unkillable-scratch-buffer ()
-	(if (equal (buffer-name (current-buffer)) "*scratch*")
-		(progn
-		  (delete-region (point-min) (point-max))
-		  nil)
-	  t))
-  (add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
+(defun unkillable-scratch-buffer ()
+  (if (equal (buffer-name (current-buffer)) "*scratch*")
+      (progn
+        (delete-region (point-min) (point-max))
+        nil)
+    t))
+(add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
 
 (fset 'split-org-item
-   [?\C-k ?\M-\\ return ?\C-y])
+      [?\C-k ?\M-\\ return ?\C-y])
 
 (fset 'convert-markdown-to-org
-   [?\M-< ?\M-% ?* return ?- return ?! ?\M-< ?\C-\M-% ?# ?* backspace backspace ?  ?# ?* ?$ return return ?! ?\M-< ?\M-% ?# return ?* return ?!])
+      [?\M-< ?\M-% ?* return ?- return ?! ?\M-< ?\C-\M-% ?# ?* backspace backspace ?  ?# ?* ?$ return return ?! ?\M-< ?\M-% ?# return ?* return ?!])
 
 (use-package! grab-mac-link
   :defer
   :config
   (setq grab-mac-link-dwim-favourite-app 'safari)
-  :bind
-  ("C-c l" . grab-mac-link-dwim))
+  (map! "C-c l" #'grab-mac-link-dwim))
 
 (use-package! deadgrep
   :defer)
 
-  (use-package! hungry-delete
-    :defer
-	:config
-	(global-hungry-delete-mode))
-
-  (use-package! shrink-whitespace
-    :defer)
-
-(use-package! org
-  :init
-  (setq org-directory "~/Library/Mobile Documents/com~apple~CloudDocs/org/")
+(use-package! hungry-delete
+  :defer
   :config
-  (setq org-startup-indented nil)
-  (setq org-adapt-indentation nil)
-  (setq org-hide-leading-stars nil)
-  ;; (defun force-org-hide-leading-stars ()
-  ;;   "See issue for more info: https://github.com/hlissner/doom-emacs/issues/3076"
-  ;;   (setq org-hide-leading-stars nil)
-  ;;   (font-lock-mode -1)
-  ;;   (font-lock-mode +1))
-  ;; (add-hook 'org-mode-hook #'force-org-hide-leading-stars)
-(setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/")))
+  (global-hungry-delete-mode))
+
+(use-package! shrink-whitespace
+  :defer)
+(map! "C-M-s-d" #'shrink-whitespace)
+
+(setq org-directory "~/Library/Mobile Documents/com~apple~CloudDocs/org/")
+
+(after! org (setq org-startup-indented nil
+      org-adapt-indentation nil))
+
+(after! org (setq org-hide-leading-stars nil))
+
+(after! org (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/")))
+
+(after! org (setq org-insert-heading-respect-content nil))
 
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/tasks.org" "Tasks")
@@ -136,37 +126,24 @@
         ;;  "* %?\nEntered on %U\n  %i\n  %a")
         )
       )
-     (define-key global-map "\C-cc" 'org-capture)
-
-
 
 (add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
 
 (require 'org-tempo)
 
-;; Enable ignoring a headline during export.
 (require 'ox-extra)
 (ox-extras-activate '(ignore-headlines))
 
 (add-hook 'org-mode-hook 'wc-mode)
 
-
-(defun flyspell-ignore-tex ()
-  (interactive)
-  (set (make-variable-buffer-local 'ispell-parser) 'tex))
-(add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
-(add-hook 'org-mode-hook 'flyspell-ignore-tex)
-
-
-
 (use-package! org-ref
   :after org
   :init
   (setq org-ref-completion-library 'org-ref-ivy-cite
-	org-ref-default-bibliography '("~/bibtex/rlr-bib/rlr.bib")))
+        org-ref-default-bibliography '("~/bibtex/rlr-bib/rlr.bib")))
 
 (use-package! orgonomic
-  :defer t
+  :after org
   :hook (org-mode . orgonomic-mode))
 
 (defun lecture-slides ()
@@ -178,7 +155,6 @@
   (find-file "*-notes.org" t)
   (org-beamer-export-to-latex)
   (kill-buffer)
-  ;(kill-buffer "*.tex")
   (arara-all)
   (find-file "*-data.org" t))
 
@@ -187,46 +163,46 @@
   (interactive)
   (org-html-export-to-html)
   (shell-command "canvas")
-)
+  )
 
 (require 'ox-latex)
 
 (with-eval-after-load 'ox-latex
-(add-to-list 'org-latex-classes
-			 '("org-article"
-			   "\\documentclass{article}
-      [NO-DEFAULT-PACKAGES]
-      [NO-PACKAGES]"
-			   ("\\section{%s}" . "\\section*{%s}")
-			   ("\\subsection{%s}" . "\\subsection*{%s}")
-			   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-			   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-			   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-(add-to-list 'org-latex-classes
-			 '("org-handout"
-			   "\\documentclass{obuhandout}
-      [NO-DEFAULT-PACKAGES]
-      [NO-PACKAGES]"
-			   ("\\section{%s}" . "\\section*{%s}")
-			   ("\\subsection{%s}" . "\\subsection*{%s}")
-			   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-			   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-			   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-(add-to-list 'org-latex-classes
-			 '("org-beamer"
-			   "\\documentclass{beamer}
-      [NO-DEFAULT-PACKAGES]
-      [NO-PACKAGES]"
-			   ("\\section{%s}" . "\\section*{%s}")
-			   ("\\subsection{%s}" . "\\subsection*{%s}")
-			   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-			   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-			   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-)
-
   (add-to-list 'org-latex-classes
-			   '("rlr-obu-letter"
-				 "\\documentclass[12pt]{obuletter}
+               '("org-article"
+                 "\\documentclass{article}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("org-handout"
+                 "\\documentclass{obuhandout}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("org-beamer"
+                 "\\documentclass{beamer}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  )
+
+(add-to-list 'org-latex-classes
+             '("rlr-obu-letter"
+               "\\documentclass[12pt]{obuletter}
 
   % Customize variables --- for the entire list, see obuletter.cls and myletter.cls.
   \\newcommand{\\obuDept}{Department of Philosophy} % For personal letterhead, use name here.
@@ -239,17 +215,17 @@
   \\newcommand{\\toName}{Recipient}
   \\newcommand{\\toAddress}{Street Address\\\\City, State ZIP}
 
-		  [NO-DEFAULT-PACKAGES]
-		  [NO-PACKAGES]"
-				 ("\\section{%s}" . "\\section*{%s}")
-				 ("\\subsection{%s}" . "\\subsection*{%s}")
-				 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-				 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-				 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+          [NO-DEFAULT-PACKAGES]
+          [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
-  (add-to-list 'org-latex-classes
-			   '("rlr-personal-letter"
-				 "\\documentclass[12pt]{myletter}
+(add-to-list 'org-latex-classes
+             '("rlr-personal-letter"
+               "\\documentclass[12pt]{myletter}
 
   % Customize variables --- for the entire list, see obuletter.cls and myletter.cls.
   \\newcommand{\\Sender}{Randy Ridenour}
@@ -257,13 +233,13 @@
   \\newcommand{\\toName}{Recipient}
   \\newcommand{\\toAddress}{Street Address\\\\City, State ZIP}
 
-		  [NO-DEFAULT-PACKAGES]
-		  [NO-PACKAGES]"
-				 ("\\section{%s}" . "\\section*{%s}")
-				 ("\\subsection{%s}" . "\\subsection*{%s}")
-				 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-				 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-				 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+          [NO-DEFAULT-PACKAGES]
+          [NO-PACKAGES]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 
 (use-package! deft
   :after org
@@ -281,24 +257,24 @@
   (deft-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes/"))
 
 (use-package! org-roam
-      :hook
-      (after-init . org-roam-mode)
-      :custom
-      (org-roam-directory (file-truename "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/roam/"))
-      :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
+  :hook
+  (after-init . org-roam-mode)
+  :custom
+  (org-roam-directory (file-truename "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/roam/"))
+  :bind (:map org-roam-mode-map
+         (("C-c n l" . org-roam)
+          ("C-c n f" . org-roam-find-file)
+          ("C-c n g" . org-roam-graph))
+         :map org-mode-map
+         (("C-c n i" . org-roam-insert))
+         (("C-c n I" . org-roam-insert-immediate))))
 
 (setq org-roam-capture-templates
-  '(("d" "default" plain (function org-roam-capture--get-point)
-     "%?"
-     :file-name "%<%Y%m%d%H%M%S>-${slug}"
-     :head "#+title: ${title}\n#+ROAM_TAGS: \n"
-     :unnarrowed t)))
+      '(("d" "default" plain (function org-roam-capture--get-point)
+         "%?"
+         :file-name "%<%Y%m%d%H%M%S>-${slug}"
+         :head "#+title: ${title}\n#+ROAM_TAGS: \n"
+         :unnarrowed t)))
 
 (setq org-roam-dailies-directory "daily/")
 
@@ -321,23 +297,24 @@
 ;;       '("~/bibtex/rlr-bib/rlr.bib"))
 
 (use-package cdlatex
+  :defer
   :init
   (setq cdlatex-math-symbol-alist
-'((?. ("\\land" "\\cdot"))
-  (?v ("\\lor" "\\vee"))
-  (?> ("\\lif" "\\rightarrow"))
-  (?= ("\\liff" "\\Leftrightarrow" "\\Longleftrightarrow"))
-  (?! ("\\lneg" "\\neg"))
-  (?# ("\\Box"))
-  (?$ ("\\Diamond"))
-   ))
+        '((?. ("\\land" "\\cdot"))
+          (?v ("\\lor" "\\vee"))
+          (?> ("\\lif" "\\rightarrow"))
+          (?= ("\\liff" "\\Leftrightarrow" "\\Longleftrightarrow"))
+          (?! ("\\lneg" "\\neg"))
+          (?# ("\\Box"))
+          (?$ ("\\Diamond"))
+          ))
   :config
   (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
 
 
 (map! :map cdlatex-mode-map
-    :i "TAB" #'cdlatex-tab)
+      :i "TAB" #'cdlatex-tab)
 
 
 
@@ -351,7 +328,7 @@
   (let ((process (TeX-run-command name command file)))
     (setq TeX-sentinel-function 'TeX-Biber-sentinel)
     (if TeX-process-asynchronous
-	process
+        process
       (TeX-synchronous-sentinel name file process))))
 
 (defun TeX-Biber-sentinel (process name)
@@ -360,18 +337,18 @@
   (cond
    ;; Check whether Biber reports any warnings or errors.
    ((re-search-backward (concat
-			 "^(There \\(?:was\\|were\\) \\([0-9]+\\) "
-			 "\\(warnings?\\|error messages?\\))") nil t)
+                         "^(There \\(?:was\\|were\\) \\([0-9]+\\) "
+                         "\\(warnings?\\|error messages?\\))") nil t)
     ;; Tell the user their number so that she sees whether the
     ;; situation is getting better or worse.
     (message (concat "Biber finished with %s %s. "
-		     "Type `%s' to display output.")
-	     (match-string 1) (match-string 2)
-	     (substitute-command-keys
-	      "\\\\[TeX-recenter-output-buffer]")))
+                     "Type `%s' to display output.")
+             (match-string 1) (match-string 2)
+             (substitute-command-keys
+              "\\\\[TeX-recenter-output-buffer]")))
    (t
     (message (concat "Biber finished successfully. "
-		     "Run LaTeX again to get citations right."))))
+                     "Run LaTeX again to get citations right."))))
   (setq TeX-command-next TeX-command-default))
 
 (eval-after-load "tex"
@@ -389,7 +366,7 @@
 
 (eval-after-load "tex"
   '(add-to-list 'TeX-command-list
-        '("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
+                '("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
 
 (defun arara-all ()
   (interactive)
@@ -415,7 +392,7 @@ only adds KEYS to it."
                 (_ ", "))
               (s-join ", " keys)
               (if (member (following-char) '(?\} ?,))
-		     ""
+                  ""
                 ", ")))
      ((and (equal (preceding-char) ?\})
            (require 'reftex-parse nil t)
@@ -452,7 +429,7 @@ only adds KEYS to it."
                 (postnote (if bibtex-completion-cite-prompt-for-optional-arguments
                               (read-from-minibuffer "Postnote: ")
                             "")))
-                        (cond ((and (string= "" prenote) (string= "" postnote))
+            (cond ((and (string= "" prenote) (string= "" postnote))
                    (format "[[%s:%s]]" cite-command (s-join ", " keys)))
                   (t
                    (format "[[%s:%s][%s::%s]]" cite-command (s-join ", " keys) prenote postnote)
@@ -467,15 +444,15 @@ only adds KEYS to it."
   (setq bibtex-completion-pdf-field "File")
   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation)
   (setq bibtex-completion-format-citation-functions
-	'((org-mode      . bibtex-completion-format-citation-orgref)
-	  (latex-mode    . bibtex-completion-format-citation-cite)
-	  ;; (markdown-mode    . bibtex-completion-format-citation-cite)
-	  (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-	  (default       . bibtex-completion-format-citation-default))))
+        '((org-mode      . bibtex-completion-format-citation-orgref)
+          (latex-mode    . bibtex-completion-format-citation-cite)
+          ;; (markdown-mode    . bibtex-completion-format-citation-cite)
+          (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+          (default       . bibtex-completion-format-citation-default))))
 
-  (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-  (setq TeX-view-program-list
-		'(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+(setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+(setq TeX-view-program-list
+      '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
 
 (add-hook! #'mixed-pitch-mode)
 
@@ -548,50 +525,44 @@ only adds KEYS to it."
   (with-dir hugo-directory
             (shell-command "git add .")
             (--> (current-time-string)
-              (concat "git commit -m \"" it "\"")
-              (shell-command it))
+                 (concat "git commit -m \"" it "\"")
+                 (shell-command it))
             (magit-push-current-to-upstream nil)))
 
-(global-set-key (kbd "C-c h n") 'hugo-draft-post)
-(global-set-key (kbd "C-c h p") 'hugo-publish-post)
-(global-set-key (kbd "C-c h t") 'hugo-timestamp)
-(global-set-key (kbd "C-c h O") (lambda () (interactive) (find-file "~/Sites/blog/")))
-(global-set-key (kbd "C-c h P") (lambda () (interactive) (find-file "~/Sites/blog/content/posts/")))
 
-(global-set-key (kbd "C-c h d") 'hugo-deploy)
+(defun  hugo-posts-dir () "Find Hugo posts directory" (interactive) (find-file "~/Sites/blog/content/posts/"))
 
 (global-unset-key (kbd "C-z"))
-;; (global-unset-key (kbd "s-p"))
+(global-unset-key (kbd "s-p"))
 (global-unset-key (kbd "s-m"))
 (global-unset-key (kbd "s-h"))
+(global-unset-key (kbd "s-w"))
 
-  (use-package! major-mode-hydra
-    :defer
-    :init
-	:bind
-	("s-m" . major-mode-hydra))
+(use-package! major-mode-hydra
+  :defer)
+
+(map! "s-m" #'major-mode-hydra)
 
 (major-mode-hydra-define markdown-mode
-    (:quit-key "q")
+  (:quit-key "q")
   ("Format"
-	(("h" markdown-insert-header-dwim "header")
-	("l" markdown-insert-link "link")
-	("u" markdown-insert-uri "url")
-	("f" markdown-insert-footnote "footnote")
-	("w" markdown-insert-wiki-link "wiki")
-	("r" markdown-insert-reference-link-dwim "r-link")
-	("n" markdown-cleanup-list-numbers "clean-lists")
-	("c" markdown-complete-buffer "complete"))))
+   (("h" markdown-insert-header-dwim "header")
+    ("l" markdown-insert-link "link")
+    ("u" markdown-insert-uri "url")
+    ("f" markdown-insert-footnote "footnote")
+    ("w" markdown-insert-wiki-link "wiki")
+    ("r" markdown-insert-reference-link-dwim "r-link")
+    ("n" markdown-cleanup-list-numbers "clean-lists")
+    ("c" markdown-complete-buffer "complete"))))
 
-
-  (major-mode-hydra-define latex-mode
-    (:quit-key "q")
-    ("Bibtex"
-	(("b" ivy-bibtex "Ivy-Bibtex"))
-     "LaTeXmk"
-	(("p" rlr/tex-pvc "pvc")
-	("c" tex-clean "clean aux")
-	("C" tex-clean-all "clean all"))))
+(major-mode-hydra-define latex-mode
+  (:quit-key "q")
+  ("Bibtex"
+   (("b" ivy-bibtex "Ivy-Bibtex"))
+   "LaTeXmk"
+   (("p" rlr/tex-pvc "pvc")
+    ("c" tex-clean "clean aux")
+    ("C" tex-clean-all "clean all"))))
 
 (major-mode-hydra-define org-mode
   (:quit-key "q")
@@ -610,9 +581,6 @@ only adds KEYS to it."
    (("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all"))))
 
-
-
-
 (major-mode-hydra-define dired-mode
   (:quit-key "q")
   ("Tools"
@@ -621,15 +589,15 @@ only adds KEYS to it."
     ("n" dired-toggle-read-only "edit Filenames"))))
 
 (map!
-   ("<s-backspace>" 'kill-whole-line)
-   ("<s-up>"  'beginning-of-buffer)
-   ("<s-down>" 'end-of-buffer))
+ ("<s-backspace>" 'kill-whole-line)
+ ("<s-up>"  'beginning-of-buffer)
+ ("<s-down>" 'end-of-buffer))
 
 ;; Hydra-toggle
 
 (defun my/insert-unicode (unicode-name)
-       "Same as C-x 8 enter UNICODE-NAME."
-       (insert-char (gethash unicode-name (ucs-names))))
+  "Same as C-x 8 enter UNICODE-NAME."
+  (insert-char (gethash unicode-name (ucs-names))))
 
 (pretty-hydra-define hydra-toggle
   (:color blue :quit-key "q" :title "Toggle")
@@ -736,14 +704,20 @@ only adds KEYS to it."
 (pretty-hydra-define hydra-hugo
   (:color blue :quit-key "q" :title "Hugo")
   ("Blog"
-   (("n" hugo-draft-post "new draft")
-    ("p" hugo-publish-post "publish post")
-    ("t" hugo-timestamp "update timestamp"))))
+   (("n" hugo-draft-post "New draft")
+    ("p" hugo-publish-post "Publish post")
+    ("t" hugo-timestamp "Update timestamp")
+    ("d" hugo-deploy "Deploy")
+    ("h" hugo-posts-dir "Posts"))))
+
 
 
 
 ;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
 
-(map! "s-b" #'counsel-switch-buffer)
+(map! "s-b" #'counsel-switch-buffer
+      "s-r" #'counsel-buffer-or-recentf
 
-  (setq default-directory "~/")
+      "s-h" #'hydra-hugo/body)
+
+(setq default-directory "~/")

@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: keybinding
-# key: kb
-# --
-(global-set-key (kbd "$1") '$2)
-$0
-
