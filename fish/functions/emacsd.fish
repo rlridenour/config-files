@@ -1,3 +1,3 @@
 function emacsd
-    cd ~/.emacs.d
+    cd ~/.config/doom
 end
