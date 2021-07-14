@@ -169,6 +169,20 @@ Kill contents of scratch buffer, not the buffer itself. From [[http://emacswiki.
 (add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
 #+end_src
 
+Create a new scratch buffer if there isn't one, find it if there is.
+
+#+begin_src emacs-lisp :tangle yes
+(defun goto-scratch ()
+  "this sends you to the scratch buffer"
+  (interactive)
+  (let ((goto-scratch-buffer (get-buffer-create "*scratch*")))
+    (switch-to-buffer goto-scratch-buffer)
+    (org-mode)))
+
+(map! "M-g s" #'goto-scratch)
+#+end_src
+
+
 ** Saved Keyboard Macros
 
 Splits Org-mode list items
@@ -228,6 +242,18 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 (map! "C-M-s-d" #'shrink-whitespace)
 #+end_src
 
+Use ebib for bibtex file management
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! ebib
+:defer
+:config
+(setq ebib-bibtex-dialect 'biblatex)
+:custom
+(ebib-preload-bib-files '("~/bibtex/rlr-bib/rlr.bib")))
+#+end_src
+
+
 * Languages
 
 ** Org Mode
@@ -243,7 +269,7 @@ Don't use Org Indent mode
 
 #+begin_src emacs-lisp :tangle yes
 (after! org (setq org-startup-indented nil
-      org-adapt-indentation nil))
+                  org-adapt-indentation nil))
 #+end_src
 
 Make all the stars visible in Org headings.
@@ -266,7 +292,7 @@ Doom, by default, inserts Org headings after the current subtree. Instead, inser
 
 Make some Org-capture templates. Here's one for quickly making todo items.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (setq org-capture-templates
       '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/tasks.org" "Tasks")
          "* TODO %?\n  %i\n  %a")
@@ -444,9 +470,23 @@ Personal letter
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 #+end_src
 
+#+BEGIN_SRC emacs-lisp :tangle no
+(after! org
+  (set-company-backend! 'org-mode nil))
+#+END_SRC
+
+Company mode was annoying me by forcing results to be in lower case when I had begun a capitalized word. So, I've increased the delay before the completion tips show.
+
+#+begin_src emacs-lisp :tangle yes
+(setq company-idle-delay 1.0)
+#+end_src
+
+
+
+
+**
 
 *** Org Roam
-
 #+begin_src emacs-lisp :tangle yes
 (use-package! deft
   :after org
@@ -769,7 +809,55 @@ Use Ivy-bibtex for reference completions.
 
 
 (defun  hugo-posts-dir () "Find Hugo posts directory" (interactive) (find-file "~/Sites/blog/content/posts/"))
+#+end_src
 
+Create new blog post for ox-hugo.
+
+#+begin_src emacs-lisp :tangle yes
+(defun new-post (title) "Create a new blog post."
+       (interactive "sPost Title: ")
+       (insert "** TODO " title"\n:PROPERTIES:\n:EXPORT_FILE_NAME: "(format-time-string "%Y%m%d-")(hugo-make-slug title)"\n:EXPORT_HUGO_CUSTOM_FRONT_MATTER: :highlight true :math false\n:END:\n\n"))
+#+end_src
+
+
+Org-capture template for a blog post. ~C-c n n~ opens a window with the new post, and ~C-c C-c~ closes the window and adds the new post to the Blog Ideas section of blog.org.
+
+#+begin_src emacs-lisp :tangle yes
+;; Populates only the EXPORT_FILE_NAME property in the inserted headline.
+(with-eval-after-load 'org-capture
+  (defun org-hugo-new-subtree-post-capture-template ()
+    "Returns `org-capture' template string for new Hugo post.
+See `org-capture-templates' for more information."
+    (let* ((title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
+           (fname (org-hugo-slug title)))
+      (mapconcat #'identity
+                 `(
+                   ,(concat "* TODO " title)
+                   ":PROPERTIES:"
+                   ,(concat ":EXPORT_FILE_NAME: " (format-time-string "%Y%m%d-") fname)
+":EXPORT_HUGO_CUSTOM_FRONT_MATTER: :highlight true :math false"
+                   ":END:"
+                   "%?\n")          ;Place the cursor here finally
+                 "\n")))
+
+  (add-to-list 'org-capture-templates
+               '("h"                ;`org-capture' binding + h
+                 "Hugo post"
+                 entry
+                 ;; It is assumed that below file is present in `org-directory'
+                 ;; and that it has a "Blog Ideas" heading. It can even be a
+                 ;; symlink pointing to the actual location of all-posts.org!
+                 (file+olp "blog.org" "Blog Ideas")
+                 (function org-hugo-new-subtree-post-capture-template))))
+#+end_src
+
+Enable Org-ref citations in Ox-hugo. Not working yet.
+
+#+begin_src emacs-lisp :tangle no
+(use-package! citeproc-org
+  :after ox-hugo
+  :config
+  (citeproc-org-setup))
 #+end_src
 
 * Keybindings
@@ -793,7 +881,6 @@ Unset some keys
 #+begin_src emacs-lisp :tangle yes
 (use-package! major-mode-hydra
   :defer)
-
 (map! "s-m" #'major-mode-hydra)
 #+end_src
 
@@ -809,7 +896,9 @@ Unset some keys
     ("r" markdown-insert-reference-link-dwim "r-link")
     ("n" markdown-cleanup-list-numbers "clean-lists")
     ("c" markdown-complete-buffer "complete"))))
+#+end_src
 
+#+begin_src emacs-lisp :tangle yes
 (major-mode-hydra-define latex-mode
   (:quit-key "q")
   ("Bibtex"
@@ -818,7 +907,9 @@ Unset some keys
    (("p" rlr/tex-pvc "pvc")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all"))))
+#+end_src
 
+#+begin_src emacs-lisp :tangle yes
 (major-mode-hydra-define org-mode
   (:quit-key "q")
   ("Export"
@@ -835,15 +926,15 @@ Unset some keys
    "Clean"
    (("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all"))))
+#+end_src
 
+#+begin_src emacs-lisp :tangle yes
 (major-mode-hydra-define dired-mode
   (:quit-key "q")
   ("Tools"
    (("d" crux-open-with "Open in default program")
     ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
     ("n" dired-toggle-read-only "edit Filenames"))))
-
-
 #+end_src
 
 
@@ -863,22 +954,10 @@ Key-chords
   )
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
-(map!
- ("<s-backspace>" 'kill-whole-line)
- ("<s-up>"  'beginning-of-buffer)
- ("<s-down>" 'end-of-buffer))
-#+end_src
 
-Other Hydras
+A hydra for toggling minor modes and other settings.
 
 #+begin_src emacs-lisp :tangle yes
-;; Hydra-toggle
-
-(defun my/insert-unicode (unicode-name)
-  "Same as C-x 8 enter UNICODE-NAME."
-  (insert-char (gethash unicode-name (ucs-names))))
-
 (pretty-hydra-define hydra-toggle
   (:color blue :quit-key "q" :title "Toggle")
   ("Basic"
@@ -890,14 +969,23 @@ Other Hydras
     ("m" toggle-frame-maximized-undecorated "max" :toggle t)
     ("p" smartparens-mode "smartparens" :toggle t)
     ("t" toggle-truncate-lines "truncate" :toggle t)
-    ("s" whitespace-mode "whitespace" :toggle t))
+    ("s" whitespace-mode "whitespace" :toggle t)
+    ("C" company-mode "company" :toggle t))
    "Writing"
    (("c" cdlatex-mode "cdlatex" :toggle t)
     ("o" olivetti-mode "olivetti" :toggle t)
     ("r" read-only-mode "read-only" :toggle t)
     ("w" wc-mode "word-count" :toggle t))))
+#+end_src
 
 
+
+This (very long) hydra is for quickly entering symbolic logic formulas. It essentially creates a new keyboard just for entering logic formulas.
+
+#+begin_src emacs-lisp :tangle yes
+(defun my/insert-unicode (unicode-name)
+  "Same as C-x 8 enter UNICODE-NAME."
+  (insert-char (gethash unicode-name (ucs-names))))
 
 (pretty-hydra-define hydra-logic
   (:color blue :title "Logic")
@@ -978,9 +1066,12 @@ Other Hydras
     ("<left>" backward-char "move-left" :exit nil)
     ("<right>" forward-char "move-right" :exit nil)
     ("<kp-delete>" delete-char "delete" :exit nil))))
+#+end_src
 
-;; Hydra-hugo
 
+This hydra is for writing and publishing Hugo blog posts.
+
+#+begin_src emacs-lisp :tangle yes
 (pretty-hydra-define hydra-hugo
   (:color blue :quit-key "q" :title "Hugo")
   ("Blog"
@@ -989,22 +1080,59 @@ Other Hydras
     ("t" hugo-timestamp "Update timestamp")
     ("d" hugo-deploy "Deploy")
     ("h" hugo-posts-dir "Posts"))))
-
-
-
-
-;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
-
 #+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+(map! "s-h" #'hydra-hugo/body
+      "s-l" #'hydra-logic/body
+      "s-t" #'hydra-toggle/body
+      )
+#+end_src
+
+
+
+
+
 
 
 ** Misc Keybindings
 
+
+#+begin_src emacs-lisp :tangle yes
+(map!
+ ("<s-backspace>" 'kill-whole-line)
+ ("<s-up>"  'beginning-of-buffer)
+ ("<s-down>" 'end-of-buffer))
+#+end_src
+
+Use ~s-r~ to select buffers and recent files, ~s-b~ to switch buffers including system buffers.
+
 #+begin_src emacs-lisp :tangle yes
 (map! "s-b" #'counsel-switch-buffer
-      "s-r" #'counsel-buffer-or-recentf
+      "s-r" #'counsel-buffer-or-recentf)
+#+end_src
 
-      "s-h" #'hydra-hugo/body)
+Use evil-nerd-commenter for comments.
+
+#+begin_src emacs-lisp :tangle yes
+(map! "M-;" #'evilnc-comment-or-uncomment-lines)
+#+end_src
+
+Replace ~goto-line~ with ~avy-goto-line~.
+
+#+begin_src emacs-lisp :tangle yes
+(map! "M-g g" #'avy-goto-line
+      "M-g M-g" #'avy-goto-line)
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+(map! "M-g o" #'counsel-outline)
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(map! "s-o" #'counsel-find-file)
 #+end_src
 
 * Final Steps

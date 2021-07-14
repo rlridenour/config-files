@@ -71,8 +71,9 @@
 (package! crux)
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"))
-
-
+(package! evil-nerd-commenter)
+(package! ebib)
+(package! citeproc-org)
 ;; When using org-roam via the `+roam` flag
 (unpin! org-roam company-org-roam)
 

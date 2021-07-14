@@ -84,6 +84,15 @@
     t))
 (add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
 
+(defun goto-scratch ()
+  "this sends you to the scratch buffer"
+  (interactive)
+  (let ((goto-scratch-buffer (get-buffer-create "*scratch*")))
+    (switch-to-buffer goto-scratch-buffer)
+    (org-mode)))
+
+(map! "M-g s" #'goto-scratch)
+
 (fset 'split-org-item
       [?\C-k ?\M-\\ return ?\C-y])
 
@@ -108,24 +117,23 @@
   :defer)
 (map! "C-M-s-d" #'shrink-whitespace)
 
+(use-package! ebib
+:defer
+:config
+(setq ebib-bibtex-dialect 'biblatex)
+:custom
+(ebib-preload-bib-files '("~/bibtex/rlr-bib/rlr.bib")))
+
 (setq org-directory "~/Library/Mobile Documents/com~apple~CloudDocs/org/")
 
 (after! org (setq org-startup-indented nil
-      org-adapt-indentation nil))
+                  org-adapt-indentation nil))
 
 (after! org (setq org-hide-leading-stars nil))
 
 (after! org (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/")))
 
 (after! org (setq org-insert-heading-respect-content nil))
-
-(setq org-capture-templates
-      '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/tasks.org" "Tasks")
-         "* TODO %?\n  %i\n  %a")
-        ;; ("j" "Journal" entry (file+datetree "~/Dropbox/Org/journal.org")
-        ;;  "* %?\nEntered on %U\n  %i\n  %a")
-        )
-      )
 
 (add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
 
@@ -240,6 +248,8 @@
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+(setq company-idle-delay 1.0)
 
 (use-package! deft
   :after org
@@ -532,6 +542,37 @@ only adds KEYS to it."
 
 (defun  hugo-posts-dir () "Find Hugo posts directory" (interactive) (find-file "~/Sites/blog/content/posts/"))
 
+(defun new-post (title) "Create a new blog post."
+       (interactive "sPost Title: ")
+       (insert "** TODO " title"\n:PROPERTIES:\n:EXPORT_FILE_NAME: "(format-time-string "%Y%m%d-")(hugo-make-slug title)"\n:EXPORT_HUGO_CUSTOM_FRONT_MATTER: :highlight true :math false\n:END:\n\n"))
+
+;; Populates only the EXPORT_FILE_NAME property in the inserted headline.
+(with-eval-after-load 'org-capture
+  (defun org-hugo-new-subtree-post-capture-template ()
+    "Returns `org-capture' template string for new Hugo post.
+See `org-capture-templates' for more information."
+    (let* ((title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
+           (fname (org-hugo-slug title)))
+      (mapconcat #'identity
+                 `(
+                   ,(concat "* TODO " title)
+                   ":PROPERTIES:"
+                   ,(concat ":EXPORT_FILE_NAME: " (format-time-string "%Y%m%d-") fname)
+":EXPORT_HUGO_CUSTOM_FRONT_MATTER: :highlight true :math false"
+                   ":END:"
+                   "%?\n")          ;Place the cursor here finally
+                 "\n")))
+
+  (add-to-list 'org-capture-templates
+               '("h"                ;`org-capture' binding + h
+                 "Hugo post"
+                 entry
+                 ;; It is assumed that below file is present in `org-directory'
+                 ;; and that it has a "Blog Ideas" heading. It can even be a
+                 ;; symlink pointing to the actual location of all-posts.org!
+                 (file+olp "blog.org" "Blog Ideas")
+                 (function org-hugo-new-subtree-post-capture-template))))
+
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "s-p"))
 (global-unset-key (kbd "s-m"))
@@ -540,7 +581,6 @@ only adds KEYS to it."
 
 (use-package! major-mode-hydra
   :defer)
-
 (map! "s-m" #'major-mode-hydra)
 
 (major-mode-hydra-define markdown-mode
@@ -588,17 +628,6 @@ only adds KEYS to it."
     ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
     ("n" dired-toggle-read-only "edit Filenames"))))
 
-(map!
- ("<s-backspace>" 'kill-whole-line)
- ("<s-up>"  'beginning-of-buffer)
- ("<s-down>" 'end-of-buffer))
-
-;; Hydra-toggle
-
-(defun my/insert-unicode (unicode-name)
-  "Same as C-x 8 enter UNICODE-NAME."
-  (insert-char (gethash unicode-name (ucs-names))))
-
 (pretty-hydra-define hydra-toggle
   (:color blue :quit-key "q" :title "Toggle")
   ("Basic"
@@ -610,14 +639,17 @@ only adds KEYS to it."
     ("m" toggle-frame-maximized-undecorated "max" :toggle t)
     ("p" smartparens-mode "smartparens" :toggle t)
     ("t" toggle-truncate-lines "truncate" :toggle t)
-    ("s" whitespace-mode "whitespace" :toggle t))
+    ("s" whitespace-mode "whitespace" :toggle t)
+    ("C" company-mode "company" :toggle t))
    "Writing"
    (("c" cdlatex-mode "cdlatex" :toggle t)
     ("o" olivetti-mode "olivetti" :toggle t)
     ("r" read-only-mode "read-only" :toggle t)
     ("w" wc-mode "word-count" :toggle t))))
 
-
+(defun my/insert-unicode (unicode-name)
+  "Same as C-x 8 enter UNICODE-NAME."
+  (insert-char (gethash unicode-name (ucs-names))))
 
 (pretty-hydra-define hydra-logic
   (:color blue :title "Logic")
@@ -699,8 +731,6 @@ only adds KEYS to it."
     ("<right>" forward-char "move-right" :exit nil)
     ("<kp-delete>" delete-char "delete" :exit nil))))
 
-;; Hydra-hugo
-
 (pretty-hydra-define hydra-hugo
   (:color blue :quit-key "q" :title "Hugo")
   ("Blog"
@@ -710,14 +740,26 @@ only adds KEYS to it."
     ("d" hugo-deploy "Deploy")
     ("h" hugo-posts-dir "Posts"))))
 
+(map! "s-h" #'hydra-hugo/body
+      "s-l" #'hydra-logic/body
+      "s-t" #'hydra-toggle/body
+      )
 
-
-
-;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
+(map!
+ ("<s-backspace>" 'kill-whole-line)
+ ("<s-up>"  'beginning-of-buffer)
+ ("<s-down>" 'end-of-buffer))
 
 (map! "s-b" #'counsel-switch-buffer
-      "s-r" #'counsel-buffer-or-recentf
+      "s-r" #'counsel-buffer-or-recentf)
 
-      "s-h" #'hydra-hugo/body)
+(map! "M-;" #'evilnc-comment-or-uncomment-lines)
+
+(map! "M-g g" #'avy-goto-line
+      "M-g M-g" #'avy-goto-line)
+
+(map! "M-g o" #'counsel-outline)
+
+(map! "s-o" #'counsel-find-file)
 
 (setq default-directory "~/")
