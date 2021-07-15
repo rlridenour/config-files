@@ -475,6 +475,13 @@ only adds KEYS to it."
   (setq markdown-indent-on-enter 'indent-and-new-item)
   (setq markdown-asymmetric-header t))
 
+(use-package! ox-hugo
+  :after org
+  :init
+  (setq org-hugo-delete-trailing-ws nil
+        org-hugo-auto-set-lastmod t
+org-hugo-suppress-lastmod-period 86400.0))
+
 ;; Hugo Settings
 
 (defun hugo-timestamp ()

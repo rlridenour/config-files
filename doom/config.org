@@ -743,6 +743,15 @@ Use Ivy-bibtex for reference completions.
 * Hugo
 
 #+begin_src emacs-lisp :tangle yes
+(use-package! ox-hugo
+  :after org
+  :init
+  (setq org-hugo-delete-trailing-ws nil
+        org-hugo-auto-set-lastmod t
+org-hugo-suppress-lastmod-period 86400.0))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
 ;; Hugo Settings
 
 (defun hugo-timestamp ()
