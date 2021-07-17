@@ -751,55 +751,75 @@ Use Ivy-bibtex for reference completions.
 org-hugo-suppress-lastmod-period 86400.0))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
-;; Hugo Settings
+Create new blog post for ox-hugo.
 
+Set some variables to use.
+
+#+begin_src emacs-lisp :tangle yes
+(defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
+(defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
+#+end_src
+
+Use this function to create a new post when in the main blog content Org file.
+
+#+begin_src emacs-lisp :tangle yes
+(defun hugo-make-slug (s) "Turn a string into a slug."
+       (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
+
+(defun new-post (title) "Create a new blog post."
+       (interactive "sPost Title: ")
+       (insert "** TODO " title"\n:PROPERTIES:\n:EXPORT_FILE_NAME: "(format-time-string "%Y%m%d-")(hugo-make-slug title)"\n:EXPORT_DATE "(format-time-string "%Y-%m-%d")"\n:END:\n\n"))
+#+end_src
+
+
+Org-capture template for a blog post. ~C-c n n~ opens a window with the new post, and ~C-c C-c~ closes the window and adds the new post to the Blog Ideas section of blog.org.
+
+#+begin_src emacs-lisp :tangle yes
+;; Populates only the EXPORT_FILE_NAME property in the inserted headline.
+(with-eval-after-load 'org-capture
+  (defun org-hugo-new-subtree-post-capture-template ()
+    "Returns `org-capture' template string for new Hugo post.
+  See `org-capture-templates' for more information."
+    (let* ((title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
+           (fname (org-hugo-slug title)))
+      (mapconcat #'identity
+                 `(
+                   ,(concat "* TODO " title)
+                   ":PROPERTIES:"
+                   ,(concat ":EXPORT_FILE_NAME: " (format-time-string "%Y%m%d-") fname)
+                   ,(concat ":EXPORT_DATE: " (format-time-string "%Y-%m-%dT%H:%M:%S"))
+                   ":END:"
+                   "%?\n")          ;Place the cursor here finally
+                 "\n")))
+
+  (add-to-list 'org-capture-templates
+               '("h"                ;`org-capture' binding + h
+                 "Hugo post"
+                 entry
+                 ;; It is assumed that below file is present in `org-directory'
+                 ;; and that it has a "Blog Ideas" heading. It can even be a
+                 ;; symlink pointing to the actual location of all-posts.org!
+                 (file+olp "blog.org" "Blog Ideas")
+                 (function org-hugo-new-subtree-post-capture-template))))
+#+end_src
+
+Update post date.
+
+#+begin_src emacs-lisp :tangle yes
 (defun hugo-timestamp ()
   "Update existing date: timestamp on a Hugo post."
   (interactive)
   (save-excursion (
-                   goto-char 1)
-                  (re-search-forward "^date:")
+                   re-search-forward "^:EXPORT_DATE:")
                   (let ((beg (point)))
                     (end-of-line)
                     (delete-region beg (point)))
-                  (insert (concat " " (format-time-string "\"%Y-%m-%dT%H:%M:%S\"")))))
+                  (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
+#+end_src
 
-(defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
-(defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
-(defvar hugo-post-ext ".md"  "File extension of Hugo posts.")
-(defvar hugo-post-template "---\ntitle: \"%s\"\ndraft: true\ncategories: []\ntags:\n- \ncomments: true\ndate: \nhighlight: true\nmarkup: \"\"\nmath: false\nurl: \"\"\n---\n"
-  "Default template for Hugo posts. %s will be replace by the post title.")
+Deploy Hugo blog.
 
-(defun hugo-make-slug (s) "Turn a string into a slug."
-       (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
-
-(defun hugo-yaml-escape (s) "Escape a string for YAML."
-       (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
-
-(defun hugo-draft-post (title) "Create a new Hugo blog post."
-       (interactive "sPost Title: ")
-       (let ((draft-file (concat hugo-directory hugo-posts-dir
-                                 (format-time-string "%Y-%m-%d-")
-                                 (hugo-make-slug title)
-                                 hugo-post-ext)))
-         (if (file-exists-p draft-file)
-             (find-file draft-file)
-           (find-file draft-file)
-           (insert (format hugo-post-template (hugo-yaml-escape title))))))
-
-(defun hugo-publish-post ()
-  "Update timestamp and set draft to false."
-  (interactive)
-  (hugo-timestamp)
-  (save-excursion (
-                   goto-char 1)
-                  (re-search-forward "^draft:")
-                  (let ((beg (point)))
-                    (end-of-line)
-                    (delete-region beg (point)))
-                  (insert " false")))
-
+#+begin_src emacs-lisp :tangle yes
 (defmacro with-dir (DIR &rest FORMS)
   "Execute FORMS in DIR."
   (let ((orig-dir (gensym)))
@@ -816,48 +836,6 @@ org-hugo-suppress-lastmod-period 86400.0))
                  (shell-command it))
             (magit-push-current-to-upstream nil)))
 
-
-(defun  hugo-posts-dir () "Find Hugo posts directory" (interactive) (find-file "~/Sites/blog/content/posts/"))
-#+end_src
-
-Create new blog post for ox-hugo.
-
-#+begin_src emacs-lisp :tangle yes
-(defun new-post (title) "Create a new blog post."
-       (interactive "sPost Title: ")
-       (insert "** TODO " title"\n:PROPERTIES:\n:EXPORT_FILE_NAME: "(format-time-string "%Y%m%d-")(hugo-make-slug title)"\n:EXPORT_HUGO_CUSTOM_FRONT_MATTER: :highlight true :math false\n:END:\n\n"))
-#+end_src
-
-
-Org-capture template for a blog post. ~C-c n n~ opens a window with the new post, and ~C-c C-c~ closes the window and adds the new post to the Blog Ideas section of blog.org.
-
-#+begin_src emacs-lisp :tangle yes
-;; Populates only the EXPORT_FILE_NAME property in the inserted headline.
-(with-eval-after-load 'org-capture
-  (defun org-hugo-new-subtree-post-capture-template ()
-    "Returns `org-capture' template string for new Hugo post.
-See `org-capture-templates' for more information."
-    (let* ((title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
-           (fname (org-hugo-slug title)))
-      (mapconcat #'identity
-                 `(
-                   ,(concat "* TODO " title)
-                   ":PROPERTIES:"
-                   ,(concat ":EXPORT_FILE_NAME: " (format-time-string "%Y%m%d-") fname)
-":EXPORT_HUGO_CUSTOM_FRONT_MATTER: :highlight true :math false"
-                   ":END:"
-                   "%?\n")          ;Place the cursor here finally
-                 "\n")))
-
-  (add-to-list 'org-capture-templates
-               '("h"                ;`org-capture' binding + h
-                 "Hugo post"
-                 entry
-                 ;; It is assumed that below file is present in `org-directory'
-                 ;; and that it has a "Blog Ideas" heading. It can even be a
-                 ;; symlink pointing to the actual location of all-posts.org!
-                 (file+olp "blog.org" "Blog Ideas")
-                 (function org-hugo-new-subtree-post-capture-template))))
 #+end_src
 
 Enable Org-ref citations in Ox-hugo. Not working yet.
@@ -1128,11 +1106,12 @@ Use evil-nerd-commenter for comments.
 (map! "M-;" #'evilnc-comment-or-uncomment-lines)
 #+end_src
 
-Replace ~goto-line~ with ~avy-goto-line~.
+Replace ~goto-line~ with ~avy-goto-line~. ~Avy-goto-char-timer~ is an efficient way to go to a specific location in the visible text.
 
 #+begin_src emacs-lisp :tangle yes
 (map! "M-g g" #'avy-goto-line
-      "M-g M-g" #'avy-goto-line)
+      "M-g M-g" #'avy-goto-line
+      "s-/" #'avy-goto-char-timer)
 #+end_src
 
 

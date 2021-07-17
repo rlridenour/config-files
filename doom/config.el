@@ -482,53 +482,52 @@ only adds KEYS to it."
         org-hugo-auto-set-lastmod t
 org-hugo-suppress-lastmod-period 86400.0))
 
-;; Hugo Settings
+(defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
+(defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
+
+(defun hugo-make-slug (s) "Turn a string into a slug."
+       (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
+
+(defun new-post (title) "Create a new blog post."
+       (interactive "sPost Title: ")
+       (insert "** TODO " title"\n:PROPERTIES:\n:EXPORT_FILE_NAME: "(format-time-string "%Y%m%d-")(hugo-make-slug title)"\n:EXPORT_DATE "(format-time-string "%Y-%m-%d")"\n:END:\n\n"))
+
+;; Populates only the EXPORT_FILE_NAME property in the inserted headline.
+(with-eval-after-load 'org-capture
+  (defun org-hugo-new-subtree-post-capture-template ()
+    "Returns `org-capture' template string for new Hugo post.
+  See `org-capture-templates' for more information."
+    (let* ((title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
+           (fname (org-hugo-slug title)))
+      (mapconcat #'identity
+                 `(
+                   ,(concat "* TODO " title)
+                   ":PROPERTIES:"
+                   ,(concat ":EXPORT_FILE_NAME: " (format-time-string "%Y%m%d-") fname)
+                   ,(concat ":EXPORT_DATE: " (format-time-string "%Y-%m-%dT%H:%M:%S"))
+                   ":END:"
+                   "%?\n")          ;Place the cursor here finally
+                 "\n")))
+
+  (add-to-list 'org-capture-templates
+               '("h"                ;`org-capture' binding + h
+                 "Hugo post"
+                 entry
+                 ;; It is assumed that below file is present in `org-directory'
+                 ;; and that it has a "Blog Ideas" heading. It can even be a
+                 ;; symlink pointing to the actual location of all-posts.org!
+                 (file+olp "blog.org" "Blog Ideas")
+                 (function org-hugo-new-subtree-post-capture-template))))
 
 (defun hugo-timestamp ()
   "Update existing date: timestamp on a Hugo post."
   (interactive)
   (save-excursion (
-                   goto-char 1)
-                  (re-search-forward "^date:")
+                   re-search-forward "^:EXPORT_DATE:")
                   (let ((beg (point)))
                     (end-of-line)
                     (delete-region beg (point)))
-                  (insert (concat " " (format-time-string "\"%Y-%m-%dT%H:%M:%S\"")))))
-
-(defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
-(defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
-(defvar hugo-post-ext ".md"  "File extension of Hugo posts.")
-(defvar hugo-post-template "---\ntitle: \"%s\"\ndraft: true\ncategories: []\ntags:\n- \ncomments: true\ndate: \nhighlight: true\nmarkup: \"\"\nmath: false\nurl: \"\"\n---\n"
-  "Default template for Hugo posts. %s will be replace by the post title.")
-
-(defun hugo-make-slug (s) "Turn a string into a slug."
-       (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
-
-(defun hugo-yaml-escape (s) "Escape a string for YAML."
-       (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
-
-(defun hugo-draft-post (title) "Create a new Hugo blog post."
-       (interactive "sPost Title: ")
-       (let ((draft-file (concat hugo-directory hugo-posts-dir
-                                 (format-time-string "%Y-%m-%d-")
-                                 (hugo-make-slug title)
-                                 hugo-post-ext)))
-         (if (file-exists-p draft-file)
-             (find-file draft-file)
-           (find-file draft-file)
-           (insert (format hugo-post-template (hugo-yaml-escape title))))))
-
-(defun hugo-publish-post ()
-  "Update timestamp and set draft to false."
-  (interactive)
-  (hugo-timestamp)
-  (save-excursion (
-                   goto-char 1)
-                  (re-search-forward "^draft:")
-                  (let ((beg (point)))
-                    (end-of-line)
-                    (delete-region beg (point)))
-                  (insert " false")))
+                  (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
 
 (defmacro with-dir (DIR &rest FORMS)
   "Execute FORMS in DIR."
@@ -545,40 +544,6 @@ org-hugo-suppress-lastmod-period 86400.0))
                  (concat "git commit -m \"" it "\"")
                  (shell-command it))
             (magit-push-current-to-upstream nil)))
-
-
-(defun  hugo-posts-dir () "Find Hugo posts directory" (interactive) (find-file "~/Sites/blog/content/posts/"))
-
-(defun new-post (title) "Create a new blog post."
-       (interactive "sPost Title: ")
-       (insert "** TODO " title"\n:PROPERTIES:\n:EXPORT_FILE_NAME: "(format-time-string "%Y%m%d-")(hugo-make-slug title)"\n:EXPORT_HUGO_CUSTOM_FRONT_MATTER: :highlight true :math false\n:END:\n\n"))
-
-;; Populates only the EXPORT_FILE_NAME property in the inserted headline.
-(with-eval-after-load 'org-capture
-  (defun org-hugo-new-subtree-post-capture-template ()
-    "Returns `org-capture' template string for new Hugo post.
-See `org-capture-templates' for more information."
-    (let* ((title (read-from-minibuffer "Post Title: ")) ;Prompt to enter the post title
-           (fname (org-hugo-slug title)))
-      (mapconcat #'identity
-                 `(
-                   ,(concat "* TODO " title)
-                   ":PROPERTIES:"
-                   ,(concat ":EXPORT_FILE_NAME: " (format-time-string "%Y%m%d-") fname)
-":EXPORT_HUGO_CUSTOM_FRONT_MATTER: :highlight true :math false"
-                   ":END:"
-                   "%?\n")          ;Place the cursor here finally
-                 "\n")))
-
-  (add-to-list 'org-capture-templates
-               '("h"                ;`org-capture' binding + h
-                 "Hugo post"
-                 entry
-                 ;; It is assumed that below file is present in `org-directory'
-                 ;; and that it has a "Blog Ideas" heading. It can even be a
-                 ;; symlink pointing to the actual location of all-posts.org!
-                 (file+olp "blog.org" "Blog Ideas")
-                 (function org-hugo-new-subtree-post-capture-template))))
 
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "s-p"))
@@ -763,7 +728,8 @@ See `org-capture-templates' for more information."
 (map! "M-;" #'evilnc-comment-or-uncomment-lines)
 
 (map! "M-g g" #'avy-goto-line
-      "M-g M-g" #'avy-goto-line)
+      "M-g M-g" #'avy-goto-line
+      "s-/" #'avy-goto-char-timer)
 
 (map! "M-g o" #'counsel-outline)
 
