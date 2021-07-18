@@ -2,6 +2,16 @@
 (setq user-full-name "Randy Ridenour"
       user-mail-address "rlridenour@gmail.com")
 
+(use-package ivy-rich
+  :after counsel
+  :config
+  (setq ivy-rich-display-transformers-list
+        (plist-put ivy-rich-display-transformers-list
+'counsel-buffer-or-recentf
+    '(:columns
+      ((ivy-rich-file-last-modified-time (:face font-lock-comment-face))
+       (counsel-buffer-or-recentf-transformer (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.7))))))))))
+
 (setq doom-font (font-spec :family "Droid Sans Mono Slashed" :size 16)
       doom-big-font (font-spec :family "Droid Sans Mono Slashed" :size 22)
       doom-variable-pitch-font (font-spec :family "Droid Sans" :size 16))
@@ -584,7 +594,7 @@ org-hugo-suppress-lastmod-period 86400.0))
     ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
     ("s" lecture-slides "Lecture slides")
-    )
+    ("h" canvas-copy "Copy HTML"))
    "Bibtex"
    (("r" ivy-bibtex "Ivy-Bibtex"))
    "View"

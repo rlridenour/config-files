@@ -75,6 +75,7 @@
 (package! ebib)
 (package! ox-hugo)
 (package! citeproc-org)
+
 ;; When using org-roam via the `+roam` flag
 (unpin! org-roam company-org-roam)
 

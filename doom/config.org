@@ -5,7 +5,6 @@ This is my main configuration file for Doom Emacs.
 
 * General Settings
 
-
 ** Personal information
 
 #+begin_src emacs-lisp :tangle yes
@@ -17,6 +16,20 @@ This is my main configuration file for Doom Emacs.
 
 
 ** Appearance
+
+The paths for files in iCloud Drive are far too long. Unless my frame was maximized, whenever I used ~counsel-buffer-or-recentf~, I couldn't see the name of the file. After much searching, I found some code that works to shorten the paths in the minibuffer.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package ivy-rich
+  :after counsel
+  :config
+  (setq ivy-rich-display-transformers-list
+        (plist-put ivy-rich-display-transformers-list
+'counsel-buffer-or-recentf
+    '(:columns
+      ((ivy-rich-file-last-modified-time (:face font-lock-comment-face))
+       (counsel-buffer-or-recentf-transformer (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.7))))))))))
+#+end_src
 
 *** Font
 
@@ -905,7 +918,7 @@ Unset some keys
     ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
     ("s" lecture-slides "Lecture slides")
-    )
+    ("h" canvas-copy "Copy HTML"))
    "Bibtex"
    (("r" ivy-bibtex "Ivy-Bibtex"))
    "View"
