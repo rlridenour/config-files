@@ -11,4 +11,4 @@ rstudio/
 iterm2/
 fish_history
 fishd*
-init.el
+doom/config.el
