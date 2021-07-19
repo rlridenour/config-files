@@ -279,11 +279,16 @@ Set default directory for Org files.
 (setq org-directory "~/Library/Mobile Documents/com~apple~CloudDocs/org/")
 #+end_src
 
-Don't use Org Indent mode
+Don't collapse anything when opening a file.
 
 #+begin_src emacs-lisp :tangle yes
-(after! org (setq org-startup-indented nil
-                  org-adapt-indentation nil))
+(after! org (setq org-startup-indented nil))
+#+end_src
+
+Indent content to heading level.
+
+#+begin_src emacs-lisp :tangle no
+(after! org (setq org-adapt-indentation nil))
 #+end_src
 
 Make all the stars visible in Org headings.
