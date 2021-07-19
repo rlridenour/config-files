@@ -27,8 +27,9 @@ The paths for files in iCloud Drive are far too long. Unless my frame was maximi
         (plist-put ivy-rich-display-transformers-list
 'counsel-buffer-or-recentf
     '(:columns
-      ((ivy-rich-file-last-modified-time (:face font-lock-comment-face))
-       (counsel-buffer-or-recentf-transformer (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.7))))))))))
+      (
+;; (ivy-rich-file-last-modified-time (:face font-lock-comment-face))
+       (counsel-buffer-or-recentf-transformer (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 1.0))))))))))
 #+end_src
 
 *** Font

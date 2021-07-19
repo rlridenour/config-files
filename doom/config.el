@@ -9,8 +9,9 @@
         (plist-put ivy-rich-display-transformers-list
 'counsel-buffer-or-recentf
     '(:columns
-      ((ivy-rich-file-last-modified-time (:face font-lock-comment-face))
-       (counsel-buffer-or-recentf-transformer (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.7))))))))))
+      (
+;; (ivy-rich-file-last-modified-time (:face font-lock-comment-face))
+       (counsel-buffer-or-recentf-transformer (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 1.0))))))))))
 
 (setq doom-font (font-spec :family "Droid Sans Mono Slashed" :size 16)
       doom-big-font (font-spec :family "Droid Sans Mono Slashed" :size 22)
