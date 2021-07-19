@@ -831,6 +831,12 @@ Update post date.
                   (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
 #+end_src
 
+Go to the posts directory in Dired.
+
+#+begin_src emacs-lisp :tangle yes
+(defun  hugo-posts-dir () "Find Hugo posts directory" (interactive) (find-file "~/Sites/blog/content/posts/"))
+#+end_src
+
 Deploy Hugo blog.
 
 #+begin_src emacs-lisp :tangle yes

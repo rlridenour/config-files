@@ -540,6 +540,8 @@ org-hugo-suppress-lastmod-period 86400.0))
                     (delete-region beg (point)))
                   (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
 
+(defun  hugo-posts-dir () "Find Hugo posts directory" (interactive) (find-file "~/Sites/blog/content/posts/"))
+
 (defmacro with-dir (DIR &rest FORMS)
   "Execute FORMS in DIR."
   (let ((orig-dir (gensym)))
