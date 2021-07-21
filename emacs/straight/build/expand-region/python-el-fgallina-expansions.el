@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/expand-region.el/python-el-fgallina-expansions.el

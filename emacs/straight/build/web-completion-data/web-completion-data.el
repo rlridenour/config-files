@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/web-completion-data/web-completion-data.el

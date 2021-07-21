@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/auctex/style/revtex4-2.el

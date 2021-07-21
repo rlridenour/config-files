@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/company-web/company-web-slim.el

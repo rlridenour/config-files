@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/emacs-fish/fish-mode.el

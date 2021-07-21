@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/markdown-mode/markdown-mode.el

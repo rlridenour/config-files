@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/shrink-whitespace.el/shrink-whitespace.el

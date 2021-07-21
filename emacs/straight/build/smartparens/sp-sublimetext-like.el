@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/smartparens/sp-sublimetext-like.el

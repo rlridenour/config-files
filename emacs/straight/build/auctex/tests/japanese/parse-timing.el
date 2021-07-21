@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/auctex/tests/japanese/parse-timing.el

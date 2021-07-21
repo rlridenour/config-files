@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/evil-nerd-commenter/evil-nerd-commenter-operator.el

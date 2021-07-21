@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/modus-themes/modus-vivendi-theme.el

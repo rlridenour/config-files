@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/emacs/straight/repos/magit/Documentation/AUTHORS.md
