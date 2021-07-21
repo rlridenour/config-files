@@ -20,16 +20,14 @@ This is my main configuration file for Doom Emacs.
 The paths for files in iCloud Drive are far too long. Unless my frame was maximized, whenever I used ~counsel-buffer-or-recentf~, I couldn't see the name of the file. After much searching, I found some code that works to shorten the paths in the minibuffer.
 
 #+begin_src emacs-lisp :tangle yes
-(use-package ivy-rich
+(use-package! ivy-rich
   :after counsel
   :config
   (setq ivy-rich-display-transformers-list
         (plist-put ivy-rich-display-transformers-list
 'counsel-buffer-or-recentf
     '(:columns
-      (
-;; (ivy-rich-file-last-modified-time (:face font-lock-comment-face))
-       (counsel-buffer-or-recentf-transformer (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 1.0))))))))))
+      ((counsel-buffer-or-recentf-transformer (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 1.0))))))))))
 #+end_src
 
 *** Font
@@ -506,6 +504,9 @@ Company mode was annoying me by forcing results to be in lower case when I had b
 **
 
 *** Org Roam
+
+Use Deft for quick notes.
+
 #+begin_src emacs-lisp :tangle yes
 (use-package! deft
   :after org
@@ -521,7 +522,17 @@ Company mode was annoying me by forcing results to be in lower case when I had b
                             (case-fn . downcase)))
   (deft-default-extension "org")
   (deft-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes/"))
+#+end_src
 
+Or-roam settings
+
+#+begin_src emacs-lisp :tangle no
+(use-package! org-roam
+  (setq org-roam-directory "~/Library/Mobile Documents/com~apple~CloudDocs/org/roam/"))
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle no
 (use-package! org-roam
   :hook
   (after-init . org-roam-mode)
