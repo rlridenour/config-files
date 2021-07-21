@@ -1,3 +1,5 @@
+;;; hugo-org.el -*- lexical-binding: t; -*-
+
 ;; Hugo Settings
 
 (use-package ox-hugo

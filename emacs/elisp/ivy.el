@@ -1,3 +1,5 @@
+;;; ivy.el -*- lexical-binding: t; -*-
+
 ;; (use-package counsel
 ;;   :diminish ivy-mode
 ;;   :bind

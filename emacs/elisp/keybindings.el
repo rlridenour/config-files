@@ -1,3 +1,5 @@
+;;; keybindings.el -*- lexical-binding: t; -*-
+
 ;; Keybindings
 
 (global-unset-key (kbd "C-z"))
@@ -130,17 +132,6 @@
     ("<right>" forward-char "move-right" :exit nil)
     ("<kp-delete>" delete-char "delete" :exit nil))))
 
-;; Hydra-hugo
-
-(pretty-hydra-define hydra-hugo
-  (:color blue :quit-key "q" :title "Hugo")
-  ("Blog"
-   (("n" hugo-draft-post "new draft")
-    ("p" hugo-publish-post "publish post")
-    ("t" hugo-timestamp "update timestamp"))))
-
-
-
 ;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
 
 ;; Major-mode Hydras
@@ -172,18 +163,24 @@
   (:quit-key "q")
   ("Export"
    (("l" org-latex-export-to-latex "Org to LaTeX")
-    ("p" org-latex-export-to-pdf "Org to PDF")
+    ("L" org-latex-export-to-pdf "Org to PDF")
     ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
     ("s" lecture-slides "Lecture slides")
+    ("h" canvas-copy "Copy html for Canvas")
+    ("c" tex-clean "clean aux")
+    ("C" tex-clean-all "clean all")
     )
-   "Bibtex"
-   (("r" ivy-bibtex "Ivy-Bibtex"))
-   "View"
-   (("p" org-toggle-pretty-entities "org-pretty"))
-   "Clean"
-   (("c" tex-clean "clean aux")
-    ("C" tex-clean-all "clean all"))))
+   "Edit"
+   (("r" ivy-bibtex "Ivy-Bibtex")
+   ("u" org-toggle-pretty-entities "org-pretty"))
+   "Blog"
+   (("n" hugo-draft-post "New draft")
+    ("p" hugo-publish-post "Publish")
+    ("t" hugo-time-stamp "Update timestamp")
+    ("e" org-hugo-auto-export-mode "Auto export"))))
+   
+    
 
 
 

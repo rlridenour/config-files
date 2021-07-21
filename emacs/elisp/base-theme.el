@@ -1,3 +1,4 @@
+;;; base-theme.el -*- lexical-binding: t; -*-
 (use-package hc-zenburn-theme)
 
 (mapc #'disable-theme custom-enabled-themes)

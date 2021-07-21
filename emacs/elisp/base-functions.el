@@ -1,3 +1,4 @@
+;;; base-functions.el -*- lexical-binding: t; -*-
 ;; Window management, from https://www.bytedude.com/useful-emacs-shortcuts/
 
 (defun delete-window-balance ()

@@ -1,3 +1,5 @@
+;;; lang-markdown.el -*- lexical-binding: t; -*-
+
 (use-package markdown-mode
   :defer t
   :mode (("\\.text\\'" . markdown-mode)

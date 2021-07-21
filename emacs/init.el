@@ -1,3 +1,4 @@
+;;; init.el -*- lexical-binding: t; -*-
 ;; This is the main init file for Randy Ridenour's Emacs configuration.
 
 (setq user-full-name "Randy Ridenour")

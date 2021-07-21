@@ -1,3 +1,5 @@
+;;; misc.el -*- lexical-binding: t; -*-
+
 (use-package diminish)
 
 (eval-after-load "flyspell"

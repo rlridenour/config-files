@@ -1,3 +1,5 @@
+;;; lang-org.el -*- lexical-binding: t; -*-
+
 ;; (use-package org
   ;; :straight org-plus-contrib)
 
@@ -102,6 +104,16 @@
   (org-html-export-to-html)
   (shell-command "canvas")
 )
+
+(setq org-latex-pdf-process '("arara %f"))
+
+(defun rlr/org-arara ()
+  "Make PDF with Arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (shell-command (concat "arara " (file-name-sans-extension (buffer-file-name))".tex"))
+  (shell-command (concat "open "(file-name-sans-extension (buffer-file-name))".pdf")))
+
 
 ;; Org-capture
 

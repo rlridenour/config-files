@@ -1,3 +1,5 @@
+;;; lang-latex.el -*- lexical-binding: t; -*-
+
 ; LaTeX
 
 (use-package tex-site
@@ -148,6 +150,16 @@
   (async-shell-command (concat "mkpvc " (buffer-file-name)))
   (delete-other-windows)
   (TeX-view))
+
+;; Run arara continuous preview
+
+(defun rlr/tex-mkt ()
+  "Compile continuously with arara."
+  (interactive)
+  (async-shell-command (concat "mkt " (buffer-file-name)))
+  (delete-other-windows)
+  (TeX-view))
+
 
 
 ;; Move to edited position after save.

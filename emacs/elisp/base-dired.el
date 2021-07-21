@@ -1,4 +1,4 @@
-
+;;; base-dired.el -*- lexical-binding: t; -*-
 
 ;; brew install coreutils
 ;; (if (executable-find "gls")

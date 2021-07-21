@@ -1,3 +1,5 @@
+;;; hugo.el -*- lexical-binding: t; -*-
+
 ;; Hugo Settings
 
 (defun hugo-timestamp ()
