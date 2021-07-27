@@ -19,3 +19,4 @@ emacs/transient/
 emacs/var/
 emacs/bookmarks
 emacs/custom.el
+emacs/.org-id-locations

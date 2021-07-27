@@ -50,6 +50,37 @@
     ("r" read-only-mode "read-only" :toggle t)
     ("w" wc-mode "word-count" :toggle t))))
 
+(pretty-hydra-define hydra-buffer
+  (:color blue :quit-key "q" :title "Buffers and Files")
+  ("Open"
+   (("b" consult-bookmark "bookmark")
+    ("w" consult-buffer-other-window "other window")
+    ("f" consult-buffer-other-frame "other frame")
+    ("d" crux-recentf-find-directory "recent directory")
+    ("a" crux-open-with "open in default app")
+    ("i" crux-find-user-init-file "init.el")
+    ("s" crux-find-shell-init-file "fish config"))
+"Actions"
+   (("D" crux-delete-file-and-buffer "delete file")
+    ("R" crux-rename-file-and-buffer "rename file")
+    ("K" crux-kill-other-buffers "kill other buffers")
+    ("c" crux-cleanup-buffer-or-region "fix indentation"))
+   "Misc"
+   (("t" crux-visit-term-buffer "ansi-term")
+    ("T" iterm-goto-filedir-or-home "iTerm2"))
+   ))
+
+(pretty-hydra-define hydra-locate
+  (:color blue :quit-key "q" title: "Search")
+  ("Buffer"
+  (("l" consult-goto-line "goto-line")
+  ("i" consult-imenu "imenu")
+  ("m" consult-mark "mark")
+  ("o" consult-outline "outline"))
+  "Global"
+  (("M" consult-global-mark "global-mark")
+   ("r" consult-ripgrep "ripgrep"))
+))
 
 
 (pretty-hydra-define hydra-logic
@@ -153,9 +184,10 @@
 (major-mode-hydra-define latex-mode
   (:quit-key "q")
   ("Bibtex"
-   (("b" ivy-bibtex "Ivy-Bibtex"))
+   (("b" bibtex-actions-insert-citation "citation"))
    "LaTeXmk"
-   (("p" rlr/tex-pvc "pvc")
+   (("a" rlr/tex-mkt "arara")
+    ("w" rlr/tex-mktc "arara watch")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all"))))
 
@@ -163,7 +195,8 @@
   (:quit-key "q")
   ("Export"
    (("l" org-latex-export-to-latex "Org to LaTeX")
-    ("L" org-latex-export-to-pdf "Org to PDF")
+    ("a" rlr/org-mkt "Make PDF with Arara")
+    ("w" rlr/org-mktc "Make PDF and Watch")
     ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
     ("s" lecture-slides "Lecture slides")
@@ -172,15 +205,16 @@
     ("C" tex-clean-all "clean all")
     )
    "Edit"
-   (("r" ivy-bibtex "Ivy-Bibtex")
+   (("i" consult-org-heading "iMenu")
+    ("r" bibtex-actions-insert-citation "citation")
    ("u" org-toggle-pretty-entities "org-pretty"))
    "Blog"
    (("n" hugo-draft-post "New draft")
     ("p" hugo-publish-post "Publish")
-    ("t" hugo-time-stamp "Update timestamp")
+    ("t" hugo-timestamp "Update timestamp")
     ("e" org-hugo-auto-export-mode "Auto export"))))
-   
-    
+
+
 
 
 
@@ -192,19 +226,6 @@
     ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
     ("n" dired-toggle-read-only "edit Filenames"))))
 
-
-
-(defhydra hydra-locate (:color blue)
-  ("l" avy-goto-line "avy-line")
-  ("L" goto-line "goto-line")
-  ("w" avy-goto-word-1 "goto-word")
-  ("b" ivy-bookmark-goto "bookmarks")
-  ("m" counsel-imenu "imenu")
-  ("q" nil))
-
-
-
-
 (defhydra hydra-org (:color blue)
   ("a" org-agenda "agenda")
   ("l" org-store-link "store-link")
@@ -214,8 +235,8 @@
 
 
 (bind-chords
- ("jh" . prelude-switch-to-previous-buffer)
- ("hj" . prelude-switch-to-previous-buffer))
+ ("jh" . crux-switch-to-previous-buffer)
+ ("hj" . crux-switch-to-previous-buffer))
 
 
 
@@ -259,12 +280,15 @@
  "s-o" 'find-file
  "s-k" 'kill-this-buffer
  "s-r" 'consult-buffer
+ "M-s-r" 'consult-buffer-other-window
  "C-S-a" 'embark-act
 
  ;; Search
 
  "s-l" 'hydra-locate/body
  "s-f" 'consult-line
+ "C-s" 'consult-isearch
+ "C-r" 'consult-isearch-reverse
 
  ;; Editing
  "RET" 'newline-and-indent
@@ -279,6 +303,7 @@
  "M-y" 'consult-yank-pop
 
  "s-t" 'hydra-toggle/body
+ "s-b" 'hydra-buffer/body
  "s-h" 'hydra-hugo/body
  "C-x 9" 'hydra-logic/body
 
@@ -313,6 +338,12 @@
  ;; "h" 'consult-history
  "k" 'crux-kill-other-buffers
  "m" 'consult-mark
+ "n b" 'hugo-draft-post
+ "n c" 'org-roam-capture
+ "n f" 'org-roam-node-find
+ "n g" 'org-roam-graph
+ "n i" 'org-roam-node-insert
+ "n j" 'org-roam-dailies-capture-today
  "o" 'consult-outline
  "r" 'crux-rename-file-and-buffer
  "s" 'goto-scratch
@@ -321,4 +352,5 @@
  "u" 'unfill-paragraph
  "w" 'ace-window
  "z" 'reveal-in-osx-finder)
+
 (provide 'keybindings)
