@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/magit/lisp/git-commit.el

@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/expand-region.el/ruby-mode-expansions.el

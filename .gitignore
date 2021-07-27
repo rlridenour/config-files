@@ -12,3 +12,10 @@ iterm2/
 fish_history
 fishd*
 doom/config.el
+emacs/eshell/
+emacs/org-roam.db
+emacs/straight/
+emacs/transient/
+emacs/var/
+emacs/bookmarks
+emacs/custom.el

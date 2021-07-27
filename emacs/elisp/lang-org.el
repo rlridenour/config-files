@@ -107,25 +107,26 @@
 
 (setq org-latex-pdf-process '("arara %f"))
 
-(defun rlr/org-arara ()
+(defun rlr/org-mkt ()
   "Make PDF with Arara."
   (interactive)
   (org-latex-export-to-latex)
-  (shell-command (concat "arara " (file-name-sans-extension (buffer-file-name))".tex"))
-  (shell-command (concat "open "(file-name-sans-extension (buffer-file-name))".pdf")))
+  (async-shell-command (concat "mkt " (file-name-sans-extension (buffer-file-name))".tex")))
+
+(defun rlr/org-mktc ()
+  "Compile continuously with arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (start-process-shell-command (concat "mktc-" (buffer-file-name)) (concat "mktc-" (buffer-file-name)) (concat "mktc " (file-name-sans-extension (buffer-file-name))".tex")))
 
 
 ;; Org-capture
 
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/tasks.org" "Tasks")
-         "* TODO %?\n  %i\n  %a")
-        ;; ("j" "Journal" entry (file+datetree "~/Dropbox/Org/journal.org")
-        ;;  "* %?\nEntered on %U\n  %i\n  %a")
-        )
-      )
-     (define-key global-map "\C-cc" 'org-capture)
+      '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/inbox.org" "Tasks")
+         "* TODO %?\n  %i\n  %a")))
 
+(setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
 ;; Org-roam
 
 ;; (use-package org-journal
@@ -157,25 +158,24 @@
 (use-package org-roam
       :custom
       (org-roam-directory (file-truename "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/roam/"))
-      :bind (("C-c n l" . org-roam-buffer-toggle)
-         ("C-c n f" . org-roam-node-find))
-  :config
-  (org-roam-setup))
+  ;; :bind (("C-c n l" . org-roam-buffer-toggle)
+  ;;            ("C-c n f" . org-roam-node-find)
+  ;;            ("C-c n g" . org-roam-graph)
+  ;;            ("C-c n i" . org-roam-node-insert)
+  ;;            ("C-c n c" . org-roam-capture)
+  ;;            ;; Dailies
+  ;;            ("C-c n j" . org-roam-dailies-capture-today))
+      :config
+      (org-roam-setup))
 
-(setq org-roam-capture-templates
-  '(("d" "default" plain (function org-roam-capture--get-point)
-     "%?"
-     :file-name "%<%Y%m%d%H%M%S>-${slug}"
-     :head "#+title: ${title}\n#+ROAM_TAGS: \n"
-     :unnarrowed t)))
 
 (setq org-roam-dailies-directory "daily/")
 
 (setq org-roam-dailies-capture-templates
       '(("d" "default" entry
-         #'org-roam-capture--get-point
          "* %?"
-         :file-name "daily/%<%Y-%m-%d>"
-         :head "#+title: %<%Y-%m-%d>\n\n")))
+         :if-new (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n"))))
+(setq org-roam-v2-ack t)
 
 (provide 'lang-org)

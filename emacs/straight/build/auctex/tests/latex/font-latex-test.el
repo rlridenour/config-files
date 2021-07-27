@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/auctex/tests/latex/font-latex-test.el

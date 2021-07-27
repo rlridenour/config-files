@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/pdf-tools/server/synctex_version.h

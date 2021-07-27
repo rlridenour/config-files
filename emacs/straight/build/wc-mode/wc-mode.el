@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/wc-mode/wc-mode.el

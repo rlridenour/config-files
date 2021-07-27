@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/org-contrib/lisp/ox-koma-letter.el

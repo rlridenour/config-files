@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/ox-hugo/org-hugo-auto-export-mode.el

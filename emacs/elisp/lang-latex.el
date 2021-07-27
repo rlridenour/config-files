@@ -52,22 +52,9 @@
   (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
 
-
-;; Italics and Bold
-
-(add-hook 'LaTeX-mode-hook
-	  '(lambda ()
-	     (define-key LaTeX-mode-map (kbd "s-i") (kbd "\C-c \C-f \C-e"))
-	     (define-key LaTeX-mode-map (kbd "s-b") (kbd "\C-c \C-f \C-b"))
-	     )
-	  )
-
-
 ;; Start Emacs server
 
 ;; (server-start)
-
-
 
 ;; Auto-raise Emacs on activation (from Skim, usually)
 
@@ -148,21 +135,33 @@
   "Compile continuously with latexmk."
   (interactive)
   (async-shell-command (concat "mkpvc " (buffer-file-name)))
-  (delete-other-windows)
   (TeX-view))
 
-;; Run arara continuous preview
+;; Compile with arara
+
+;; Run once
 
 (defun rlr/tex-mkt ()
+  "Compile with arara."
+  (interactive)
+  (async-shell-command (concat "mkt " (buffer-file-name))))
+
+
+;; Run continuously
+
+;; (defun rlr/tex-mktc ()
+;;   "Compile continuously with arara."
+;;   (interactive)
+;;   (async-shell-command (concat "mktc " (buffer-file-name)))
+;;   (TeX-view))
+
+(defun rlr/tex-mktc ()
   "Compile continuously with arara."
   (interactive)
-  (async-shell-command (concat "mkt " (buffer-file-name)))
-  (delete-other-windows)
-  (TeX-view))
+  (start-process-shell-command (concat "mktc-" (buffer-file-name)) (concat "mktc-" (buffer-file-name)) (concat "mktc " (buffer-file-name))))
 
 
-
-;; Move to edited position after save.
+;; move to edited position after save.
 
 (add-hook 'after-save-hook
 	  (lambda ()

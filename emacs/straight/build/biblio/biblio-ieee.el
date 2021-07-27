@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/biblio.el/biblio-ieee.el

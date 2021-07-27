@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/multiple-cursors.el/multiple-cursors-pkg.el

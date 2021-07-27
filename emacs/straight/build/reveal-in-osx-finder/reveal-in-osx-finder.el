@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/reveal-in-osx-finder/reveal-in-osx-finder.el

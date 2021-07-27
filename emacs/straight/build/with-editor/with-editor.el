@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/with-editor/with-editor.el

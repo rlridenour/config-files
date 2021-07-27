@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/embark/embark-consult.el

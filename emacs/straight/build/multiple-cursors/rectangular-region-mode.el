@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/multiple-cursors.el/rectangular-region-mode.el

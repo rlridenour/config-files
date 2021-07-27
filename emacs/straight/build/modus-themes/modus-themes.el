@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/modus-themes/modus-themes.el

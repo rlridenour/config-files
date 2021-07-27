@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/smartparens/smartparens-pkg.el

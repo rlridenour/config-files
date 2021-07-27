@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/bibtex-actions/bibtex-actions-org-cite.el

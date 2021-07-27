@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/ox-hugo/ox-blackfriday.el

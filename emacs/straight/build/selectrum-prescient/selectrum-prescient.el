@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/prescient.el/selectrum-prescient.el

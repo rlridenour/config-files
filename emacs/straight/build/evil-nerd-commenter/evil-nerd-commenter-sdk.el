@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/evil-nerd-commenter/evil-nerd-commenter-sdk.el

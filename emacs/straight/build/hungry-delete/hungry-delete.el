@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/hungry-delete/hungry-delete.el

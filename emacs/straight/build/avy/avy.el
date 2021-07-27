@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/avy/avy.el

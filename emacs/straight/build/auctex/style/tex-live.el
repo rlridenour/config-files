@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/auctex/style/tex-live.el

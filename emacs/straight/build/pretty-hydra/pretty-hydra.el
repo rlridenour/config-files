@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/emacs/straight/repos/major-mode-hydra.el/pretty-hydra.el

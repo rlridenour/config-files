@@ -21,11 +21,12 @@
 (use-package consult
   :straight (:host github :repo "minad/consult" :branch "main")
   ;; Replace bindings. Lazily loaded due to use-package.
-         
+
 
   ;; The :init configuration is always executed (Not lazy!)
   :init
   (setq consult-themes '(modus-operandi modus-vivendi hc-zenburn))
+  (setq consult-narrow-key "<")
 
   ;; Replace functions (consult-multi-occur is a drop-in replacement)
   (fset 'multi-occur #'consult-multi-occur)
