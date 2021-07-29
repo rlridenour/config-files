@@ -7,6 +7,7 @@
   :init
   (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
   :config
+  (setq org-highlight-latex-and-related '(latex script entities))
   (setq org-startup-indented nil)
   (setq org-adapt-indentation nil)
   (setq org-hide-leading-stars nil)

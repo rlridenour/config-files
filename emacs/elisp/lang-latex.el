@@ -8,10 +8,11 @@
   :init
   (setq TeX-parse-self t
 	TeX-auto-save t
-  TeX-electric-math t
-  LaTeX-electric-left-right-brace t
-	TeX-electric-sub-and-superscript t
-	TeX-quote-after-quote t
+  TeX-electric-math nil
+  LaTeX-electric-left-right-brace nil
+	TeX-electric-sub-and-superscript nil
+  LaTeX-item-indent 0
+	TeX-quote-after-quote nil
 	TeX-clean-confirm nil
 	TeX-source-correlate-mode t
 	TeX-source-correlate-method 'synctex))
@@ -22,12 +23,12 @@
   (setq org-latex-pdf-process (list "latexmk -shell-escape -f -pdf -quiet -interaction=nonstopmode  %f"))
 
 ;; Insert math-mode delimiters for LaTeX and ConTeXt.
-(add-hook 'ConTeXt-mode-hook
-	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
-			  (cons "$" "$"))))
-(add-hook 'LaTeX-mode-hook
-	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
-			  (cons "\\(" "\\)"))))
+;; (add-hook 'ConTeXt-mode-hook
+;; 	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
+;; 			  (cons "$" "$"))))
+;; (add-hook 'LaTeX-mode-hook
+;; 	  (lambda () (set (make-variable-buffer-local 'TeX-electric-math)
+;; 			  (cons "\\(" "\\)"))))
 
 (add-hook 'LaTeX-mode-hook #'flymake-mode)
 
@@ -39,17 +40,22 @@
 
 (use-package cdlatex
   :init
+  (setq cdlatex-make-sub-superscript-roman-if-pressed-twice t
+        cdlatex-use-dollar-to-ensure-math nil
+        cdlatex-takeover-dollar t
+        cdlatex-paired-parens "([{")
   (setq cdlatex-math-symbol-alist
-'((?. ("\\land" "\\cdot"))
-  (?v ("\\lor" "\\vee"))
-  (?> ("\\lif" "\\rightarrow"))
-  (?= ("\\liff" "\\Leftrightarrow" "\\Longleftrightarrow"))
-  (?! ("\\lneg" "\\neg"))
-  (?# ("\\Box"))
-  (?$ ("\\Diamond"))
-   ))
+        '((?. ("\\land" "\\cdot"))
+          (?v ("\\lor" "\\vee"))
+          (?> ("\\lif" "\\rightarrow"))
+          (?= ("\\liff" "\\Leftrightarrow" "\\Longleftrightarrow"))
+          (?! ("\\lneg" "\\neg"))
+          (?# ("\\Box"))
+          (?$ ("\\Diamond"))
+          ))
   :config
   (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+  (add-hook 'latex-mode-hook 'turn-on-cdlatex)
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
 
 ;; Start Emacs server

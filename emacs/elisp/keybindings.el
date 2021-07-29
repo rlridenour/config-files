@@ -29,12 +29,12 @@
 ;; Hydra-toggle
 
 (defun my/insert-unicode (unicode-name)
-       "Same as C-x 8 enter UNICODE-NAME."
-       (insert-char (gethash unicode-name (ucs-names))))
+  "Same as C-x 8 enter UNICODE-NAME."
+  (insert-char (gethash unicode-name (ucs-names))))
 
 (pretty-hydra-define hydra-toggle
   (:color blue :quit-key "q" :title "Toggle")
-  ("Basic"
+  (" "
    (("a" abbrev-mode "abbrev" :toggle t)
     ("d" toggle-debug-on-error "debug" (default value 'debug-on-error))
     ("i" aggressive-indent-mode "indent" :toggle t)
@@ -44,11 +44,12 @@
     ("p" smartparens-mode "smartparens" :toggle t)
     ("t" toggle-truncate-lines "truncate" :toggle t)
     ("s" whitespace-mode "whitespace" :toggle t))
-   "Writing"
+   " "
    (("c" cdlatex-mode "cdlatex" :toggle t)
     ("o" olivetti-mode "olivetti" :toggle t)
     ("r" read-only-mode "read-only" :toggle t)
-    ("w" wc-mode "word-count" :toggle t))))
+    ("w" wc-mode "word-count" :toggle t)
+    ("S" auto-save-visited-mode "auto-save" :toggle t))))
 
 (pretty-hydra-define hydra-buffer
   (:color blue :quit-key "q" :title "Buffers and Files")
@@ -57,30 +58,31 @@
     ("w" consult-buffer-other-window "other window")
     ("f" consult-buffer-other-frame "other frame")
     ("d" crux-recentf-find-directory "recent directory")
-    ("a" crux-open-with "open in default app")
-    ("i" crux-find-user-init-file "init.el")
-    ("s" crux-find-shell-init-file "fish config"))
-"Actions"
+    ("a" crux-open-with "open in default app"))
+   "Actions"
    (("D" crux-delete-file-and-buffer "delete file")
     ("R" crux-rename-file-and-buffer "rename file")
     ("K" crux-kill-other-buffers "kill other buffers")
+    ("N" nuke-all-buffers "Kill all buffers")
     ("c" crux-cleanup-buffer-or-region "fix indentation"))
    "Misc"
    (("t" crux-visit-term-buffer "ansi-term")
-    ("T" iterm-goto-filedir-or-home "iTerm2"))
+    ("T" iterm-goto-filedir-or-home "iTerm2")
+        ("i" crux-find-user-init-file "init.el")
+    ("s" crux-find-shell-init-file "fish config"))
    ))
 
 (pretty-hydra-define hydra-locate
   (:color blue :quit-key "q" title: "Search")
   ("Buffer"
-  (("l" consult-goto-line "goto-line")
-  ("i" consult-imenu "imenu")
-  ("m" consult-mark "mark")
-  ("o" consult-outline "outline"))
-  "Global"
-  (("M" consult-global-mark "global-mark")
-   ("r" consult-ripgrep "ripgrep"))
-))
+   (("l" consult-goto-line "goto-line")
+    ("i" consult-imenu "imenu")
+    ("m" consult-mark "mark")
+    ("o" consult-outline "outline"))
+   "Global"
+   (("M" consult-global-mark "global-mark")
+    ("r" consult-ripgrep "ripgrep"))
+   ))
 
 
 (pretty-hydra-define hydra-logic
@@ -207,7 +209,7 @@
    "Edit"
    (("i" consult-org-heading "iMenu")
     ("r" bibtex-actions-insert-citation "citation")
-   ("u" org-toggle-pretty-entities "org-pretty"))
+    ("u" org-toggle-pretty-entities "org-pretty"))
    "Blog"
    (("n" hugo-draft-post "New draft")
     ("p" hugo-publish-post "Publish")

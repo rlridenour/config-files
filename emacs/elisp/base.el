@@ -67,6 +67,9 @@
 ;; Auto save often — save every 20 characters typed (this is the minimum)
 (setq auto-save-interval 20)
 
+;; Auto-save open files. This can be toggled off with the toggle hydra.
+(auto-save-visited-mode)
+
 
 ;; Use "y" and "n":
 (defalias 'yes-or-no-p 'y-or-n-p)

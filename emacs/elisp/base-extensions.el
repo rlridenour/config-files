@@ -167,6 +167,15 @@
         '("~/.emacs.d/snippets")))
   (yas-global-mode 1))
 
+;; With this code, yasnippet will expand the snippet if company didn't complete the word
+;; replace company-complete-common with company-complete if you're using it
+
+(advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
+
+(advice-add 'company-complete-common :after (lambda ()
+  		  				(when (equal my-company-point (point))
+  			  			  (yas-expand))))
+
 (use-package wc-mode)
 
 
