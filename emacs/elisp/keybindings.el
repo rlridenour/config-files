@@ -6,6 +6,8 @@
 ;; (global-unset-key (kbd "s-p"))
 (global-unset-key (kbd "s-m"))
 (global-unset-key (kbd "s-h"))
+(global-unset-key (kbd "<S-return>"))
+
 
 (use-package key-chord
   :defer t
@@ -346,6 +348,7 @@
  "n g" 'org-roam-graph
  "n i" 'org-roam-node-insert
  "n j" 'org-roam-dailies-capture-today
+ "n t" 'org-roam-buffer-toggle 
  "o" 'consult-outline
  "r" 'crux-rename-file-and-buffer
  "s" 'goto-scratch

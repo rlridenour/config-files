@@ -164,7 +164,7 @@
 (use-package yasnippet
   :config
   (setq yas-snippet-dirs (append yas-snippet-dirs
-        '("~/.emacs.d/snippets")))
+        '("~/.config/emacs/snippets")))
   (yas-global-mode 1))
 
 ;; With this code, yasnippet will expand the snippet if company didn't complete the word

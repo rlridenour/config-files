@@ -81,7 +81,12 @@
 (use-package orgonomic
   :defer t
   :straight (orgonomic :host github :repo "aaronjensen/emacs-orgonomic")
-  :hook (org-mode . orgonomic-mode))
+  :hook (org-mode . orgonomic-mode)
+  :bind (
+         :map orgonomic-mode-map
+         ("<S-s-return>" . orgonomic-shift-return)
+         ("<S-return>" . crux-smart-open-line)))
+
 
 ;; Functions for automating lecture notes and slides
 
@@ -156,9 +161,12 @@
   (deft-default-extension "org")
   (deft-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes/"))
 
+
 (use-package org-roam
-      :custom
-      (org-roam-directory (file-truename "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/roam/"))
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory (file-truename "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/roam/"))
   ;; :bind (("C-c n l" . org-roam-buffer-toggle)
   ;;            ("C-c n f" . org-roam-node-find)
   ;;            ("C-c n g" . org-roam-graph)
@@ -166,8 +174,8 @@
   ;;            ("C-c n c" . org-roam-capture)
   ;;            ;; Dailies
   ;;            ("C-c n j" . org-roam-dailies-capture-today))
-      :config
-      (org-roam-setup))
+  :config
+  (org-roam-setup))
 
 
 (setq org-roam-dailies-directory "daily/")
@@ -177,6 +185,6 @@
          "* %?"
          :if-new (file+head "%<%Y-%m-%d>.org"
                             "#+title: %<%Y-%m-%d>\n"))))
-(setq org-roam-v2-ack t)
+
 
 (provide 'lang-org)
