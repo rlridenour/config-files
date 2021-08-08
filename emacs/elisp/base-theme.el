@@ -48,9 +48,11 @@
 
 (add-to-list 'default-frame-alist '(fullscreen . fullheight))
 
+;; Use Telephone Line for styling the mode-line.
 
-;; Change background color for selected text to make it easier to see.
-;; (set-face-attribute 'region nil :background "#666")
+(use-package telephone-line
+  :config
+  (telephone-line-mode 1))
 
 (provide 'base-theme)
 ;;; base-theme ends here

@@ -39,6 +39,7 @@
   (" "
    (("a" abbrev-mode "abbrev" :toggle t)
     ("d" toggle-debug-on-error "debug" (default value 'debug-on-error))
+    ("e" evil-mode "evil" :toggle t)
     ("i" aggressive-indent-mode "indent" :toggle t)
     ("f" auto-fill-mode "fill" :toggle t)
     ("l" display-line-numbers-mode "linum" :toggle t)

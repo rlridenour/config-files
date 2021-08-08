@@ -62,6 +62,7 @@
 (require 'base)
 (require 'base-theme)
 (require 'base-extensions)
+(require 'evil)
 (require 'base-functions)
 (require 'base-writing)
 (require 'base-dired)
