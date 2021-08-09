@@ -136,14 +136,19 @@
 
 (use-package aggressive-indent)
 
-(use-package undo-tree
-  :diminish undo-tree-mode
-  :config (global-undo-tree-mode)
-  ;; :bind (("s-z" . undo-tree-undo)
-	 ;; ("s-Z" . undo-tree-redo)))
+;; Undo-fo and undo-fo session mode for undo and redo.
+
+(use-package undo-fu
   :general
-  ("s-z" 'undo-tree-undo
-   "s-Z" 'undo-tree-redo))
+  ("s-z"   'undo-fu-only-undo
+  "s-S-z" 'undo-fu-only-redo))
+
+(use-package undo-fu-session
+  :config
+  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
+
+(global-undo-fu-session-mode)
+
 
 (use-package evil-nerd-commenter
   :bind (("M-;" . evilnc-comment-or-uncomment-lines)))

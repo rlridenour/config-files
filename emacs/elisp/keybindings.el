@@ -35,7 +35,7 @@
   (insert-char (gethash unicode-name (ucs-names))))
 
 (pretty-hydra-define hydra-toggle
-  (:color blue :quit-key "q" :title "Toggle")
+  (:color teal :quit-key "q" :title "Toggle")
   (" "
    (("a" abbrev-mode "abbrev" :toggle t)
     ("d" toggle-debug-on-error "debug" (default value 'debug-on-error))
@@ -55,7 +55,7 @@
     ("S" auto-save-visited-mode "auto-save" :toggle t))))
 
 (pretty-hydra-define hydra-buffer
-  (:color blue :quit-key "q" :title "Buffers and Files")
+  (:color teal :quit-key "q" :title "Buffers and Files")
   ("Open"
    (("b" consult-bookmark "bookmark")
     ("w" consult-buffer-other-window "other window")
@@ -76,7 +76,7 @@
    ))
 
 (pretty-hydra-define hydra-locate
-  (:color blue :quit-key "q" title: "Search")
+  (:color teal :quit-key "q" title: "Search")
   ("Buffer"
    (("l" consult-goto-line "goto-line")
     ("i" consult-imenu "imenu")
@@ -89,7 +89,7 @@
 
 
 (pretty-hydra-define hydra-logic
-  (:color blue :title "Logic")
+  (:color teal :title "Logic")
   ("Operators"
    (("1" (my/insert-unicode "NOT SIGN") "¬" :exit nil)
     ("2" (my/insert-unicode "AMPERSAND") "&" :exit nil)
@@ -231,7 +231,7 @@
     ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
     ("n" dired-toggle-read-only "edit Filenames"))))
 
-(defhydra hydra-org (:color blue)
+(defhydra hydra-org (:color teal)
   ("a" org-agenda "agenda")
   ("l" org-store-link "store-link")
   ("q" nil))
