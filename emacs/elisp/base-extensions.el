@@ -136,12 +136,12 @@
 
 (use-package aggressive-indent)
 
-;; Undo-fo and undo-fo session mode for undo and redo.
+;; Undo-fu and undo-fu session mode for undo and redo.
 
 (use-package undo-fu
   :general
   ("s-z"   'undo-fu-only-undo
-  "s-S-z" 'undo-fu-only-redo))
+  "s-Z" 'undo-fu-only-redo))
 
 (use-package undo-fu-session
   :config

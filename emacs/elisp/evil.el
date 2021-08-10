@@ -8,11 +8,12 @@
         evil-default-state 'insert
         evil-undo-system 'undo-fu
         evil-cross-lines t
+        evil-vsplit-window-right t
+        evil-split-window-below t
         evil-respect-visual-line-mode t)
   :config
   (evil-set-initial-state 'dired-mode 'emacs)
   (evil-mode 1))
-
 
 (provide 'evil)
 

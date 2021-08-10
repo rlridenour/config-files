@@ -21,6 +21,18 @@
   (balance-windows)
   (other-window 1))
 
+(defun rlr/find-file-right ()
+  "Split window vertically and select recent file."
+  (interactive)
+  (split-window-right-focus)
+  (consult-buffer))
+
+(defun rlr/find-file-below ()
+  "Split window horizontally and select recent file."
+  (interactive)
+  (split-window-below-focus)
+  (consult-buffer))
+
 ;; Fullscreen
 
 (defun toggle-frame-maximized-undecorated ()

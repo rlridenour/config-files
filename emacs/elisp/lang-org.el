@@ -5,14 +5,18 @@
 
 (use-package org
   :init
-  (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
+ ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
+ (setq org-directory "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
   :config
   (setq org-highlight-latex-and-related '(latex script entities))
   (setq org-startup-indented nil)
   (setq org-adapt-indentation nil)
   (setq org-hide-leading-stars nil)
   (setq org-html-validation-link nil)
-  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/")))
+  ;; (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/")
+        (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
+        )
+  )
 
 
 (use-package org-contrib
@@ -129,7 +133,8 @@
 ;; Org-capture
 
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/inbox.org" "Tasks")
+      ;; '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/inbox.org" "Tasks")
+         '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/inbox.org" "Tasks")
          "* TODO %?\n  %i\n  %a")))
 
 (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))

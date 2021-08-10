@@ -3,7 +3,8 @@
 ;; Keybindings
 
 (global-unset-key (kbd "C-z"))
-;; (global-unset-key (kbd "s-p"))
+(global-unset-key (kbd "s-p"))
+(global-unset-key (kbd "s-w"))
 (global-unset-key (kbd "s-m"))
 (global-unset-key (kbd "s-h"))
 (global-unset-key (kbd "<S-return>"))
@@ -86,6 +87,21 @@
    (("M" consult-global-mark "global-mark")
     ("r" consult-ripgrep "ripgrep"))
    ))
+
+(pretty-hydra-define hydra-window
+  (:color teal :quit-key "q" title: "Windows")
+  ("Split"
+   (("h" split-window-below-focus "horizontally")
+    ("v" split-window-right-focus "vertically")
+    ("b" rlr/find-file-below "open file below")
+    ("r" rlr/find-file-right "open file right"))
+   "Kill"
+   (("t" delete-window "this window")
+    ("o" delete-other-windows "other windows"))
+   ))
+
+
+  
 
 
 (pretty-hydra-define hydra-logic
@@ -308,6 +324,7 @@
  "M-y" 'consult-yank-pop
 
  "s-t" 'hydra-toggle/body
+ "s-w" 'hydra-window/body
  "s-b" 'hydra-buffer/body
  "s-h" 'hydra-hugo/body
  "C-x 9" 'hydra-logic/body
