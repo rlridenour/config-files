@@ -90,15 +90,23 @@
 
 (pretty-hydra-define hydra-window
   (:color teal :quit-key "q" title: "Windows")
-  ("Split"
-   (("h" split-window-below-focus "horizontally")
-    ("v" split-window-right-focus "vertically")
-    ("b" rlr/find-file-below "open file below")
-    ("r" rlr/find-file-right "open file right"))
-   "Kill"
-   (("t" delete-window "this window")
+  ("Windows"
+   (("w" other-window "cycle windows" :exit nil)
+    ("a" ace-window "ace window")
+    ("m" minimize-window "minimize window")
+    ("s" transpose-windows "swap windows")
+    ("S" shrink-window-if-larger-than-buffer "shrink to fit")
+    ("b" balance-windows "balance windows")
+    ("t" toggle-window-split "toggle split")
+   ("T" enlarge-window" grow taller" :exit nil)
+   ("G" enlarge-window-horizontally "grow wider" :exit nil)
     ("o" delete-other-windows "other windows"))
-   ))
+   "Frames"
+   (("M" iconify-frame "minimize frame")
+    ("d" delete-other-frames "delete other frames")
+    ("D" delete-frame "delete this frame")
+    ("i" make-frame-invisible "invisible frame")
+   )))
 
 
   
@@ -354,6 +362,8 @@
  :prefix "C-c"
  ;; bind "C-c a" to 'org-agenda
  "a" 'org-agenda
+ "2" 'rlr/find-file-below
+ "3" 'rlr/find-file-right
  "b" 'consult-bookmark
  "c" 'org-capture
  "D" 'crux-delete-file-and-buffer
