@@ -191,5 +191,10 @@
          :if-new (file+head "%<%Y-%m-%d>.org"
                             "#+title: %<%Y-%m-%d>\n"))))
 
+(use-package org-download
+  :init
+  (setq org-image-actual-width nil)
+  :config
+  (add-hook 'dired-mode-hook 'org-download-enable))
 
 (provide 'lang-org)

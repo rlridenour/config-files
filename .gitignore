@@ -21,3 +21,4 @@ emacs/bookmarks
 emacs/custom.el
 emacs/.org-id-locations
 emacs/.mc-lists.el
+emacs/projectile-bookmarks.eld
