@@ -5,7 +5,7 @@ gtk*
 omf/
 xm1/
 ranger/
-karabiner/
+karabiner/automatic_backups/
 nvim
 rstudio/
 iterm2/
@@ -22,3 +22,5 @@ emacs/custom.el
 emacs/.org-id-locations
 emacs/.mc-lists.el
 emacs/projectile-bookmarks.eld
+emacs/recentf
+emacs/undo-fu-session/
