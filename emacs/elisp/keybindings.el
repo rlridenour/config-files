@@ -204,7 +204,8 @@
     ("C" tex-clean-all "clean all")
     )
    "Edit"
-   (("i" consult-org-heading "iMenu")
+   (("d" rlr/org-date "update date stamp")
+    ("i" consult-org-heading "iMenu")
     ("r" bibtex-actions-insert-citation "citation")
     ("u" org-toggle-pretty-entities "org-pretty"))
    "Blog"

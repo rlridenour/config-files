@@ -197,4 +197,16 @@
   :config
   (add-hook 'dired-mode-hook 'org-download-enable))
 
+
+(defun rlr/org-date ()
+  "Update existing date: timestamp on a Hugo post."
+  (interactive)
+  (save-excursion (
+                   goto-char 1)
+                  (re-search-forward "^#\\+date:")
+                  (let ((beg (point)))
+                    (end-of-line)
+                    (delete-region beg (point)))
+                  (insert (concat " " (format-time-string "%B %e, %Y")))))
+
 (provide 'lang-org)

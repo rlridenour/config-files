@@ -200,4 +200,13 @@
               ("s-p" . projectile-command-map)
               ("C-c p" . projectile-command-map)))
 
+(use-package dogears
+:straight (dogears :host github :repo "alpha/dogears.el")
+:bind (:map global-map
+              ("M-g d" . dogears-go)
+              ("M-g M-b" . dogears-back)
+              ("M-g M-f" . dogears-forward)
+              ("M-g M-d" . dogears-list)
+              ("M-g M-D" . dogears-sidebar)))
+
 (provide 'base-extensions)
