@@ -52,8 +52,10 @@
    (("c" cdlatex-mode "cdlatex" :toggle t)
     ("o" olivetti-mode "olivetti" :toggle t)
     ("r" read-only-mode "read-only" :toggle t)
+    ("v" view-mode "view" :toggle t)
     ("w" wc-mode "word-count" :toggle t)
-    ("S" auto-save-visited-mode "auto-save" :toggle t))))
+    ("S" auto-save-visited-mode "auto-save" :toggle t)
+    ("C" cua-selection-mode "rectangle" :toggle t))))
 
 (pretty-hydra-define hydra-buffer
   (:color teal :quit-key "q" :title "Buffers and Files")
@@ -313,7 +315,7 @@
  "C-x 9" 'hydra-logic/body
 
  "s-/" 'avy-goto-char-timer
- "s-d" 'diredp-dired-recent-dirs
+ "s-d" 'consult-dir
  "s-=" 'endless/ispell-word-then-abbrev
  "<help> a" 'consult-apropos
  "C-x 4 b" 'consult-buffer-other-window
@@ -321,6 +323,9 @@
  "C-x r x" 'consult-register
  "M-s m" 'consult-multi-occur
  "<f8>" 'insert-standard-date
+ "M-u" 'upcase-dwim
+ "M-l" 'downcase-dwim
+ "M-c" 'capitalize-dwim
  )
 
 

@@ -82,6 +82,14 @@
   :hook
   (embark-collect-mode . embark-consult-preview-minor-mode))
 
+
+(use-package consult-dir
+  :straight (:host github :repo "karthink/consult-dir" :branch "master")
+  :bind (("C-x C-d" . consult-dir)
+         :map selectrum-minibuffer-map
+         ("C-x C-d" . consult-dir)
+         ("C-x C-j" . consult-dir-jump-file)))
+
 (use-package avy
   :bind
   ("C-c SPC" . avy-goto-char))
