@@ -336,7 +336,8 @@
 
 (setq epg-gpg-program "/usr/local/bin/gpg")
 
-
+;; CUA mode for easy rectangle editing.
+(cua-selection-mode t)
 
 (provide 'base)
 ;;; base ends here
