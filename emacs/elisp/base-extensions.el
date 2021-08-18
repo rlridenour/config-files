@@ -209,7 +209,7 @@
               ("C-c p" . projectile-command-map)))
 
 (use-package dogears
-:straight (dogears :host github :repo "alpha/dogears.el")
+:straight (dogears :host github :repo "alphapapa/dogears.el")
 :bind (:map global-map
               ("M-g d" . dogears-go)
               ("M-g M-b" . dogears-back)
