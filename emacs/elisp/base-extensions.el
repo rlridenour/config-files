@@ -217,4 +217,5 @@
               ("M-g M-d" . dogears-list)
               ("M-g M-D" . dogears-sidebar)))
 
+
 (provide 'base-extensions)
