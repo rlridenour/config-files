@@ -8,7 +8,16 @@
 ;; Silence the "Package cl is deprecated" warning.
 (setq byte-compile-warnings '(cl-functions))
 
+
+;; Silence native compilation warnings
+(setq native-comp-async-report-warnings-errors nil)
+(setq warning-minimum-level :error)
 ;; Code
+
+;; compile elisp
+(when (fboundp 'native-compile-async)
+    (setq comp-deferred-compilation t
+          comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
 
 ;; Package management using straight.el
 
