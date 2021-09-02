@@ -306,6 +306,7 @@
  "<S-return>" 'crux-smart-open-line
  "<C-S-return>" 'crux-smart-open-line-above
  "M-y" 'consult-yank-pop
+ "M-q" 'reformat-paragraph
 
   ;; Hydras
  "s-h" 'hydra-hydras/body

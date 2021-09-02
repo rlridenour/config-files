@@ -311,4 +311,56 @@
 (fset 'convert-markdown-to-org
    [?\M-< ?\M-% ?* return ?- return ?! ?\M-< ?\C-\M-% ?# ?* backspace backspace ?  ?# ?* ?$ return return ?! ?\M-< ?\M-% ?# return ?* return ?!])
 
+
+;; Fill functions from https://schauderbasis.de/posts/reformat_paragraph/
+
+(use-package unfill)
+
+(defun fill-sentences-in-paragraph ()
+  "Put a newline at the end of each sentence in the current paragraph."
+  (interactive)
+  (save-excursion
+    (mark-paragraph)
+    (call-interactively 'fill-sentences-in-region)
+    )
+  )
+
+(defun fill-sentences-in-region (start end)
+  "Put a newline at the end of each sentence in the region maked by (start end)."
+  (interactive "*r")
+  (call-interactively 'unfill-region)
+  (save-excursion
+    (goto-char start)
+    (while (< (point) end)
+      (forward-sentence)
+      (if (looking-at-p " ")
+          (newline-and-indent)
+        )
+      )
+    )
+  )
+
+(defvar repetition-counter 0
+  "How often cycle-on-repetition was called in a row using the same command.")
+
+(defun cycle-on-repetition (list-of-expressions)
+  "Return the first element from the list on the first call,
+   the second expression on the second consecutive call etc"
+  (interactive)
+  (if (equal this-command last-command)
+      (setq repetition-counter (+ repetition-counter 1)) ;; then
+    (setq repetition-counter 0) ;; else
+    )
+  (nth
+   (mod repetition-counter (length list-of-expressions))
+   list-of-expressions) ;; implicit return of the last evaluated value
+  )
+
+(defun reformat-paragraph ()
+  "Cycles the paragraph between three states: filled/unfilled/fill-sentences."
+  (interactive)
+  (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
+  )
+
+
 (provide 'base-functions)
