@@ -15,6 +15,8 @@
   (evil-set-initial-state 'dired-mode 'emacs)
   (evil-mode 1))
 
+(define-key evil-visual-state-map (kbd "v") 'er/expand-region)
+
 (provide 'evil)
 
 

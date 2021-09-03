@@ -302,7 +302,6 @@
  "C--" 'text-scale-decrease
  "<s-backspace>" 'kill-whole-line
  "s-j" 'crux-top-join-line
- "C-k" 'crux-smart-kill-line
  "<S-return>" 'crux-smart-open-line
  "<C-S-return>" 'crux-smart-open-line-above
  "M-y" 'consult-yank-pop
