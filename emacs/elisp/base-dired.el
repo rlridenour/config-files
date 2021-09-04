@@ -7,7 +7,7 @@
 ;;       (setq dired-listing-switches "-lFGh1v --group-directories-first"))
 ;;   (setq dired-listing-switches "-hlF"))
 
-(setq insert-directory-program "/usr/local/bin/gls"); use proper GNU ls
+(setq insert-directory-program "gls"); use proper GNU ls
 
 
 ; dired-x: to hide uninteresting files in dired

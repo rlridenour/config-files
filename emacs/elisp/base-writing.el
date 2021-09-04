@@ -5,7 +5,7 @@
 ;; (cond ((executable-find "enchant-2")  (setq-default ispell-program-name "enchant-2"))
       ;; ((executable-find "aspell")     (setq-default ispell-program-name "aspell")))
 
-(setq ispell-program-name "/usr/local/bin/aspell")
+(setq ispell-program-name "aspell")
 (setq ispell-extra-args '("--sug-mode=ultra"))
 
 ;; Store personal dictionary in Dropbox to sync between machines. Save to personal dictionary without asking.

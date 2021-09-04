@@ -59,8 +59,8 @@
 
 ;; Add Homebrew packages to the path.
 
-(let ((default-directory "/usr/local/share/emacs/site-lisp/"))
-	(normal-top-level-add-subdirs-to-load-path))
+;;(let ((default-directory "/usr/local/share/emacs/site-lisp/"))
+;;	(normal-top-level-add-subdirs-to-load-path))
 
 ;; set load path
 (add-to-list 'load-path (concat user-emacs-directory "elisp"))

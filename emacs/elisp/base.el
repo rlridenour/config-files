@@ -247,7 +247,7 @@
 ;; Use GNU ls to avoid "Listing directory failed but 'access-file' worked" error.
 
 
-(setq insert-directory-program "/usr/local/bin/gls"); use proper GNU ls
+(setq insert-directory-program "gls"); use proper GNU ls
 
                                         ;Auto refresh buffers including dired
 (setq global-auto-revert-non-file-buffers t)
@@ -334,7 +334,7 @@
 
 ;; gpg
 
-(setq epg-gpg-program "/usr/local/bin/gpg")
+(setq epg-gpg-program "gpg")
 
 ;; CUA mode for easy rectangle editing.
 (cua-selection-mode t)
