@@ -37,14 +37,13 @@
 ;; (setq default-frame-alist '((font . "Droid Sans Mono Slashed-16"))) ;;; set default font for emacs --daemon / emacsclient
 
 ;; Main typeface
-(set-face-attribute 'default nil :family "Droid Sans Mono Slashed" :height 160)
+(set-face-attribute 'default nil :family "JuliaMono" :height 160)
 
 ;; Proportionately spaced typeface
 (set-face-attribute 'variable-pitch nil :family "Droid Sans" :height 1.0)
 
 ;; Monospaced typeface
-(set-face-attribute 'fixed-pitch nil :family "DejaVu Sans Mono Slashed" :height 1.0)
-
+(set-face-attribute 'fixed-pitch nil :family "JuliaMono" :height 1.0)
 
 (add-to-list 'default-frame-alist '(fullscreen . fullheight))
 
