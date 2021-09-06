@@ -1,4 +1,14 @@
 ;;; base.el -*- lexical-binding: t; -*-
+
+;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
+(custom-set-variables
+  '(auto-save-file-name-transforms '((".*" "~/.backups/emacs/autosaves/\\1" t)))
+  '(backup-directory-alist '((".*" . "~/.backups/emacs/backups/"))))
+
+;; create the autosave dir if necessary, since emacs won't.
+(make-directory "~/.backups/emacs/autosaves/" t)
+
+;; Set some misc defaults
 (setq inhibit-splash-screen t
       initial-scratch-message nil
       initial-major-mode 'org-mode

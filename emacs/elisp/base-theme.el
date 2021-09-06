@@ -53,6 +53,10 @@
   :config
   (telephone-line-mode 1))
 
+(use-package rainbow-delimiters
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+
 (provide 'base-theme)
 ;;; base-theme ends here
 
