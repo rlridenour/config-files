@@ -139,19 +139,11 @@
   :config
   (global-hungry-delete-mode))
 
-;; (use-package smartparens
-;;   :diminish smartparens-mode)
-;; (require 'smartparens-config)
-;; (smartparens-global-mode t)
+(use-package smartparens
+  :diminish smartparens-mode)
+(require 'smartparens-config)
+(smartparens-global-mode t)
 
-;; Use puni-mode globally and disable it for term-mode.
-(use-package puni
-  :init
-  ;; The autoloads of Puni are set up so you can enable `puni-mode` or
-  ;; `puni-global-mode` before `puni` is actually loaded. Only after you press
-  ;; any key that calls Puni commands, it's loaded.
-  (puni-global-mode)
-  (add-hook 'term-mode-hook #'puni-disable-puni-mode))
 
 (use-package aggressive-indent)
 
