@@ -4,6 +4,7 @@
 
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "s-p"))
+(global-unset-key (kbd "s-q"))
 (global-unset-key (kbd "s-w"))
 (global-unset-key (kbd "s-m"))
 (global-unset-key (kbd "s-h"))
