@@ -138,6 +138,11 @@
          "* TODO %?\n  %i\n  %a")))
 
 (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
+
+;; Archive settings
+
+(setq org-archive-location "~/Library/Mobile Documents/com~apple~CloudDocs/org/archive/%s::datetree/")
+
 ;; Org-roam
 
 ;; (use-package org-journal
