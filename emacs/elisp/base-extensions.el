@@ -109,6 +109,11 @@
   (add-hook 'after-init-hook 'global-company-mode)
   (add-hook 'after-init-hook 'company-tng-mode))
 
+;; Highlight current line when idle
+(use-package hl-line+
+  :config
+  (toggle-hl-line-when-idle))
+
 
 (use-package expand-region
   :bind
