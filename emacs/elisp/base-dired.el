@@ -28,4 +28,6 @@
 
 (define-key dired-mode-map [?\M-\r] 'crux-open-with)
 
+(setq dired-dwim-target t)
+
 (provide 'base-dired)
