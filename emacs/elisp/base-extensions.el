@@ -133,22 +133,7 @@
 
 (use-package fish-mode)
 
-(use-package projectile
-  :ensure t
-  :init
-  (projectile-mode +1)
-  :bind (:map projectile-mode-map
-              ("s-p" . projectile-command-map)
-              ("C-c p" . projectile-command-map)))
-
-(use-package dogears
-:straight (dogears :host github :repo "alphapapa/dogears.el")
-:bind (:map global-map
-              ("M-g d" . dogears-go)
-              ("M-g M-b" . dogears-back)
-              ("M-g M-f" . dogears-forward)
-              ("M-g M-d" . dogears-list)
-              ("M-g M-D" . dogears-sidebar)))
+(use-package rg)
 
 
 (provide 'base-extensions)

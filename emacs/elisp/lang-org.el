@@ -13,6 +13,8 @@
   (setq org-adapt-indentation nil)
   (setq org-hide-leading-stars nil)
   (setq org-html-validation-link nil)
+  (setq org-goto-interface 'outline-path-completionp)
+  (setq org-outline-path-complete-in-steps nil)
   ;; (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/")
         (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
         )

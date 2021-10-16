@@ -62,9 +62,9 @@
   (:color teal :quit-key "q" :title "Buffers and Files")
   ("Open"
    (("b" ibuffer "ibuffer")
-    ("m" consult-bookmark "bookmark")
-    ("w" consult-buffer-other-window "other window")
-    ("f" consult-buffer-other-frame "other frame")
+    ("m" bookmark-jump "bookmark")
+    ("w" switch-to-buffer-other-window "other window")
+    ("f" switch-to-buffer-other-frame "other frame")
     ("d" crux-recentf-find-directory "recent directory")
     ("a" crux-open-with "open in default app"))
    "Actions"
@@ -83,13 +83,10 @@
 (pretty-hydra-define hydra-locate
   (:color teal :quit-key "q" title: "Search")
   ("Buffer"
-   (("l" consult-goto-line "goto-line")
-    ("i" consult-imenu "imenu")
-    ("m" consult-mark "mark")
-    ("o" consult-outline "outline"))
+   (("l" goto-line "goto-line")
+    ("i" imenu "imenu"))
    "Global"
-   (("M" consult-global-mark "global-mark")
-    ("r" consult-ripgrep "ripgrep"))
+    (("r" rg "ripgrep"))
    ))
 
 (pretty-hydra-define hydra-window
@@ -208,7 +205,7 @@
     )
    "Edit"
    (("d" rlr/org-date "update date stamp")
-    ("i" consult-org-heading "iMenu")
+    ("g" org-goto "iMenu")
     ("r" bibtex-actions-insert-citation "citation")
     ("u" org-toggle-pretty-entities "org-pretty"))
    "Blog"
@@ -285,16 +282,12 @@
  "C-`" 'iterm-goto-filedir-or-home
  "s-o" 'find-file
  "s-k" 'kill-this-buffer
- "s-r" 'consult-buffer
- "M-s-r" 'consult-buffer-other-window
+ "s-r" 'crux-recentf-find-file
  "C-S-a" 'embark-act
 
  ;; Search
 
  "s-l" 'hydra-locate/body
- "s-f" 'consult-line
- ;; "C-s" 'consult-isearch
- ;; "C-r" 'consult-isearch-reverse
 
  ;; Editing
  "RET" 'newline-and-indent
@@ -305,7 +298,6 @@
  "s-j" 'crux-top-join-line
  "<S-return>" 'crux-smart-open-line
  "<C-S-return>" 'crux-smart-open-line-above
- "M-y" 'consult-yank-pop
  "M-q" 'reformat-paragraph
 
   ;; Hydras
@@ -316,13 +308,8 @@
  "C-x 9" 'hydra-logic/body
 
  "s-/" 'avy-goto-char-timer
- "s-d" 'consult-dir
+ "s-d" 'crux-recentf-find-directory
  "s-=" 'endless/ispell-word-then-abbrev
- "<help> a" 'consult-apropos
- "C-x 4 b" 'consult-buffer-other-window
- "C-x 5 b" 'consult-buffer-other-frame
- "C-x r x" 'consult-register
- "M-s m" 'consult-multi-occur
  "<f8>" 'insert-standard-date
  "M-u" 'upcase-dwim
  "M-l" 'downcase-dwim
@@ -346,12 +333,10 @@
  "a" 'org-agenda
  "2" 'rlr/find-file-below
  "3" 'rlr/find-file-right
- "b" 'consult-bookmark
+ "b" 'bookmark-jump
  "c" 'org-capture
  "D" 'crux-delete-file-and-buffer
- ;; "h" 'consult-history
  "k" 'crux-kill-other-buffers
- "m" 'consult-mark
  "n b" 'hugo-draft-post
  "n c" 'org-roam-capture
  "n f" 'org-roam-node-find
@@ -359,7 +344,6 @@
  "n i" 'org-roam-node-insert
  "n j" 'org-roam-dailies-capture-today
  "n t" 'org-roam-buffer-toggle 
- "o" 'consult-outline
  "r" 'crux-rename-file-and-buffer
  "s" 'goto-scratch
  "S" 'crux-cleanup-buffer-or-region
