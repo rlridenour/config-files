@@ -119,10 +119,16 @@
    version-control t)
 
 ;; Recent files
-(require 'recentf)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
-(recentf-mode)
+;; (require 'recentf)
+;; (setq recentf-max-saved-items 200
+;;       recentf-max-menu-items 15)
+;; (recentf-mode)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(setq recentf-max-saved-items 200)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
+
 
 ;; Use spotlight for locate.
 
@@ -348,6 +354,9 @@
 
 ;; CUA mode for easy rectangle editing.
 (cua-selection-mode t)
+
+;;Use fido for completion.
+(fido-vertical-mode 1)
 
 (provide 'base)
 ;;; base ends here
