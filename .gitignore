@@ -18,7 +18,6 @@ emacs/straight/
 emacs/transient/
 emacs/var/
 emacs/bookmarks
-emacs/projects
 emacs/custom.el
 emacs/.org-id-locations
 emacs/.mc-lists.el

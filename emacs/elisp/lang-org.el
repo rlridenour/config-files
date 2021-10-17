@@ -13,8 +13,6 @@
   (setq org-adapt-indentation nil)
   (setq org-hide-leading-stars nil)
   (setq org-html-validation-link nil)
-  (setq org-goto-interface 'outline-path-completionp)
-  (setq org-outline-path-complete-in-steps nil)
   ;; (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/")
         (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
         )
@@ -76,11 +74,11 @@
 (add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
 (add-hook 'org-mode-hook 'flyspell-ignore-tex)
 
-;; (use-package org-ref
-;;   :after org
-;;   :init
-;;   (setq org-ref-completion-library 'org-ref-ivy-cite
-;; 	org-ref-default-bibliography '("~/bibtex/rlr-bib/rlr.bib")))
+(use-package org-ref
+  :after org
+  :init
+  (setq org-ref-completion-library 'org-ref-ivy-cite
+	org-ref-default-bibliography '("~/bibtex/rlr-bib/rlr.bib")))
 
 
 ;; Return adds new heading or list item. From https://github.com/aaronjensen/emacs-orgonomic
@@ -215,7 +213,5 @@
                     (end-of-line)
                     (delete-region beg (point)))
                   (insert (concat " " (format-time-string "%B %e, %Y")))))
-
-
 
 (provide 'lang-org)
