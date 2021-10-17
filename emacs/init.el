@@ -70,6 +70,7 @@
 
 (require 'base)
 (require 'base-theme)
+(require 'ivy)
 (require 'base-extensions)
 (require 'evil)
 (require 'base-functions)
@@ -81,6 +82,8 @@
 (require 'lang-html)
 (require 'hugo-org)
 (require 'keybindings)
+
+(require 'bibtex)
 (require 'misc)
 
 

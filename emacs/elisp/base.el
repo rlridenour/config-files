@@ -356,7 +356,7 @@
 (cua-selection-mode t)
 
 ;;Use fido for completion.
-(fido-vertical-mode 1)
+;; (fido-vertical-mode 1)
 
 (provide 'base)
 ;;; base ends here

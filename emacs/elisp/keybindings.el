@@ -1,5 +1,11 @@
 ;;; keybindings.el -*- lexical-binding: t; -*-
 
+
+(use-package general
+  :config
+  (general-auto-unbind-keys)
+  )
+
 ;; Keybindings
 
 (global-unset-key (kbd "C-z"))
