@@ -105,6 +105,8 @@
   :bind ("M-=" . shrink-whitespace))
 
 (use-package company
+  :init
+  (setq company-idle-delay 3)
   :config
   (add-hook 'after-init-hook 'global-company-mode)
   (add-hook 'after-init-hook 'company-tng-mode))
