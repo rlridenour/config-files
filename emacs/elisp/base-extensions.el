@@ -227,5 +227,8 @@
               ("M-g M-d" . dogears-list)
               ("M-g M-D" . dogears-sidebar)))
 
+(use-package pomm
+  :straight (:host github :repo "SqrtMinusOne/pomm.el" :files (:defaults "resources"))
+  :commands (pomm))
 
 (provide 'base-extensions)
