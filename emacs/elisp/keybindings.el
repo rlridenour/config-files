@@ -110,6 +110,7 @@
     ("d" delete-other-frames "delete other frames")
     ("D" delete-frame "delete this frame")
     ("i" make-frame-invisible "invisible frame")
+    ("f" toggle-frame-fullscreen "fullscreen")
    )))
 
 (pretty-hydra-define hydra-logic

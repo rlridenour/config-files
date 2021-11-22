@@ -231,4 +231,6 @@
   :straight (:host github :repo "SqrtMinusOne/pomm.el" :files (:defaults "resources"))
   :commands (pomm))
 
+(use-package anki-editor)
+
 (provide 'base-extensions)
