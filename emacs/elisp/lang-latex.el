@@ -177,72 +177,6 @@
 ;; Revert PDF after compilation has finished
 (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 
-;; Modify Bibtex completion in Org mode.
-
-
-(setq bibtex-completion-cite-default-command "autocite")
-(defun bibtex-completion-format-citation-orgref (keys)
-  "Formatter for Org mode citation commands.
-Prompts for the command and for arguments if the commands can
-take any.  If point is inside or just after a citation command,
-only adds KEYS to it."
-  (let (macro)
-    (cond
-     ((and (require 'reftex-parse nil t)
-           (setq macro (reftex-what-macro 1))
-           (stringp (car macro))
-           (string-match "\\`\\\\cite\\|cite\\'" (car macro)))
-      ;; We are inside a cite macro.  Insert key at point, with appropriate delimiters.
-      (delete-horizontal-space)
-      (concat (pcase (preceding-char)
-                (?\{ "")
-                (?, " ")
-                (_ ", "))
-              (s-join ", " keys)
-              (if (member (following-char) '(?\} ?,))
-		  ""
-                ", ")))
-     ((and (equal (preceding-char) ?\})
-           (require 'reftex-parse nil t)
-           (save-excursion
-             (forward-char -1)
-             (setq macro (reftex-what-macro 1)))
-           (stringp (car macro))
-           (string-match "\\`\\\\cite\\|cite\\'" (car macro)))
-      ;; We are right after a cite macro.  Append key and leave point at the end.
-      (delete-char -1)
-      (delete-horizontal-space t)
-      (concat (pcase (preceding-char)
-                (?\{ "")
-                (?, " ")
-                (_ ", "))
-              (s-join ", " keys)
-              "}"))
-     (t
-      ;; We are not inside or right after a cite macro.  Insert a full citation.
-      (let* ((initial (when bibtex-completion-cite-default-as-initial-input
-                        bibtex-completion-cite-default-command))
-             (default (unless bibtex-completion-cite-default-as-initial-input
-                        bibtex-completion-cite-default-command))
-             (default-info (if default (format " (default \"%s\")" default) ""))
-             (cite-command (completing-read
-                            (format "Cite command%s: " default-info)
-                            bibtex-completion-cite-commands nil nil initial
-                            'bibtex-completion-cite-command-history default nil)))
-        (if (member cite-command '("nocite" "supercite"))  ; These don't want arguments.
-            (format "\\%s{%s}" cite-command (s-join ", " keys))
-          (let ((prenote (if bibtex-completion-cite-prompt-for-optional-arguments
-                             (read-from-minibuffer "Prenote: ")
-                           ""))
-                (postnote (if bibtex-completion-cite-prompt-for-optional-arguments
-                              (read-from-minibuffer "Postnote: ")
-                            "")))
-            (cond ((and (string= "" prenote) (string= "" postnote))
-                   (format "[[%s:%s]]" cite-command (s-join ", " keys)))
-                  (t
-                   (format "[[%s:%s][%s::%s]]" cite-command (s-join ", " keys) prenote postnote)
-                   )))))))))
-
 
 ;; Use Ivy-bibtex for reference completions.
 ;; (use-package ivy-bibtex
@@ -260,16 +194,43 @@ only adds KEYS to it."
 ;; 	  (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
 ;; 	  (default       . bibtex-completion-format-citation-default))))
 
-(use-package bibtex-actions
-  :straight (:host github :repo "bdarcus/bibtex-actions")
-  :config
-  (setq bibtex-completion-bibliography "~/Dropbox/bibtex/rlr.bib")
-  (setq bibtex-completion-format-citation-functions
-	'((org-mode      . bibtex-completion-format-citation-orgref)
-	  (latex-mode    . bibtex-completion-format-citation-cite)
-	  ;; (markdown-mode    . bibtex-completion-format-citation-cite)
-	  (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
-	  (default       . bibtex-completion-format-citation-default))))
+;; (use-package bibtex-actions
+;;   :straight (:host github :repo "bdarcus/bibtex-actions")
+;;   :config
+;;   (setq bibtex-completion-bibliography "~/Dropbox/bibtex/rlr.bib")
+;;   (setq bibtex-completion-format-citation-functions
+;; 	'((org-mode      . bibtex-completion-format-citation-orgref)
+;; 	  (latex-mode    . bibtex-completion-format-citation-cite)
+;; 	  ;; (markdown-mode    . bibtex-completion-format-citation-cite)
+;; 	  (markdown-mode . bibtex-completion-format-citation-pandoc-citeproc)
+;; 	  (default       . bibtex-completion-format-citation-default))))
+
+
+
+(use-package citar
+  :custom
+  (citar-bibliography '("~/Dropbox/bibtex/rlr.bib"))
+  (citar-major-mode-functions
+  '(((org-mode) .
+     ((local-bib-files . citar-org-local-bib-files)
+      (insert-citation . citar-latex-insert-citation)
+      (insert-edit . citar-latex-insert-edit)
+      (key-at-point . citar-latex-key-at-point)
+      (citation-at-point . citar-latex-citation-at-point)))
+    ((latex-mode) .
+     ((local-bib-files . citar-latex-local-bib-files)
+      (insert-citation . citar-latex-insert-citation)
+      (insert-edit . citar-latex-insert-edit)
+      (key-at-point . citar-latex-key-at-point)
+      (citation-at-point . citar-latex-citation-at-point)))
+    ((markdown-mode) .
+     ((insert-keys . citar-markdown-insert-keys)
+      (insert-citation . citar-markdown-insert-citation)
+      (insert-edit . citar-markdown-insert-edit)
+      (key-at-point . citar-markdown-key-at-point)
+      (citation-at-point . citar-markdown-citation-at-point)))
+    (t .
+       ((insert-keys . citar--insert-keys-comma-separated))))))
 
 (use-package ebib
   :defer t
