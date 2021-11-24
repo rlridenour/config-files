@@ -24,6 +24,12 @@
 
 (require 'org-tempo)
 
+;; manage citations
+(require 'org-bibtex-extras)
+
+;; export citations
+(require 'ox-bibtex)
+(setq org-bibtex-file "~/Dropbox/bibtex/org/rlr.org")
 
 ;; Enable ignoring a headline during export.
 (require 'ox-extra)
