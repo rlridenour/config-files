@@ -187,7 +187,7 @@
 (major-mode-hydra-define latex-mode
   (:quit-key "q")
   ("Bibtex"
-   (("b" bibtex-actions-insert-citation "citation"))
+   (("r" citar-insert-citation "citation"))
    "LaTeXmk"
    (("a" rlr/tex-mkt "arara")
     ("w" rlr/tex-mktc "arara watch")
@@ -210,7 +210,7 @@
    "Edit"
    (("d" rlr/org-date "update date stamp")
     ("i" consult-org-heading "iMenu")
-    ("r" bibtex-actions-insert-citation "citation")
+    ("r" citar-insert-citation "citation")
     ("u" org-toggle-pretty-entities "org-pretty"))
    "Blog"
    (("n" hugo-draft-post "New draft")

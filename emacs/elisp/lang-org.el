@@ -51,7 +51,7 @@
 			   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
 (add-to-list 'org-latex-classes
 			 '("org-handout"
-			   "\\documentclass{obuhandout}
+			   "\\documentclass{pretty-handout}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
 			   ("\\section{%s}" . "\\section*{%s}")
