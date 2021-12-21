@@ -152,19 +152,14 @@
   (interactive)
   (async-shell-command (concat "mkt " (buffer-file-name))))
 
-
 ;; Run continuously
-
-;; (defun rlr/tex-mktc ()
-;;   "Compile continuously with arara."
-;;   (interactive)
-;;   (async-shell-command (concat "mktc " (buffer-file-name)))
-;;   (TeX-view))
 
 (defun rlr/tex-mktc ()
   "Compile continuously with arara."
   (interactive)
-  (start-process-shell-command (concat "mktc-" (buffer-file-name)) (concat "mktc-" (buffer-file-name)) (concat "mktc " (buffer-file-name))))
+  (async-shell-command (concat "mktc " (buffer-file-name))))
+;;   (TeX-view))
+
 
 
 ;; move to edited position after save.

@@ -1,12 +1,12 @@
 ;;; lang-org.el -*- lexical-binding: t; -*-
 
 ;; (use-package org
-  ;; :straight org-plus-contrib)
+;; :straight org-plus-contrib)
 
 (use-package org
   :init
- ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
- (setq org-directory "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
+  ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
+  (setq org-directory "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
   :config
   (setq org-highlight-latex-and-related '(latex script entities))
   (setq org-startup-indented nil)
@@ -14,7 +14,7 @@
   (setq org-hide-leading-stars nil)
   (setq org-html-validation-link nil)
   ;; (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/")
-        (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
+  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
         )
   )
 
@@ -39,44 +39,44 @@
 (require 'ox-latex)
 
 (with-eval-after-load 'ox-latex
-(add-to-list 'org-latex-classes
-			 '("org-article"
-			   "\\documentclass{article}
+  (add-to-list 'org-latex-classes
+               '("org-article"
+                 "\\documentclass{article}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
-			   ("\\section{%s}" . "\\section*{%s}")
-			   ("\\subsection{%s}" . "\\subsection*{%s}")
-			   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-			   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-			   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-(add-to-list 'org-latex-classes
-			 '("org-handout"
-			   "\\documentclass{pretty-handout}
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("org-handout"
+                 "\\documentclass{pretty-handout}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
-			   ("\\section{%s}" . "\\section*{%s}")
-			   ("\\subsection{%s}" . "\\subsection*{%s}")
-			   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-			   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-			   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-(add-to-list 'org-latex-classes
-			 '("org-beamer"
-			   "\\documentclass{beamer}
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("org-beamer"
+                 "\\documentclass{beamer}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
-			   ("\\section{%s}" . "\\section*{%s}")
-			   ("\\subsection{%s}" . "\\subsection*{%s}")
-			   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-			   ("\\paragraph{%s}" . "\\paragraph*{%s}")
-			   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-)
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  )
 
 ;; (add-hook 'org-mode-hook 'wc-mode)
 
 
 (defun flyspell-ignore-tex ()
-	(interactive)
-	(set (make-variable-buffer-local 'ispell-parser) 'tex))
+  (interactive)
+  (set (make-variable-buffer-local 'ispell-parser) 'tex))
 (add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
 (add-hook 'org-mode-hook 'flyspell-ignore-tex)
 
@@ -84,7 +84,7 @@
   :after org
   :init
   (setq org-ref-completion-library 'org-ref-ivy-cite
-	org-ref-default-bibliography '("~/bibtex/rlr-bib/rlr.bib")))
+        org-ref-default-bibliography '("~/bibtex/rlr-bib/rlr.bib")))
 
 
 ;; Return adds new heading or list item. From https://github.com/aaronjensen/emacs-orgonomic
@@ -110,7 +110,7 @@
   (find-file "*-notes.org" t)
   (org-beamer-export-to-latex)
   (kill-buffer)
-					;(kill-buffer "*.tex")
+                                        ;(kill-buffer "*.tex")
   (arara-all)
   (find-file "*-data.org" t))
 
@@ -119,7 +119,7 @@
   (interactive)
   (org-html-export-to-html)
   (shell-command "canvas")
-)
+  )
 
 (setq org-latex-pdf-process '("arara %f"))
 
@@ -139,9 +139,9 @@
 ;; Org-capture
 
 (setq org-capture-templates
-      ;; '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/tasks/inbox.org" "Tasks")
-         '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/inbox.org" "Tasks")
+      '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Tasks")
          "* TODO %?\n  %i\n  %a")))
+
 
 (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
 

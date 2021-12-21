@@ -76,7 +76,7 @@
    "Misc"
    (("t" crux-visit-term-buffer "ansi-term")
     ("T" iterm-goto-filedir-or-home "iTerm2")
-        ("i" crux-find-user-init-file "init.el")
+    ("i" crux-find-user-init-file "init.el")
     ("s" crux-find-shell-init-file "fish config"))
    ))
 
@@ -285,7 +285,7 @@
  "C-x C-b" 'ibuffer
  "C-`" 'iterm-goto-filedir-or-home
  "s-o" 'find-file
- "s-k" 'kill-this-buffer
+ "s-k" 'kill-buffer-and-window
  "s-r" 'consult-buffer
  "M-s-r" 'consult-buffer-other-window
  "C-S-a" 'embark-act
