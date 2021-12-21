@@ -139,7 +139,7 @@
 ;; Org-capture
 
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Tasks")
+      '(("t" "Todo" entry (file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org")
          "* TODO %?\n  %i\n  %a")))
 
 
