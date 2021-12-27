@@ -192,7 +192,8 @@
    (("a" rlr/tex-mkt "arara")
     ("w" rlr/tex-mktc "arara watch")
     ("c" tex-clean "clean aux")
-    ("C" tex-clean-all "clean all"))))
+    ("C" tex-clean-all "clean all")
+    ("n" latex-word-count "word count"))))
 
 (major-mode-hydra-define org-mode
   (:quit-key "q")

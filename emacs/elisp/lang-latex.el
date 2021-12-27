@@ -17,10 +17,18 @@
 	TeX-source-correlate-mode t
 	TeX-source-correlate-method 'synctex))
 
-  (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
-  (setq TeX-view-program-list
-	'(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
-  (setq org-latex-pdf-process (list "latexmk -shell-escape -f -pdf -quiet -interaction=nonstopmode  %f"))
+  ;; (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+  ;; (setq TeX-view-program-list
+	;; '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+  ;; (setq org-latex-pdf-process (list "latexmk -shell-escape -f -pdf -quiet -interaction=nonstopmode  %f"))
+
+(setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+      TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))
+      TeX-source-correlate-start-server t)
+
+(add-hook 'TeX-after-compilation-finished-functions
+          #'TeX-revert-document-buffer)
+
 
 ;; Insert math-mode delimiters for LaTeX and ConTeXt.
 ;; (add-hook 'ConTeXt-mode-hook
@@ -234,6 +242,16 @@
   :custom
   (ebib-preload-bib-files '("~/Dropbox/bibtex/rlr.bib")))
 
-	  
+
+(defun latex-word-count ()
+  (interactive)
+  (let* ((this-file (buffer-file-name))
+         (word-count
+          (with-output-to-string
+            (with-current-buffer standard-output
+              (call-process "texcount" nil t nil "-brief" this-file)))))
+    (string-match "\n$" word-count)
+    (message (replace-match "" nil nil word-count))))
+
 
 (provide 'lang-latex)

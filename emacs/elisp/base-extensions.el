@@ -233,4 +233,20 @@
 
 (use-package anki-editor)
 
+(use-package pdf-tools
+   :pin manual
+   :config
+   (pdf-tools-install)
+   (setq-default pdf-view-display-size 'fit-width)
+   (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+   :custom
+   (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+
+(add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1)))
+
+;; (evil-set-initial-state 'pdf-view-mode 'emacs)
+(add-hook 'pdf-view-mode-hook
+  (lambda ()
+    (set (make-local-variable 'evil-emacs-state-cursor) (list nil))))
+
 (provide 'base-extensions)
