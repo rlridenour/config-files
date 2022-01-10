@@ -37,3 +37,4 @@ SETUVAR fish_pager_color_completion:normal
 SETUVAR fish_pager_color_description:555\x1eyellow
 SETUVAR fish_pager_color_prefix:cyan
 SETUVAR fish_pager_color_progress:cyan
+SETUVAR fish_user_paths:/usr/local/opt/node\x408/bin\x1e/usr/local/opt/node\x4010/bin\x1e/opt/homebrew/opt/fzf/bin
