@@ -1,6 +1,6 @@
 switch (uname)
     case Darwin
-        set -x PATH /usr/local/opt/coreutils/libexec/gnubin /Users/rlridenour/bin /opt/homebrew/bin /usr/local/bin /usr/local/sbin /usr/bin /bin /usr/sbin /sbin /Users/rlridenour/context/tex/texmf-osx-64/bin /Library/TeX/texbin /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin /Users/rlridenour/.emacs.d/bin /Users/rlridenour/node_modules/stylelint/bin /opt/homebrew/opt/openjdk/bin /Users/rlridenour/node_modules/.bin
+        set -x PATH /usr/local/opt/grep/libexec/gnubin /usr/local/opt/coreutils/libexec/gnubin /Users/rlridenour/bin /opt/homebrew/bin /usr/local/bin /usr/local/sbin /usr/bin /bin /usr/sbin /sbin /Users/rlridenour/context/tex/texmf-osx-64/bin /Library/TeX/texbin /Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin /Users/rlridenour/.emacs.d/bin /Users/rlridenour/node_modules/stylelint/bin /opt/homebrew/opt/openjdk/bin /Users/rlridenour/node_modules/.bin
     case Linux
         set -x PATH /usr/local/sbin /usr/local/bin /usr/sbin /usr/bin /sbin /bin /usr/games /usr/local/games /home/rlridenour/bin /snap/bin
 end
