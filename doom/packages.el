@@ -50,7 +50,28 @@
 ;(unpin! t)
 
 (package! modus-themes
-  :recipe (:host gitlab :repo "protesilaos/modus-themes" :branch "main"))
-(package! mixed-pitch)
-(package! org-contrib
-  :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"))
+ :recipe (:host gitlab :repo "protesilaos/modus-themes" :branch "main"))
+(package! hungry-delete)
+(package! wc-mode)
+;; (package! org-ref)
+(package! major-mode-hydra)
+(package! shrink-whitespace)
+(package! deadgrep)
+(package! orgonomic
+  :recipe (:host github :repo "aaronjensen/emacs-orgonomic"))
+;; (package! org-roam-bibtex
+  ;; :recipe (:host github :repo "org-roam/org-roam-bibtex"))
+(package! dired-narrow)
+;; (package! fish-mode)
+;; (package! grab-mac-link
+  ;; :recipe (:host github :repo "xuchunyang/grab-mac-link.el"))
+(package! doom-snippets :ignore t)
+;; (package! aggressive-indent)
+(package! crux)
+;; (package! org-contrib
+;;   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"))
+;; (package! ebib)
+(package! ox-hugo)
+;; (package! citeproc-org)
+(package! unfill)
+(package! key-chord)

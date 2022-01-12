@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/legacy/straight/repos/key-chord/key-chord.el

@@ -64,6 +64,161 @@ The [[https://gitlab.com/protesilaos/modus-themes][modus-themes by Protesilaos S
   (setq doom-theme 'modus-operandi))
 #+end_src
 
+When editing two files that have the same name, it's annoying to make changes in one thinking that it was the other. This helps to distinguish them by putting their path in the buffer name. Although both items are displayed in the menu bar, it's nice to be able to see the time and battery level in the mode-line. Finally, I always want to see matching parentheses and the current line highlighted.
+
+#+begin_src emacs-lisp :tangle yes
+(setq-default
+ uniquify-buffer-name-style 'forward)
+(display-time-mode 1)
+(display-battery-mode 1)
+(show-smartparens-global-mode t)
+(global-visual-line-mode t)
+#+end_src
+
+This turns off Doom's highlighting for non-standard indentation. I've re-enabled it to see what I didn't like about it.
+
+#+begin_src emacs-lisp :tangle no
+(advice-add #'doom-highlight-non-default-indentation-h :override #'ignore)
+#+end_src
+
+Don't ask for confirmation about running processes when killing Emacs.
+
+#+begin_src emacs-lisp :tangle yes
+(setq confirm-kill-processes nil)
+#+end_src
+
+Show normal vim mode indicators in the modeline.
+
+#+begin_src emacs-lisp :tangle yes
+(setq doom-modeline-modal-icon nil)
+#+end_src
+
+
+* Basic editing
+
+#+begin_src emacs-lisp :tangle yes
+(load "~/Dropbox/emacs/my-emacs-abbrev")
+#+end_src
+
+Set  input method to TeX. This is especially useful for entering em and en-dashes. Turn it on with ~C-\~.
+
+#+begin_src emacs-lisp :tangle yes
+(setq default-input-method 'TeX)
+#+end_src
+
+Add my custom snippets to Yasnippet
+
+#+begin_src emacs-lisp :tangle yes
+(after! yasnippet
+  (setq yas-snippet-dirs (append yas-snippet-dirs
+                                 '("~/.config/doom/snippets"))))
+#+end_src
+
+Insert dates and times
+
+#+begin_src emacs-lisp :tangle yes
+(defun insert-date-string ()
+  "Insert current date yyyymmdd."
+  (interactive)
+  (insert (format-time-string "%Y%m%d")))
+
+(defun insert-standard-date ()
+  "Inserts standard date time string."
+  (interactive)
+  (insert (format-time-string "%B %e, %Y")))
+(global-set-key (kbd "<f8>") 'insert-standard-date)
+(global-set-key (kbd "C-c d") 'insert-date-string)
+#+end_src
+
+** Spelling
+
+#+begin_src emacs-lisp :tangle yes
+
+(setq ispell-program-name "/opt/homebrew/bin/aspell")
+(setq ispell-extra-args '("--sug-mode=ultra"))
+(setq ispell-personal-dictionary "/Users/rlridenour/Dropbox/emacs/spelling/.aspell.en.pws")
+(setq ispell-silently-savep t)
+#+end_src
+
+** Scratch
+
+Kill contents of scratch buffer, not the buffer itself. From [[http://emacswiki.org/emacs/RecreateScratchBuffer][TN]].
+
+#+begin_src emacs-lisp :tangle yes
+(defun unkillable-scratch-buffer ()
+  (if (equal (buffer-name (current-buffer)) "*scratch*")
+      (progn
+        (delete-region (point-min) (point-max))
+        nil)
+    t))
+(add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
+#+end_src
+
+Create a new scratch buffer if there isn't one, find it if there is.
+
+#+begin_src emacs-lisp :tangle yes
+(defun goto-scratch ()
+  "this sends you to the scratch buffer"
+  (interactive)
+  (let ((goto-scratch-buffer (get-buffer-create "*scratch*")))
+    (switch-to-buffer goto-scratch-buffer)
+    (org-mode)))
+
+(map! "M-g s" #'goto-scratch)
+#+end_src
+
+
+** Saved Keyboard Macros
+
+Splits Org-mode list items
+
+#+begin_src emacs-lisp :tangle yes
+(fset 'split-org-item
+      [?\C-k ?\M-\\ return ?\C-y])
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+(fset 'convert-markdown-to-org
+      [?\M-< ?\M-% ?* return ?- return ?! ?\M-< ?\C-\M-% ?# ?* backspace backspace ?  ?# ?* ?$ return return ?! ?\M-< ?\M-% ?# return ?* return ?!])
+#+end_src
+
+
+** Bookmarks and Abbreviations
+
+#+begin_src emacs-lisp :tangle yes
+
+;; Load Abbreviations
+(load "~/Dropbox/emacs/my-emacs-abbrev")
+
+;; Bookmarks
+(require 'bookmark)
+(bookmark-bmenu-list)
+
+#+end_src
+
+
+** Evil Settings
+
+#+begin_src emacs-lisp :tangle yes
+(use-package evil
+  :init
+  (setq evil-disable-insert-state-bindings t
+        evil-default-state 'insert
+        ;;evil-undo-system 'undo-fu
+        evil-cross-lines t
+        evil-vsplit-window-right t
+        evil-split-window-below t
+        evil-respect-visual-line-mode t)
+  :config
+  (evil-set-initial-state 'dired-mode 'emacs)
+  (evil-set-initial-state 'calendar-mode 'emacs))
+
+(define-key evil-visual-state-map (kbd "v") 'er/expand-region)
+#+end_src
+
+
+
 * Extensions
 
 ** Yasnippet
@@ -76,22 +231,277 @@ Add my custom snippets to Yasnippet
                                  '("~/.config/doom/snippets"))))
 #+end_src
 
+** Hungry Delete
 
-* Org Mode
+Hungry delete deletes consecutive whitespace.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! hungry-delete
+  :defer
+  :config
+  (global-hungry-delete-mode))
+#+end_src
+
+** Shrink Whitespace
+
+The Shrink Whitespace package reduces all whitespace surrounding the point to one empty line or space when called once. When called again, it also eliminates that bit of whitespace.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! shrink-whitespace
+  :defer)
+(map! "M-=" #'shrink-whitespace)
+#+end_src
+
+
+* Functions
+
+#+begin_src emacs-lisp :tangle yes
+(defun delete-window-balance ()
+  "Delete window and rebalance the remaining ones."
+  (interactive)
+  (delete-window)
+  (balance-windows))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(defun split-window-below-focus ()
+  "Split window horizontally and move focus to other window."
+  (interactive)
+  (split-window-below)
+  (balance-windows)
+  (other-window 1))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(defun split-window-right-focus ()
+  "Split window vertically and move focus to other window."
+  (interactive)
+  (split-window-right)
+  (balance-windows)
+  (other-window 1))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(defun rlr/find-file-right ()
+  "Split window vertically and select recent file."
+  (interactive)
+  (split-window-right-focus)
+  (consult-buffer))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(defun rlr/find-file-below ()
+  "Split window horizontally and select recent file."
+  (interactive)
+  (split-window-below-focus)
+  (consult-buffer))
+#+end_src
+
+;; Fullscreen
+
+#+begin_src emacs-lisp :tangle yes
+(defun toggle-frame-maximized-undecorated () (interactive) (let* ((frame (selected-frame)) (on? (and (frame-parameter frame 'undecorated) (eq (frame-parameter frame 'fullscreen) 'maximized))) (geom (frame-monitor-attribute 'geometry)) (x (nth 0 geom)) (y (nth 1 geom)) (display-height (nth 3 geom)) (display-width (nth 2 geom)) (cut (if on? (if ns-auto-hide-menu-bar 26 50) (if ns-auto-hide-menu-bar 4 26)))) (set-frame-position frame x y) (set-frame-parameter frame 'fullscreen-restore 'maximized) (set-frame-parameter nil 'fullscreen 'maximized) (set-frame-parameter frame 'undecorated (not on?)) (set-frame-height frame (- display-height cut) nil t) (set-frame-width frame (- display-width 20) nil t) (set-frame-position frame x y)))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(defun insert-date-string ()
+  "Insert current date yyyymmdd."
+  (interactive)
+  (insert (format-time-string "%Y%m%d")))
+#+end_src
+#+begin_src emacs-lisp :tangle yes
+(defun insert-standard-date ()
+  "Inserts standard date time string."
+  (interactive)
+  (insert (format-time-string "%B %e, %Y")))
+(global-set-key (kbd "<f8>") 'insert-standard-date)
+(global-set-key (kbd "C-c d") 'insert-date-string)
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+;; Open files in dired mode using 'open' in OS X
+(eval-after-load "dired"
+  '(progn
+     (define-key dired-mode-map (kbd "z")
+       (lambda () (interactive)
+         (let ((fn (dired-get-file-for-visit)))
+           (start-process "default-app" nil "open" fn))))))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(defun rlr-count-words (&optional begin end)
+  "count words between BEGIN and END (region); if no region defined, count words in buffer"
+  (interactive "r")
+  (let ((b (if mark-active begin (point-min)))
+        (e (if mark-active end (point-max))))
+    (message "Word count: %s" (how-many "\\w+" b e))))
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+(defun transpose-windows ()
+  "Transpose two windows.  If more or less than two windows are visible, error."
+  (interactive)
+  (unless (= 2 (count-windows))
+    (error "There are not 2 windows."))
+  (let* ((windows (window-list))
+         (w1 (car windows))
+         (w2 (nth 1 windows))
+         (w1b (window-buffer w1))
+         (w2b (window-buffer w2)))
+    (set-window-buffer w1 w2b)
+    (set-window-buffer w2 w1b)))
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+(defun occur-non-ascii ()
+  "Find any non-ascii characters in the current buffer."
+  (interactive)
+  (occur "[^[:ascii:]]"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+;; From https://github.com/ocodo/.emacs.d/blob/master/custom/handy-functions.el
+(defun nuke-all-buffers ()
+  "Kill all the open buffers except the current one.
+  Leave *scratch*, *dashboard* and *Messages* alone too."
+  (interactive)
+  (mapc
+   (lambda (buffer)
+     (unless (or
+              (string= (buffer-name buffer) "*scratch*")
+              (string= (buffer-name buffer) "*dashboard*")
+              (string= (buffer-name buffer) "*Messages*"))
+       (kill-buffer buffer)))
+   (buffer-list))
+  (delete-other-windows))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(defun make-parent-directory ()
+  "Make sure the directory of `buffer-file-name' exists."
+  (make-directory (file-name-directory buffer-file-name) t))
+(add-hook 'find-file-not-found-functions #'make-parent-directory)
+#+end_src
+
+;; Fill functions from https://schauderbasis.de/posts/reformat_paragraph/
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! unfill)
+
+(defun fill-sentences-in-paragraph ()
+  "Put a newline at the end of each sentence in the current paragraph."
+  (interactive)
+  (save-excursion
+    (mark-paragraph)
+    (call-interactively 'fill-sentences-in-region)
+    )
+  )
+
+(defun fill-sentences-in-region (start end)
+  "Put a newline at the end of each sentence in the region maked by (start end)."
+  (interactive "*r")
+  (call-interactively 'unfill-region)
+  (save-excursion
+    (goto-char start)
+    (while (< (point) end)
+      (forward-sentence)
+      (if (looking-at-p " ")
+          (newline-and-indent)
+        )
+      )
+    )
+  )
+
+(defvar repetition-counter 0
+  "How often cycle-on-repetition was called in a row using the same command.")
+
+(defun cycle-on-repetition (list-of-expressions)
+  "Return the first element from the list on the first call,
+   the second expression on the second consecutive call etc"
+  (interactive)
+  (if (equal this-command last-command)
+      (setq repetition-counter (+ repetition-counter 1)) ;; then
+    (setq repetition-counter 0) ;; else
+    )
+  (nth
+   (mod repetition-counter (length list-of-expressions))
+   list-of-expressions) ;; implicit return of the last evaluated value
+  )
+
+(defun reformat-paragraph ()
+  "Cycles the paragraph between three states: filled/unfilled/fill-sentences."
+  (interactive)
+  (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
+  )
+#+end_src
+
+
+* Languages
+
+** Org Mode
 
 Set org directory, along with a few org mode settings.
 
 #+begin_src emacs-lisp :tangle yes
-(use-package org
+(use-package! org
   :init
-  (setq org-directory "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
+  (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
   :config
   (setq org-highlight-latex-and-related '(latex script entities))
   (setq org-startup-indented nil)
   (setq org-adapt-indentation nil)
   (setq org-hide-leading-stars nil)
   (setq org-html-validation-link nil)
-  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
+  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")))
+
+(require 'org-tempo)
+
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+;; Return adds new heading or list item. From https://github.com/aaronjensen/emacs-orgonomic
+(use-package orgonomic
+  :defer t
+  :hook (org-mode . orgonomic-mode)
+  :bind (
+         :map orgonomic-mode-map
+         ("<S-s-return>" . orgonomic-shift-return)
+         ("<S-return>" . crux-smart-open-line)))
+#+end_src
+
+Insert Org headings at point.
+
+#+begin_src emacs-lisp :tangle yes
+(after! org (setq org-insert-heading-respect-content nil))
 #+end_src
 
 Some export settings.
@@ -129,4 +539,695 @@ Some export settings.
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   )
+#+end_src
+
+Ignore LaTeX when spell checking
+
+#+begin_src emacs-lisp :tangle yes
+(defun flyspell-ignore-tex ()
+  (interactive)
+  (set (make-variable-buffer-local 'ispell-parser) 'tex))
+(add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
+(add-hook 'org-mode-hook 'flyspell-ignore-tex)
+#+end_src
+
+Some functions for automating lecture notes and slides.
+
+
+#+begin_src emacs-lisp :tangle yes
+(defun lecture-slides ()
+  "publish org file as beamer slides and notes"
+  (interactive)
+  (find-file "*-slides.org" t)
+  (org-beamer-export-to-latex)
+  (kill-buffer)
+  (find-file "*-notes.org" t)
+  (org-beamer-export-to-latex)
+  (kill-buffer)
+                                        ;(kill-buffer "*.tex")
+  (arara-all)
+  (find-file "*-data.org" t))
+
+(defun canvas-copy ()
+  "Copy html for canvas pages"
+  (interactive)
+  (org-html-export-to-html)
+  (shell-command "canvas")
+  )
+
+(setq org-latex-pdf-process '("arara %f"))
+
+(defun rlr/org-mkt ()
+  "Make PDF with Arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (async-shell-command (concat "mkt " (file-name-sans-extension (buffer-file-name))".tex")))
+
+(defun rlr/org-mktc ()
+  "Compile continuously with arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (start-process-shell-command (concat "mktc-" (buffer-file-name)) (concat "mktc-" (buffer-file-name)) (concat "mktc " (file-name-sans-extension (buffer-file-name))".tex")))
+#+end_src
+
+*** Org capture
+
+#+begin_src emacs-lisp :tangle yes
+(setq org-capture-templates
+      '(("t" "Todo" entry (file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org")
+         "* TODO %?\n  %i\n  %a")))
+(setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
+#+end_src
+
+*** Deft
+Use Deft for quick notes.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! deft
+  :after org
+  :bind
+  ("C-c n d" . deft)
+  :custom
+  (deft-recursive t)
+  (deft-use-filename-as-title nil)
+  (deft-use-filter-string-for-filename t)
+  (deft-extensions '("org" "md" "txt"))
+  (deft-file-naming-rules '((noslash . "-")
+                            (nospace . "-")
+                            (case-fn . downcase)))
+  (deft-default-extension "org")
+  (deft-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes/"))
+#+end_src
+
+*** Org Roam
+
+#+begin_src emacs-lisp :tangle yes
+;; (use-package org-roam
+;;   :init
+;;   (setq org-roam-v2-ack t)
+;;   :custom
+;;   (org-roam-directory (file-truename "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/roam/"))
+;;   ;; :bind (("C-c n l" . org-roam-buffer-toggle)
+;;   ;;            ("C-c n f" . org-roam-node-find)
+;;   ;;            ("C-c n g" . org-roam-graph)
+;;   ;;            ("C-c n i" . org-roam-node-insert)
+;;   ;;            ("C-c n c" . org-roam-capture)
+;;   ;;            ;; Dailies
+;;   ;;            ("C-c n j" . org-roam-dailies-capture-today))
+;;   :config
+;;   (org-roam-setup))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(setq org-roam-dailies-directory "daily/")
+
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         "* %?"
+         :if-new (file+head "%<%Y-%m-%d>.org"
+                            "#+title: %<%Y-%m-%d>\n"))))
+#+end_src
+
+
+#+begin_src emacs-lisp :tangle yes
+(defun rlr/org-date ()
+  "Update existing date: timestamp on a Hugo post."
+  (interactive)
+  (save-excursion (
+                   goto-char 1)
+                  (re-search-forward "^#\\+date:")
+                  (let ((beg (point)))
+                    (end-of-line)
+                    (delete-region beg (point)))
+                  (insert (concat " " (format-time-string "%B %e, %Y")))))
+#+end_src
+
+** LaTeX
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! cdlatex
+  :defer
+  :init
+  (setq cdlatex-math-symbol-alist
+        '((?. ("\\land" "\\cdot"))
+          (?v ("\\lor" "\\vee"))
+          (?> ("\\lif" "\\rightarrow"))
+          (?= ("\\liff" "\\Leftrightarrow" "\\Longleftrightarrow"))
+          (?! ("\\lneg" "\\neg"))
+          (?# ("\\Box"))
+          (?$ ("\\Diamond"))
+          ))
+  :config
+  (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
+  (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
+
+(map! :map cdlatex-mode-map
+      :i "TAB" #'cdlatex-tab)
+#+end_src
+
+Functions for cleaning and compiling with Arara.
+
+#+begin_src emacs-lisp :tangle yes
+(defun tex-clean ()
+  (interactive)
+  (shell-command "latexmk -c"))
+
+
+(defun tex-clean-all ()
+  (interactive)
+  (shell-command "latexmk -C"))
+
+(eval-after-load "tex"
+  '(add-to-list 'TeX-command-list
+                '("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
+
+(defun arara-all ()
+  (interactive)
+  (async-shell-command "mkall"))
+
+;; Run once
+
+(defun rlr/tex-mkt ()
+  "Compile with arara."
+  (interactive)
+  (async-shell-command (concat "mkt " (buffer-file-name))))
+
+;; Run continuously
+
+(defun rlr/tex-mktc ()
+  "Compile continuously with arara."
+  (interactive)
+  (async-shell-command (concat "mktc " (buffer-file-name))))
+;;   (TeX-view))
+
+(defun latex-word-count ()
+  (interactive)
+  (let* ((this-file (buffer-file-name))
+         (word-count
+          (with-output-to-string
+            (with-current-buffer standard-output
+              (call-process "texcount" nil t nil "-brief" this-file)))))
+    (string-match "\n$" word-count)
+    (message (replace-match "" nil nil word-count))))
+
+
+#+end_src
+
+** Markdown
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! markdown-mode
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.Rmd\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :config
+  (setq markdown-indent-on-enter 'indent-and-new-item)
+  (setq markdown-asymmetric-header t))
+
+#+end_src
+
+* Hugo
+
+#+begin_src emacs-lisp :tangle yes
+(use-package ox-hugo
+  :after org
+  :init
+  (setq org-hugo-delete-trailing-ws nil
+        org-hugo-auto-set-lastmod t
+        org-hugo-suppress-lastmod-period 86400.0))
+
+(defun hugo-timestamp ()
+  "Update existing date: timestamp on a Hugo post."
+  (interactive)
+  (save-excursion (
+                   goto-char 1)
+                  (re-search-forward "^#\\+date:")
+                  (let ((beg (point)))
+                    (end-of-line)
+                    (delete-region beg (point)))
+                  (insert (concat " " (format-time-string "\"%Y-%m-%dT%H:%M:%S\"")))))
+
+(defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
+(defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
+(defvar hugo-org-dir "content-org/" "Relative path to posts directory.")
+(defvar hugo-post-ext ".org"  "File extension of Hugo posts.")
+(defvar hugo-post-template "#+TITLE: \"%s\"\n#+hugo_draft: true\n#+hugo_tags: \n#+date: \n\n"
+  "Default template for Hugo posts. %s will be replace by the post title.")
+
+(defun hugo-make-slug (s) "Turn a string into a slug."
+       (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
+
+(defun hugo-yaml-escape (s) "Escape a string for YAML."
+       (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
+
+(defun hugo-draft-post (title) "Create a new Hugo blog post."
+       (interactive "sPost Title: ")
+       (let ((draft-file (concat hugo-directory hugo-org-dir
+                                 (format-time-string "%Y-%m-%d-")
+                                 (hugo-make-slug title)
+                                 hugo-post-ext)))
+         (if (file-exists-p draft-file)
+             (find-file draft-file)
+           (find-file draft-file)
+           (insert (format hugo-post-template (hugo-yaml-escape title))))))
+
+(defun hugo-publish-post ()
+  "Update timestamp and set draft to false."
+  (interactive)
+  (hugo-timestamp)
+  (save-excursion (
+                   goto-char 1)
+                  (re-search-forward "^#\\+hugo_draft:")
+                  (let ((beg (point)))
+                    (end-of-line)
+                    (delete-region beg (point)))
+                  (insert " false"))
+  (org-hugo-export-to-md))
+
+(defmacro with-dir (DIR &rest FORMS)
+  "Execute FORMS in DIR."
+  (let ((orig-dir (gensym)))
+    `(progn (setq ,orig-dir default-directory)
+            (cd ,DIR) ,@FORMS (cd ,orig-dir))))
+
+(defun hugo-deploy ()
+  "Push changes upstream."
+  (interactive)
+  (with-dir hugo-directory
+            (shell-command "git add .")
+            (--> (current-time-string)
+                 (concat "git commit -m \"" it "\"")
+                 (shell-command it))
+            (magit-push-current-to-upstream nil)))
+
+(global-set-key (kbd "C-c h n") 'hugo-draft-post)
+(global-set-key (kbd "C-c h p") 'hugo-publish-post)
+(global-set-key (kbd "C-c h t") 'hugo-timestamp)
+(global-set-key (kbd "C-c h O") (lambda () (interactive) (find-file "~/Sites/blog/")))
+(global-set-key (kbd "C-c h P") (lambda () (interactive) (find-file "~/Sites/blog/content/posts/")))
+
+(global-set-key (kbd "C-c h d") 'hugo-deploy)
+#+end_src
+
+* Keybindings
+
+Unset some keys
+
+#+begin_src emacs-lisp :tangle yes
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "s-p"))
+(global-unset-key (kbd "s-m"))
+(global-unset-key (kbd "s-h"))
+(global-unset-key (kbd "s-w"))
+(global-unset-key (kbd "<S-return>"))
+#+end_src
+
+
+** Hydras
+
+[[https://github.com/jerrypnz/major-mode-hydra.el][Major-mode-hydra]] provides the ability to define a different hydra for each major mode, all accessible using the same keybinding.
+
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! major-mode-hydra
+  :defer)
+(map! "s-m" #'major-mode-hydra)
+#+end_src
+
+*** Markdown Mode
+
+#+begin_src emacs-lisp :tangle yes
+(major-mode-hydra-define markdown-mode
+  (:quit-key "q")
+  ("Format"
+   (("h" markdown-insert-header-dwim "header")
+    ("l" markdown-insert-link "link")
+    ("u" markdown-insert-uri "url")
+    ("f" markdown-insert-footnote "footnote")
+    ("w" markdown-insert-wiki-link "wiki")
+    ("r" markdown-insert-reference-link-dwim "r-link")
+    ("n" markdown-cleanup-list-numbers "clean-lists")
+    ("c" markdown-complete-buffer "complete"))))
+#+end_src
+
+*** LaTeX Mode
+
+#+begin_src emacs-lisp :tangle yes
+(major-mode-hydra-define latex-mode
+  (:quit-key "q")
+  ("Bibtex"
+   (("r" citar-insert-citation "citation"))
+   "LaTeXmk"
+   (("a" rlr/tex-mkt "arara")
+    ("w" rlr/tex-mktc "arara watch")
+    ("c" tex-clean "clean aux")
+    ("C" tex-clean-all "clean all")
+    ("n" latex-word-count "word count"))))
+#+end_src
+
+*** Org Mode
+
+#+begin_src emacs-lisp :tangle yes
+(major-mode-hydra-define org-mode
+  (:quit-key "q")
+  ("Export"
+   (("l" org-latex-export-to-latex "Org to LaTeX")
+    ("a" rlr/org-mkt "Make PDF with Arara")
+    ("w" rlr/org-mktc "Make PDF and Watch")
+    ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
+    ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
+    ("s" lecture-slides "Lecture slides")
+    ("h" canvas-copy "Copy html for Canvas")
+    ("c" tex-clean "clean aux")
+    ("C" tex-clean-all "clean all")
+    )
+   "Edit"
+   (("d" rlr/org-date "update date stamp")
+    ("i" consult-org-heading "iMenu")
+    ("r" citar-insert-citation "citation")
+    ("u" org-toggle-pretty-entities "org-pretty"))
+   "Blog"
+   (("n" hugo-draft-post "New draft")
+    ("p" hugo-publish-post "Publish")
+    ("t" hugo-timestamp "Update timestamp")
+    ("e" org-hugo-auto-export-mode "Auto export"))
+   "Other"
+   (("I" org-toggle-inline-images "Inline images"))
+   ))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(major-mode-hydra-define dired-mode
+  (:quit-key "q")
+  ("Tools"
+   (("d" crux-open-with "Open in default program")
+    ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
+    ("n" dired-toggle-read-only "edit Filenames"))))
+#+end_src
+
+
+Key-chords
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! key-chord
+  :init
+  (key-chord-mode 1)
+  :config
+  (key-chord-define-global "kj" #'evil-escape)
+  (key-chord-define-global "jk" #'evil-escape)
+  ;; (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
+  ;; (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  )
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(defun my/insert-unicode (unicode-name)
+  "Same as C-x 8 enter UNICODE-NAME."
+  (insert-char (gethash unicode-name (ucs-names))))
+#+end_src
+
+*** Hydra Toggle
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-toggle
+  (:color teal :quit-key "q" :title "Toggle")
+  (" "
+   (("a" abbrev-mode "abbrev" :toggle t)
+    ("d" toggle-debug-on-error "debug" (default value 'debug-on-error))
+    ("e" evil-mode "evil" :toggle t)
+    ("i" aggressive-indent-mode "indent" :toggle t)
+    ("f" auto-fill-mode "fill" :toggle t)
+    ("l" display-line-numbers-mode "linum" :toggle t)
+    ("m" toggle-frame-maximized-undecorated "max" :toggle t)
+    ("p" smartparens-mode "smartparens" :toggle t)
+    ("t" toggle-truncate-lines "truncate" :toggle t)
+    ("s" whitespace-mode "whitespace" :toggle t))
+   " "
+   (("c" cdlatex-mode "cdlatex" :toggle t)
+    ("o" olivetti-mode "olivetti" :toggle t)
+    ("r" read-only-mode "read-only" :toggle t)
+    ("v" view-mode "view" :toggle t)
+    ("w" wc-mode "word-count" :toggle t)
+    ("S" auto-save-visited-mode "auto-save" :toggle t)
+    ("C" cua-selection-mode "rectangle" :toggle t))))
+#+end_src
+
+*** Hydra Buffer
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-buffer
+  (:color teal :quit-key "q" :title "Buffers and Files")
+  ("Open"
+   (("b" ibuffer "ibuffer")
+    ("m" consult-bookmark "bookmark")
+    ("w" consult-buffer-other-window "other window")
+    ("f" consult-buffer-other-frame "other frame")
+    ("d" crux-recentf-find-directory "recent directory")
+    ("a" crux-open-with "open in default app"))
+   "Actions"
+   (("D" crux-delete-file-and-buffer "delete file")
+    ("R" crux-rename-file-and-buffer "rename file")
+    ("K" crux-kill-other-buffers "kill other buffers")
+    ("N" nuke-all-buffers "Kill all buffers")
+    ("c" crux-cleanup-buffer-or-region "fix indentation"))
+   "Misc"
+   (("t" crux-visit-term-buffer "ansi-term")
+    ("T" iterm-goto-filedir-or-home "iTerm2")
+    ("i" crux-find-user-init-file "init.el")
+    ("s" crux-find-shell-init-file "fish config"))
+   ))
+#+end_src
+
+*** Hydra locate
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-locate
+  (:color teal :quit-key "q" title: "Search")
+  ("Buffer"
+   (("l" consult-goto-line "goto-line")
+    ("i" consult-imenu "imenu")
+    ("m" consult-mark "mark")
+    ("o" consult-outline "outline"))
+   "Global"
+   (("M" consult-global-mark "global-mark")
+    ("r" consult-ripgrep "ripgrep"))
+   ))
+#+end_src
+
+*** Hydra Window
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-window
+  (:color teal :quit-key "q" title: "Windows")
+  ("Windows"
+   (("w" other-window "cycle windows" :exit nil)
+    ("a" ace-window "ace window")
+    ("m" minimize-window "minimize window")
+    ("s" transpose-windows "swap windows")
+    ("S" shrink-window-if-larger-than-buffer "shrink to fit")
+    ("b" balance-windows "balance windows")
+    ("t" toggle-window-split "toggle split")
+    ("T" enlarge-window" grow taller" :exit nil)
+    ("G" enlarge-window-horizontally "grow wider" :exit nil)
+    ("o" delete-other-windows "other windows"))
+   "Frames"
+   (("M" iconify-frame "minimize frame")
+    ("d" delete-other-frames "delete other frames")
+    ("D" delete-frame "delete this frame")
+    ("i" make-frame-invisible "invisible frame")
+    ("f" toggle-frame-fullscreen "fullscreen")
+    )))
+#+end_src
+
+
+*** Hydra Logic
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-logic
+  (:color pink :quit-key "0" :title "Logic")
+  ("Operators"
+   (("1" (my/insert-unicode "NOT SIGN") "¬")
+    ("2" (my/insert-unicode "AMPERSAND") "&")
+    ("3" (my/insert-unicode "LOGICAL OR") "v")
+    ("4" (my/insert-unicode "RIGHTWARDS ARROW") "→")
+    ("5" (my/insert-unicode "LEFT RIGHT ARROW") "↔")
+    ("6" (my/insert-unicode "THERE EXISTS") "∃")
+    ("7" (my/insert-unicode "FOR ALL") "∀")
+    ("8" (my/insert-unicode "WHITE MEDIUM SQUARE") "□")
+    ("9" (my/insert-unicode "LOZENGE") "◊"))
+   "Space"
+   (("?" (my/insert-unicode "MEDIUM MATHEMATICAL SPACE") "Narrow space"))
+   "Quit"
+   (("0" quit-window "quit" :color blue))
+   ))
+#+end_src
+
+*** Hydra Math
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-math
+  (:color pink :quit-key "?" :title "Math")
+  ("Operators"
+   (("1" (my/insert-unicode "NOT SIGN") "¬")
+    ("2" (my/insert-unicode "AMPERSAND") "&")
+    ("3" (my/insert-unicode "LOGICAL OR") "v")
+    ("4" (my/insert-unicode "RIGHTWARDS ARROW") "→")
+    ("5" (my/insert-unicode "LEFT RIGHT ARROW") "↔")
+    ("6" (my/insert-unicode "THERE EXISTS") "∃")
+    ("7" (my/insert-unicode "FOR ALL") "∀")
+    ("8" (my/insert-unicode "WHITE MEDIUM SQUARE") "□")
+    ("9" (my/insert-unicode "LOZENGE") "◊"))
+   "Sets"
+   (("R" (my/insert-unicode "DOUBLE-STRUCK CAPITAL R") "ℝ real")
+    ("N" (my/insert-unicode "DOUBLE-STRUCK CAPITAL N") "ℕ natural")
+    ("Z" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Z") "ℤ integer")
+    ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
+    ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
+    ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
+    )
+   "Space"
+   (("?" (my/insert-unicode "MEDIUM MATHEMATICAL SPACE") "Narrow space"))
+   "Quit"
+   (("?" quit-window "quit" :color blue))
+   ))
+#+end_src
+
+*** Hydra Hydras
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-hydras
+  (:color teal :quit-key "q" :title "Hydras")
+  ("Unicode"
+   (("l" hydra-logic/body "logic")
+    ("m" hydra-math/body))
+   )
+  )
+#+end_src
+
+
+
+** Misc Keybindings
+
+#+begin_src emacs-lisp :tangle yes
+(map!
+ "<s-up>" #'beginning-of-buffer
+ "<s-down>" #'end-of-buffer
+ "<s-right>" #'end-of-visual-line
+ "<s-left>" #'beginning-of-visual-line
+ "s-w" #'delete-frame
+ "<C-tab>" #'other-window
+ "<M-down>" #'forward-paragraph
+ "<M-up>" #'backward-paragraph
+
+ ;; Windows and frames
+ "C-0" #'delete-window-balance
+ "C-1" #'delete-other-windows
+ "C-2" #'split-window-below-focus
+ "C-3" #'split-window-right-focus
+ "s-K" #'nuke-all-buffers
+ "s-6" #'toggle-window-split
+ "S-C-<left>" #'shrink-window-horizontally
+ "S-C-<right>" #'enlarge-window-horizontally
+ "S-C-<down>" #'shrink-window
+ "S-C-<up>" #'enlarge-window
+ "C-x w" #'delete-frame
+ "M-o" #'crux-other-window-or-switch-buffer
+
+ ;; Files and buffers
+ "C-x c" #'save-buffers-kill-emacs
+ "C-x C-b" #'ibuffer
+ "C-`" #'iterm-goto-filedir-or-home
+ "s-o" #'find-file
+ "s-k" #'kill-buffer-and-window
+ "s-r" #'consult-buffer
+ "M-s-r" #'consult-buffer-other-window
+ "C-S-a" #'embark-act
+ "<f12>" #'+term/toggle
+
+ ;; Search
+
+ "s-l" #'hydra-locate/body
+ "s-f" #'consult-line
+ ;; "C-s" #'consult-isearch
+ ;; "C-r" #'consult-isearch-reverse
+
+ ;; Editing
+ "RET" #'newline-and-indent
+ "M-/" #'hippie-expand
+ "C-+" #'text-scale-increase
+ "C--" #'text-scale-decrease
+ "<s-backspace>" #'kill-whole-line
+ "s-j" #'crux-top-join-line
+ "<S-return>" #'crux-smart-open-line
+ "<C-S-return>" #'crux-smart-open-line-above
+ "M-y" #'consult-yank-pop
+ "M-q" #'reformat-paragraph
+
+ ;; Hydras
+ "s-h" #'hydra-hydras/body
+ "s-t" #'hydra-toggle/body
+ "s-w" #'hydra-window/body
+ "s-b" #'hydra-buffer/body
+ "C-x 9" #'hydra-logic/body
+
+ "s-/" #'avy-goto-char-timer
+ "s-d" #'consult-dir
+ "s-=" #'endless/ispell-word-then-abbrev
+ "<help> a" #'consult-apropos
+ "C-x 4 b" #'consult-buffer-other-window
+ "C-x 5 b" #'consult-buffer-other-frame
+ "C-x r x" #'consult-register
+ "M-s m" #'consult-multi-occur
+ "<f8>" #'insert-standard-date
+ "M-u" #'upcase-dwim
+ "M-l" #'downcase-dwim
+ "M-c" #'capitalize-dwim
+
+
+ ;; "C-c u" #'unfill-paragraph
+ ;; "C-c C-<return>" #'split-org-item
+ ;; "C-c o" #'crux-open-with
+ ;; "C-c D" #'crux-delete-file-and-buffer
+ ;; "C-c C-k" #'compile
+
+
+
+ ;; Prefix Keybindings
+ ;; :prefix can be used to prevent redundant specification of prefix keys
+ ;; bind "C-c a" to #'org-agenda
+ "C-c a" #'org-agenda
+ "C-c 2" #'rlr/find-file-below
+ "C-c 3" #'rlr/find-file-right
+ "C-c b" #'consult-bookmark
+ "C-c c" #'org-capture
+ "C-c D" #'crux-delete-file-and-buffer
+ ;; "C-c h" #'consult-history
+ "C-c k" #'crux-kill-other-buffers
+ "C-c m" #'consult-mark
+ "C-c n b" #'hugo-draft-post
+ "C-c n c" #'org-roam-capture
+ "C-c n f" #'org-roam-node-find
+ "C-c n g" #'org-roam-graph
+ "C-c n i" #'org-roam-node-insert
+ "C-c n j" #'org-roam-dailies-capture-today
+ "C-c n t" #'org-roam-buffer-toggle
+ "C-c o" #'consult-outline
+ "C-c r" #'crux-rename-file-and-buffer
+ "C-c s" #'goto-scratch
+ "C-c S" #'crux-cleanup-buffer-or-region
+ "C-c t" #'crux-visit-term-buffer
+ "C-c u" #'unfill-paragraph
+ "C-c w" #'ace-window
+ "C-c z" #'+macos/reveal-in-finder
+ )
+#+end_src
+
+#+end_src
+
+
+* Final Steps
+
+#+begin_src emacs-lisp :tangle yes
+(setq default-directory "~/")
 #+end_src

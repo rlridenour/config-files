@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/legacy/straight/repos/straight.el/straight.el

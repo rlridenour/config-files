@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/legacy/straight/repos/exec-path-from-shell/exec-path-from-shell.el

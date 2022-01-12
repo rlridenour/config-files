@@ -1,0 +1,70 @@
+;;;; Emacs Bookmark Format Version 1;;;; -*- coding: utf-8-emacs; mode: lisp-data -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("cc-obu.org"
+ (filename . "~/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/cc-obu.org")
+ (front-context-string . "#+STARTUP: logdo")
+ (rear-context-string)
+ (position . 1))
+("curriculum-committee"
+ (filename . "~/icloud/obu/curriculum/curriculum-committee/")
+ (front-context-string . "20201021\n  drwxr")
+ (rear-context-string . "92 Nov  5 09:43 ")
+ (position . 164))
+("org-capture-last-stored-marker"
+ (filename . "~/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/obu.org")
+ (front-context-string . "** TODO Order ex")
+ (rear-context-string . "nt\n* OBU Tasks\n\n")
+ (position . 52))
+("icloud"
+ (filename . "~/icloud/")
+ (front-context-string)
+ (rear-context-string . "64 Oct  6 07:36 ")
+ (position . 4999))
+("21F"
+ (filename . "~/icloud/teaching/syllabi/21F/")
+ (front-context-string . "2021 Fall PHIL 1")
+ (rear-context-string . "94 Sep  2 10:23 ")
+ (position . 152))
+("org-refile-last-stored"
+ (filename . "~/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/obu.org")
+ (front-context-string . "** TODO Order ex")
+ (rear-context-string . "nt\n* OBU Tasks\n\n")
+ (position . 52))
+("beorg"
+ (filename . "~/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")
+ (front-context-string . "advising.org\n  -")
+ (rear-context-string . "30 Aug  9 15:58 ")
+ (position . 191))
+("ct"
+ (filename . "~/icloud/teaching/critical-thinking/ct-lectures/")
+ (front-context-string . "argument-forms\n ")
+ (rear-context-string . "52 Sep  3 19:08 ")
+ (position . 164))
+("aesthetics"
+ (filename . "~/icloud/teaching/aesthetics/aesthetics-lectures/")
+ (front-context-string)
+ (rear-context-string . "76 Sep  3 19:08 ")
+ (position . 167))
+("intro"
+ (filename . "~/Library/Mobile Documents/com~apple~CloudDocs/Documents/teaching/intro/intro-lectures/")
+ (front-context-string . "epistemic-virtue")
+ (rear-context-string . "76 Sep  6 21:54 ")
+ (position . 269))
+("ancient"
+ (filename . "~/icloud/teaching/ancient/ancient-lectures/")
+ (front-context-string . "eleatics\n  drwxr")
+ (rear-context-string . "76 Sep  3 19:08 ")
+ (position . 161))
+("political"
+ (filename . "~/icloud/teaching/political/political-lectures/")
+ (front-context-string . "intro-political\n")
+ (rear-context-string . "76 Sep  3 19:08 ")
+ (position . 165))
+("org-capture-last-stored"
+ (filename . "~/Library/Mobile Documents/com~apple~CloudDocs/org/roam/daily/2021-12-30.org")
+ (front-context-string . "* December 30, 2")
+ (rear-context-string . "tle: 2021-12-30\n")
+ (position . 88))
+)

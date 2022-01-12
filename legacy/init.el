@@ -65,7 +65,7 @@
 ;; set load path
 (add-to-list 'load-path (concat user-emacs-directory "elisp"))
 
-(setq custom-file "~/.config/emacs/custom.el")
+(setq custom-file "~/.config/legacy/custom.el")
 (load custom-file)
 
 (require 'base)

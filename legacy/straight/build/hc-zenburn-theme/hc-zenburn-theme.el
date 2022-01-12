@@ -1,0 +1,1 @@
+/Users/rlridenour/.config/legacy/straight/repos/hc-zenburn-emacs/hc-zenburn-theme.el
