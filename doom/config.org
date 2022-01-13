@@ -12,6 +12,27 @@ This is my main configuration file for Doom Emacs.
 
 * Appearance
 
+** Initial Settings
+
+Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
+
+#+begin_src emacs-lisp :tangle yes
+(custom-set-variables
+  '(auto-save-file-name-transforms '((".*" "~/.backups/emacs/autosaves/\\1" t)))
+  '(backup-directory-alist '((".*" . "~/.backups/emacs/backups/"))))
+
+;; create the autosave dir if necessary, since emacs won't.
+(make-directory "~/.backups/emacs/autosaves/" t)
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+;; Set some misc defaults
+(setq initial-major-mode 'org-mode
+      make-pointer-invisible t
+      display-time-24hr-format t
+      display-time-day-and-date t)
+#+end_src
+
 ** Font
 
 I prefer a font that has some heft to it, and having tried several, I've settled for now on Droid Sans. I'm using a variant that has a slashed zero.
@@ -113,6 +134,14 @@ Add my custom snippets to Yasnippet
   (setq yas-snippet-dirs (append yas-snippet-dirs
                                  '("~/.config/doom/snippets"))))
 #+end_src
+
+Use evil-snipe for f, F, t, and T searches.
+
+#+begin_src emacs-lisp :tangle yes
+;; Globally
+(evil-snipe-override-mode 1)
+#+end_src
+
 
 Insert dates and times
 
@@ -218,6 +247,15 @@ Splits Org-mode list items
 #+end_src
 
 
+** Shell Command Buffers
+
+Don't display async shell command process buffers
+
+#+begin_src emacs-lisp :tangle yes
+(add-to-list 'display-buffer-alist '("^*Async Shell Command*" . (display-buffer-no-window)))
+#+end_src
+
+
 
 * Extensions
 
@@ -252,6 +290,23 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 (map! "M-=" #'shrink-whitespace)
 #+end_src
 
+** Company Mode
+
+#+begin_src emacs-lisp :tangle yes
+(use-package company
+  :init
+  (setq company-idle-delay 3)
+  :config
+  (add-hook 'after-init-hook 'global-company-mode)
+  (add-hook 'after-init-hook 'company-tng-mode))
+#+end_src
+
+
+** WS-Butler
+
+#+begin_src emacs-lisp :tangle yes
+(ws-butler-global-mode)
+#+end_src
 
 * Functions
 
@@ -467,6 +522,28 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 
 * Languages
 
+** BibTeX
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! citar
+  :bind (("C-c C-b" . citar-insert-citation)
+         :map minibuffer-local-map
+         ("M-b" . citar-insert-preset))
+  :custom
+  (citar-bibliography '("~/Dropbox/bibtex/rlr.bib")))
+#+end_src
+
+Use ebib for bibtex file management
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! ebib
+:defer
+:config
+(setq ebib-bibtex-dialect 'biblatex)
+:custom
+(ebib-preload-bib-files '("~/Dropbox/bibtex/rlr.bib")))
+#+end_src
+
 ** Org Mode
 
 Set org directory, along with a few org mode settings.
@@ -482,10 +559,20 @@ Set org directory, along with a few org mode settings.
   (setq org-hide-leading-stars nil)
   (setq org-html-validation-link nil)
   (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")))
-
-(require 'org-tempo)
-
 #+end_src
+
+Org-tempo is need for structure templates like "<s".
+
+#+begin_src emacs-lisp :tangle yes
+(require 'org-tempo)
+#+end_src
+
+I need to keep whitespace at the end of lines for my Beamer slides.
+
+#+begin_src emacs-lisp :tangle yes
+(add-hook 'text-mode-hook 'doom-disable-delete-trailing-whitespace-h)
+#+end_src
+
 
 #+begin_src emacs-lisp :tangle yes
 ;; Return adds new heading or list item. From https://github.com/aaronjensen/emacs-orgonomic
@@ -564,7 +651,6 @@ Some functions for automating lecture notes and slides.
   (find-file "*-notes.org" t)
   (org-beamer-export-to-latex)
   (kill-buffer)
-                                        ;(kill-buffer "*.tex")
   (arara-all)
   (find-file "*-data.org" t))
 
@@ -840,6 +926,8 @@ Unset some keys
 (global-unset-key (kbd "s-m"))
 (global-unset-key (kbd "s-h"))
 (global-unset-key (kbd "s-w"))
+(global-unset-key (kbd "M-;"))
+(global-unset-key (kbd "s-/"))
 (global-unset-key (kbd "<S-return>"))
 #+end_src
 
@@ -993,11 +1081,14 @@ Key-chords
     ("c" crux-cleanup-buffer-or-region "fix indentation"))
    "Misc"
    (("t" crux-visit-term-buffer "ansi-term")
-    ("T" iterm-goto-filedir-or-home "iTerm2")
+    ("T" +macos/open-in-iterm "iTerm2")
     ("i" crux-find-user-init-file "init.el")
     ("s" crux-find-shell-init-file "fish config"))
    ))
 #+end_src
+
+#+RESULTS:
+: hydra-buffer/body
 
 *** Hydra locate
 
@@ -1110,6 +1201,7 @@ Key-chords
 ** Misc Keybindings
 
 #+begin_src emacs-lisp :tangle yes
+(global-set-key [remap zap-to-char] 'zop-to-char)
 (map!
  "<s-up>" #'beginning-of-buffer
  "<s-down>" #'end-of-buffer
@@ -1137,7 +1229,7 @@ Key-chords
  ;; Files and buffers
  "C-x c" #'save-buffers-kill-emacs
  "C-x C-b" #'ibuffer
- "C-`" #'iterm-goto-filedir-or-home
+ "C-`" #'+macos/open-in-iterm
  "s-o" #'find-file
  "s-k" #'kill-buffer-and-window
  "s-r" #'consult-buffer
@@ -1163,6 +1255,7 @@ Key-chords
  "<C-S-return>" #'crux-smart-open-line-above
  "M-y" #'consult-yank-pop
  "M-q" #'reformat-paragraph
+ "M-;" #'evilnc-comment-or-uncomment-lines
 
  ;; Hydras
  "s-h" #'hydra-hydras/body
@@ -1222,6 +1315,8 @@ Key-chords
  "C-c z" #'+macos/reveal-in-finder
  )
 #+end_src
+
+#+RESULTS:
 
 #+end_src
 
