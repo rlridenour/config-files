@@ -57,32 +57,22 @@ I use  [[https://manytricks.com/moom/][Moom by Many Tricks]] to set window sizes
 
 The [[https://gitlab.com/protesilaos/modus-themes][modus-themes by Protesilaos Stavrou]] are highly customizable. I'm currently using the lighter theme, but it's nice to be able to switch to the darker version at night. Use ~counsel-load-theme~ (bound to ~C-h t~) to change the theme.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! modus-themes
   :init
-  (setq modus-themes-slanted-constructs t
-        modus-themes-bold-constructs t
-        modus-themes-fringes 'intense ; {nil,'subtle,'intense}
-        ;; modus-themes-mode-line '3d ; {nil,'3d,'moody}
-        modus-themes-syntax 'faint ; Lots of options---continue reading the manual
-        modus-themes-intense-hl-line nil
-        modus-themes-paren-match 'subtle-bold ; {nil,'subtle-bold,'intense,'intense-bold}
-        modus-themes-links 'faint-neutral-underline ; Lots of options---continue reading the manual
-        modus-themes-no-mixed-fonts t
-        modus-themes-prompts 'intense ; {nil,'subtle,'intense}
-        modus-themes-completions 'opinionated ; {nil,'moderate,'opinionated}
-        modus-themes-region 'bg-only-no-extend ; {nil,'no-extend,'bg-only,'bg-only-no-extend}
-        modus-themes-diffs nil ; {nil,'desaturated,'fg-only,'bg-only}
-        modus-themes-org-blocks nil ; {nil,'grayscale,'rainbow}
-        modus-themes-variable-pitch-headings nil
-        modus-themes-scale-headings t
-        modus-themes-scale-1 1.1
-        modus-themes-scale-2 1.15
-        modus-themes-scale-3 1.21
-        modus-themes-scale-4 1.27
-        modus-themes-scale-5 1.33)
+  (setq modus-themes-italic-constructs t
+        modus-themes-bold-constructs t)
   :config
   (setq doom-theme 'modus-operandi))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! almost-mono-themes
+  :config
+  ;; (load-theme 'almost-mono-black t)
+  ;; (load-theme 'almost-mono-gray t)
+  ;; (load-theme 'almost-mono-cream t)
+  (load-theme 'almost-mono-white t))
 #+end_src
 
 When editing two files that have the same name, it's annoying to make changes in one thinking that it was the other. This helps to distinguish them by putting their path in the buffer name. Although both items are displayed in the menu bar, it's nice to be able to see the time and battery level in the mode-line. Finally, I always want to see matching parentheses and the current line highlighted.
@@ -114,6 +104,16 @@ Show normal vim mode indicators in the modeline.
 (setq doom-modeline-modal-icon nil)
 #+end_src
 
+
+** Windows
+
+Ask which buffer to use after splitting a window.
+
+#+begin_src emacs-lisp :tangle yes
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (consult-buffer))
+#+end_src
 
 * Basic editing
 
@@ -230,7 +230,7 @@ Splits Org-mode list items
 ** Evil Settings
 
 #+begin_src emacs-lisp :tangle yes
-(use-package evil
+(use-package! evil
   :init
   (setq evil-disable-insert-state-bindings t
         evil-default-state 'insert
@@ -257,7 +257,43 @@ Don't display async shell command process buffers
 
 
 
+* Dired
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! dired-x
+  :hook ((dired-mode . dired-omit-mode))
+  :config
+  (setq dired-omit-verbose nil)
+  ;; hide backup, autosave, *.*~ files
+  ;; omit mode can be toggled using `C-x M-o' in dired buffer.
+  (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" ".glo" "idx" "ilg" ".ind" "ist" ".log" ".out" "gz" "bcf" "run.xml"  "DS_Store" "auctex-auto"))
+  (setq dired-omit-files
+        (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^.git$\\|^\\..+$")))
+
+(map! :map dired-mode-map
+           :g "<M-return>" #'crux-open-with)
+
+(setq dired-dwim-target t)
+
+#+end_src
+
 * Extensions
+
+** Evil
+
+Some changes to Evil mode: 
+
+1. Make substitution using ":s/.../..." global. 
+2. Don't move the cursor back when going from insert to normal mode.
+3. Don't send replaced text to the kill ring.
+
+#+begin_src emacs-lisp :tangle yes
+(after! evil
+  (setq evil-ex-substitute-global t     ; Make substition global by default.
+        evil-move-cursor-back nil       ; Don't go back when turning normal mode on.
+        evil-kill-on-visual-paste nil)) ; Don't send replaced text to the kill ring.
+
+#+end_src
 
 ** Yasnippet
 
@@ -293,7 +329,7 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 ** Company Mode
 
 #+begin_src emacs-lisp :tangle yes
-(use-package company
+(use-package! company
   :init
   (setq company-idle-delay 3)
   :config
@@ -540,6 +576,9 @@ Use ebib for bibtex file management
 :defer
 :config
 (setq ebib-bibtex-dialect 'biblatex)
+(evil-set-initial-state 'ebib-index-mode 'emacs)
+(evil-set-initial-state 'ebib-entry-mode 'emacs)
+(evil-set-initial-state 'ebib-log-mode 'emacs)
 :custom
 (ebib-preload-bib-files '("~/Dropbox/bibtex/rlr.bib")))
 #+end_src
@@ -551,6 +590,7 @@ Set org directory, along with a few org mode settings.
 #+begin_src emacs-lisp :tangle yes
 (use-package! org
   :init
+  ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
   (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
   :config
   (setq org-highlight-latex-and-related '(latex script entities))
@@ -558,7 +598,7 @@ Set org directory, along with a few org mode settings.
   (setq org-adapt-indentation nil)
   (setq org-hide-leading-stars nil)
   (setq org-html-validation-link nil)
-  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")))
+  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
 #+end_src
 
 Org-tempo is need for structure templates like "<s".
@@ -576,7 +616,7 @@ I need to keep whitespace at the end of lines for my Beamer slides.
 
 #+begin_src emacs-lisp :tangle yes
 ;; Return adds new heading or list item. From https://github.com/aaronjensen/emacs-orgonomic
-(use-package orgonomic
+(use-package! orgonomic
   :defer t
   :hook (org-mode . orgonomic-mode)
   :bind (
@@ -607,7 +647,7 @@ Some export settings.
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
                '("org-handout"
-                 "\\documentclass{pretty-handout}
+                 "\\documentclass{rlrhandout}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
@@ -667,13 +707,13 @@ Some functions for automating lecture notes and slides.
   "Make PDF with Arara."
   (interactive)
   (org-latex-export-to-latex)
-  (async-shell-command (concat "mkt " (file-name-sans-extension (buffer-file-name))".tex")))
+  (async-shell-command (concat "mkt " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
 
 (defun rlr/org-mktc ()
   "Compile continuously with arara."
   (interactive)
   (org-latex-export-to-latex)
-  (start-process-shell-command (concat "mktc-" (buffer-file-name)) (concat "mktc-" (buffer-file-name)) (concat "mktc " (file-name-sans-extension (buffer-file-name))".tex")))
+  (start-process-shell-command (concat "mktc-" (buffer-file-name)) (concat "mktc-" (buffer-file-name)) (concat "mktc " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
 #+end_src
 
 *** Org capture
@@ -708,7 +748,7 @@ Use Deft for quick notes.
 *** Org Roam
 
 #+begin_src emacs-lisp :tangle yes
-;; (use-package org-roam
+;; (use-package! org-roam
 ;;   :init
 ;;   (setq org-roam-v2-ack t)
 ;;   :custom
@@ -746,6 +786,15 @@ Use Deft for quick notes.
                     (end-of-line)
                     (delete-region beg (point)))
                   (insert (concat " " (format-time-string "%B %e, %Y")))))
+#+end_src
+
+*** Keybindings
+
+#+begin_src emacs-lisp :tangle yes
+(map! :map evil-org-mode-map
+      :after evil-org
+      :i "<return>" #'orgonomic-return ; Make return automatically create new headings and list items.
+)
 #+end_src
 
 ** LaTeX
@@ -836,7 +885,7 @@ Functions for cleaning and compiling with Arara.
 * Hugo
 
 #+begin_src emacs-lisp :tangle yes
-(use-package ox-hugo
+(use-package! ox-hugo
   :after org
   :init
   (setq org-hugo-delete-trailing-ws nil
@@ -924,6 +973,7 @@ Unset some keys
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "s-p"))
 (global-unset-key (kbd "s-m"))
+(global-unset-key (kbd "s-n"))
 (global-unset-key (kbd "s-h"))
 (global-unset-key (kbd "s-w"))
 (global-unset-key (kbd "M-;"))
@@ -993,8 +1043,10 @@ Unset some keys
    "Edit"
    (("d" rlr/org-date "update date stamp")
     ("i" consult-org-heading "iMenu")
+    ("f" org-footnote-action "footnote")
     ("r" citar-insert-citation "citation")
-    ("u" org-toggle-pretty-entities "org-pretty"))
+    ("u" org-toggle-pretty-entities "org-pretty")
+    ("L" org-cycle-list-bullet "cycle bullets" :exit nil))
    "Blog"
    (("n" hugo-draft-post "New draft")
     ("p" hugo-publish-post "Publish")
@@ -1215,8 +1267,8 @@ Key-chords
  ;; Windows and frames
  "C-0" #'delete-window-balance
  "C-1" #'delete-other-windows
- "C-2" #'split-window-below-focus
- "C-3" #'split-window-right-focus
+ "C-2" #'evil-window-split
+ "C-3" #'evil-window-vsplit
  "s-K" #'nuke-all-buffers
  "s-6" #'toggle-window-split
  "S-C-<left>" #'shrink-window-horizontally
@@ -1225,6 +1277,7 @@ Key-chords
  "S-C-<up>" #'enlarge-window
  "C-x w" #'delete-frame
  "M-o" #'crux-other-window-or-switch-buffer
+ "s-n" #'make-frame-command
 
  ;; Files and buffers
  "C-x c" #'save-buffers-kill-emacs

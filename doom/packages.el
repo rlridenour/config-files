@@ -72,3 +72,5 @@
 (package! ox-hugo)
 (package! unfill)
 (package! key-chord)
+(package! dired+)
+(package! almost-mono-themes)
