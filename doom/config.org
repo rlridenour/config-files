@@ -916,14 +916,14 @@ Functions for cleaning and compiling with Arara.
 (defun rlr/tex-mkt ()
   "Compile with arara."
   (interactive)
-  (async-shell-command (concat "mkt " (buffer-file-name))))
+  (async-shell-command (concat "mkt " (shell-quote-argument(buffer-file-name)))))
 
 ;; Run continuously
 
 (defun rlr/tex-mktc ()
   "Compile continuously with arara."
   (interactive)
-  (async-shell-command (concat "mktc " (buffer-file-name))))
+  (async-shell-command (concat "mktc " (shell-quote-argument(buffer-file-name)))))
 ;;   (TeX-view))
 
 (defun latex-word-count ()
