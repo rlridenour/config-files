@@ -4,12 +4,21 @@
 # group: skeleton
 # name: \documentclass{exam} ...
 # --
+% arara: pdflatex: { interaction: nonstopmode, synctex: yes }
 
 \documentclass{examdesign}
 \Fullpages
 \NumberOfVersions{1}
 \class{${1:Course Name}}
 \examname{${2:Exam Name}}
+
+\usepackage{enumitem}
+\setlist[itemize]{noitemsep} % Comment out for wider separation in lists.
+\setlist[enumerate]{noitemsep}
+\usepackage{libertinus-type1}
+\usepackage{libertinust1math}
+\usepackage[T1]{fontenc}
+
 \begin{document}
 
 \begin{examtop}

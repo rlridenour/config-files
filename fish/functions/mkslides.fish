@@ -1,3 +1,6 @@
 function mkslides
-	 mkpvc *-slides.tex
+		for file in *-slides.tex
+				arara $file
+		end
+		open -g *-slides.pdf
 end

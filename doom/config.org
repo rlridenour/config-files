@@ -72,7 +72,8 @@ The [[https://gitlab.com/protesilaos/modus-themes][modus-themes by Protesilaos S
   ;; (load-theme 'almost-mono-black t)
   ;; (load-theme 'almost-mono-gray t)
   ;; (load-theme 'almost-mono-cream t)
-  (load-theme 'almost-mono-white t))
+  (load-theme 'almost-mono-white t)
+)
 #+end_src
 
 When editing two files that have the same name, it's annoying to make changes in one thinking that it was the other. This helps to distinguish them by putting their path in the buffer name. Although both items are displayed in the menu bar, it's nice to be able to see the time and battery level in the mode-line. Finally, I always want to see matching parentheses and the current line highlighted.
@@ -102,6 +103,51 @@ Show normal vim mode indicators in the modeline.
 
 #+begin_src emacs-lisp :tangle yes
 (setq doom-modeline-modal-icon nil)
+#+end_src
+
+Pulsar to find current line.
+
+#+begin_src emacs-lisp :tangle yes
+(pulsar-setup)
+
+(customize-set-variable
+ 'pulsar-pulse-functions ; Read the doc string for why not `setq'
+ '(recenter-top-bottom
+   move-to-window-line-top-bottom
+   reposition-window
+   bookmark-jump
+   other-window
+   delete-window
+   delete-other-windows
+   forward-page
+   backward-page
+   scroll-up-command
+   scroll-down-command
+   windmove-right
+   windmove-left
+   windmove-up
+   windmove-down
+   windmove-swap-states-right
+   windmove-swap-states-left
+   windmove-swap-states-up
+   windmove-swap-states-down
+   tab-new
+   tab-close
+   tab-next
+   org-next-visible-heading
+   org-previous-visible-heading
+   org-forward-heading-same-level
+   org-backward-heading-same-level
+   outline-backward-same-level
+   outline-forward-same-level
+   outline-next-visible-heading
+   outline-previous-visible-heading
+   outline-up-heading))
+
+(setq pulsar-pulse t)
+(setq pulsar-delay 0.055)
+(setq pulsar-iterations 10)
+(setq pulsar-face 'pulsar-blue)
 #+end_src
 
 
@@ -682,17 +728,40 @@ Some functions for automating lecture notes and slides.
 
 
 #+begin_src emacs-lisp :tangle yes
+
+(defun  
+    arara-slides ()
+  ;; (interactive)
+  (async-shell-command "mkslides"))
+
+(defun  
+    arara-notes ()
+  ;; (interactive)
+  (async-shell-command "mknotes"))
+
+
 (defun lecture-slides ()
-  "publish org file as beamer slides and notes"
+  "publish org data file as beamer slides"
   (interactive)
   (find-file "*-slides.org" t)
   (org-beamer-export-to-latex)
   (kill-buffer)
+  (arara-slides)
+  (find-file "*-data.org" t))
+
+
+(defun lecture-notes ()
+  "publish org data file as beamer notes"
+  (interactive)
   (find-file "*-notes.org" t)
   (org-beamer-export-to-latex)
   (kill-buffer)
-  (arara-all)
+  (arara-notes)
   (find-file "*-data.org" t))
+
+(defun present ()
+  (interactive)
+  (async-shell-command "present"))
 
 (defun canvas-copy ()
   "Copy html for canvas pages"
@@ -816,8 +885,9 @@ Use Deft for quick notes.
   (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
   (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
 
-(map! :map cdlatex-mode-map
-      :i "TAB" #'cdlatex-tab)
+(map! :map cdlatex-mode-map :i "TAB" #'cdlatex-tab)
+
+
 #+end_src
 
 Functions for cleaning and compiling with Arara.
@@ -836,7 +906,8 @@ Functions for cleaning and compiling with Arara.
   '(add-to-list 'TeX-command-list
                 '("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
 
-(defun arara-all ()
+(defun  
+    arara-all ()
   (interactive)
   (async-shell-command "mkall"))
 
@@ -981,6 +1052,10 @@ Unset some keys
 (global-unset-key (kbd "<S-return>"))
 #+end_src
 
+#+begin_src emacs-lisp :tangle yes
+(define-key evil-normal-state-map (kbd "s-/") #'avy-goto-char-timer)
+#+end_src
+
 
 ** Hydras
 
@@ -1036,6 +1111,8 @@ Unset some keys
     ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
     ("s" lecture-slides "Lecture slides")
+    ("n" lecture-notes "Lecture notes")
+    ("p" present "Present slides")
     ("h" canvas-copy "Copy html for Canvas")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all")
@@ -1048,10 +1125,10 @@ Unset some keys
     ("u" org-toggle-pretty-entities "org-pretty")
     ("L" org-cycle-list-bullet "cycle bullets" :exit nil))
    "Blog"
-   (("n" hugo-draft-post "New draft")
-    ("p" hugo-publish-post "Publish")
-    ("t" hugo-timestamp "Update timestamp")
-    ("e" org-hugo-auto-export-mode "Auto export"))
+   (("N" hugo-draft-post "New draft")
+    ("P" hugo-publish-post "Publish")
+    ("T" hugo-timestamp "Update timestamp")
+    ("E" org-hugo-auto-export-mode "Auto export"))
    "Other"
    (("I" org-toggle-inline-images "Inline images"))
    ))
@@ -1253,7 +1330,7 @@ Key-chords
 ** Misc Keybindings
 
 #+begin_src emacs-lisp :tangle yes
-(global-set-key [remap zap-to-char] 'zop-to-char)
+;; (global-set-key [remap zap-to-char] 'zop-to-char)
 (map!
  "<s-up>" #'beginning-of-buffer
  "<s-down>" #'end-of-buffer
@@ -1284,7 +1361,8 @@ Key-chords
  "C-x C-b" #'ibuffer
  "C-`" #'+macos/open-in-iterm
  "s-o" #'find-file
- "s-k" #'kill-buffer-and-window
+ "s-k" #'kill-this-buffer
+"M-s-k" #'kill-buffer-and-window
  "s-r" #'consult-buffer
  "M-s-r" #'consult-buffer-other-window
  "C-S-a" #'embark-act

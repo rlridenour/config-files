@@ -8,6 +8,7 @@ end
 # /Users/rlridenour/anaconda/bin  removed from Darwin path for homebrew
 # /usr/local/sbin /usr/texbin
 
+set -Ux EDITOR emacsclient -c
 
 set normal (set_color normal)
 set magenta (set_color magenta)
