@@ -74,5 +74,4 @@
 (package! key-chord)
 (package! dired+)
 (package! almost-mono-themes)
-(package! pulsar
- :recipe (:host gitlab :repo "protesilaos/pulsar" :branch "main"))
+(package! pulsar)

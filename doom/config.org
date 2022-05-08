@@ -108,46 +108,49 @@ Show normal vim mode indicators in the modeline.
 Pulsar to find current line.
 
 #+begin_src emacs-lisp :tangle yes
-(pulsar-setup)
-
-(customize-set-variable
- 'pulsar-pulse-functions ; Read the doc string for why not `setq'
- '(recenter-top-bottom
-   move-to-window-line-top-bottom
-   reposition-window
-   bookmark-jump
-   other-window
-   delete-window
-   delete-other-windows
-   forward-page
-   backward-page
-   scroll-up-command
-   scroll-down-command
-   windmove-right
-   windmove-left
-   windmove-up
-   windmove-down
-   windmove-swap-states-right
-   windmove-swap-states-left
-   windmove-swap-states-up
-   windmove-swap-states-down
-   tab-new
-   tab-close
-   tab-next
-   org-next-visible-heading
-   org-previous-visible-heading
-   org-forward-heading-same-level
-   org-backward-heading-same-level
-   outline-backward-same-level
-   outline-forward-same-level
-   outline-next-visible-heading
-   outline-previous-visible-heading
-   outline-up-heading))
+(setq pulsar-pulse-functions
+      '(isearch-repeat-forward
+        isearch-repeat-backward
+        recenter-top-bottom
+        move-to-window-line-top-bottom
+        reposition-window
+        bookmark-jump
+        other-window
+        delete-window
+        delete-other-windows
+        forward-page
+        backward-page
+        scroll-up-command
+        scroll-down-command
+        windmove-right
+        windmove-left
+        windmove-up
+        windmove-down
+        windmove-swap-states-right
+        windmove-swap-states-left
+        windmove-swap-states-up
+        windmove-swap-states-down
+        tab-new
+        tab-close
+        tab-next
+        org-next-visible-heading
+        org-previous-visible-heading
+        org-forward-heading-same-level
+        org-backward-heading-same-level
+        outline-backward-same-level
+        outline-forward-same-level
+        outline-next-visible-heading
+        outline-previous-visible-heading
+        outline-up-heading))
 
 (setq pulsar-pulse t)
 (setq pulsar-delay 0.055)
 (setq pulsar-iterations 10)
-(setq pulsar-face 'pulsar-blue)
+(setq pulsar-face 'pulsar-magenta)
+(setq pulsar-highlight-face 'pulsar-blue)
+
+(pulsar-global-mode 1)
+
 #+end_src
 
 
@@ -332,13 +335,13 @@ Some changes to Evil mode:
 1. Make substitution using ":s/.../..." global. 
 2. Don't move the cursor back when going from insert to normal mode.
 3. Don't send replaced text to the kill ring.
+4. Use emacs keybindings in insert mode.
 
 #+begin_src emacs-lisp :tangle yes
 (after! evil
-  (setq evil-ex-substitute-global t     ; Make substition global by default.
-        evil-move-cursor-back nil       ; Don't go back when turning normal mode on.
-        evil-kill-on-visual-paste nil)) ; Don't send replaced text to the kill ring.
-
+  (setq evil-ex-substitute-global t    ; Make substition global by default.
+        evil-move-cursor-back nil      ; Don't go back when turning normal mode on.
+        evil-kill-on-visual-paste nil))  ; Don't send replaced text to the kill ring.
 #+end_src
 
 ** Yasnippet
@@ -382,7 +385,6 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
   (add-hook 'after-init-hook 'global-company-mode)
   (add-hook 'after-init-hook 'company-tng-mode))
 #+end_src
-
 
 ** WS-Butler
 
@@ -712,6 +714,8 @@ Some export settings.
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   )
+
+(setq org-export-with-smart-quotes t)
 #+end_src
 
 Ignore LaTeX when spell checking
@@ -816,7 +820,7 @@ Use Deft for quick notes.
 
 *** Org Roam
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;; (use-package! org-roam
 ;;   :init
 ;;   (setq org-roam-v2-ack t)
