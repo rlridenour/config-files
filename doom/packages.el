@@ -75,3 +75,7 @@
 (package! dired+)
 (package! almost-mono-themes)
 (package! pulsar)
+(package! math-delimiters
+  :recipe (:host github :repo "oantolin/math-delimiters" :branch "master"))
+(package! latex-change-env)
+(package! move-text)

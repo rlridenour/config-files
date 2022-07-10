@@ -392,6 +392,17 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 (ws-butler-global-mode)
 #+end_src
 
+** MoveText
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! move-text
+:config
+(map! "<M-S-up>" #'move-text-up)
+(map! "<M-S-down>" #'move-text-down))
+#+end_src
+
+
+
 * Functions
 
 #+begin_src emacs-lisp :tangle yes
@@ -601,6 +612,26 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
   (interactive)
   (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
   )
+#+end_src
+
+
+Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/][Bozhidar Batsov]]
+
+#+begin_src emacs-lisp :tangle yes
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
+
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
 #+end_src
 
 
@@ -886,13 +917,33 @@ Use Deft for quick notes.
           (?$ ("\\Diamond"))
           ))
   :config
-  (add-hook 'LaTeX-mode-hook 'turn-on-cdlatex)
-  (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
+  ;; (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
+  ;; (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
 
 (map! :map cdlatex-mode-map :i "TAB" #'cdlatex-tab)
-
-
 #+end_src
+
+[[https://github.com/oantolin/math-delimiters][Math-delimiters]]
+
+
+#+begin_src emacs-lisp :tangle yes
+(autoload 'math-delimiters-insert "math-delimiters")
+
+(with-eval-after-load 'org
+  (define-key org-mode-map "$" #'math-delimiters-insert))
+
+(with-eval-after-load 'tex              ; for AUCTeX
+  (define-key TeX-mode-map "$" #'math-delimiters-insert))
+
+(with-eval-after-load 'tex-mode         ; for the built-in TeX/LaTeX modes
+  (define-key tex-mode-map "$" #'math-delimiters-insert))
+
+(with-eval-after-load 'cdlatex
+  (define-key cdlatex-mode-map "$" nil))
+#+end_src
+
+
+
 
 Functions for cleaning and compiling with Arara.
 
@@ -939,8 +990,14 @@ Functions for cleaning and compiling with Arara.
               (call-process "texcount" nil t nil "-brief" this-file)))))
     (string-match "\n$" word-count)
     (message (replace-match "" nil nil word-count))))
+#+end_src
 
-
+#+begin_src emacs-lisp :tangle yes
+(use-package! latex-change-env
+    :after latex
+    :bind (:map LaTeX-mode-map ("C-c r" . latex-change-env))
+:config
+(setq latex-change-env-display math-delimiters-display))
 #+end_src
 
 ** Markdown
@@ -1322,9 +1379,12 @@ Key-chords
 #+begin_src emacs-lisp :tangle yes
 (pretty-hydra-define hydra-hydras
   (:color teal :quit-key "q" :title "Hydras")
-  ("Unicode"
+("System"
+(("t" hydra-toggle/body))
+  "Unicode"
    (("l" hydra-logic/body "logic")
-    ("m" hydra-math/body))
+    ("m" hydra-math/body)
+    )
    )
   )
 #+end_src
@@ -1429,7 +1489,6 @@ Key-chords
  "C-c 3" #'rlr/find-file-right
  "C-c b" #'consult-bookmark
  "C-c c" #'org-capture
- "C-c D" #'crux-delete-file-and-buffer
  ;; "C-c h" #'consult-history
  "C-c k" #'crux-kill-other-buffers
  "C-c m" #'consult-mark
@@ -1441,7 +1500,6 @@ Key-chords
  "C-c n j" #'org-roam-dailies-capture-today
  "C-c n t" #'org-roam-buffer-toggle
  "C-c o" #'consult-outline
- "C-c r" #'crux-rename-file-and-buffer
  "C-c s" #'goto-scratch
  "C-c S" #'crux-cleanup-buffer-or-region
  "C-c t" #'crux-visit-term-buffer
