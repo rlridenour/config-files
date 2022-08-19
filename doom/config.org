@@ -57,7 +57,7 @@ I use  [[https://manytricks.com/moom/][Moom by Many Tricks]] to set window sizes
 
 The [[https://gitlab.com/protesilaos/modus-themes][modus-themes by Protesilaos Stavrou]] are highly customizable. I'm currently using the lighter theme, but it's nice to be able to switch to the darker version at night. Use ~counsel-load-theme~ (bound to ~C-h t~) to change the theme.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (use-package! modus-themes
   :init
   (setq modus-themes-italic-constructs t
@@ -89,9 +89,6 @@ When editing two files that have the same name, it's annoying to make changes in
 
 This turns off Doom's highlighting for non-standard indentation. I've re-enabled it to see what I didn't like about it.
 
-#+begin_src emacs-lisp :tangle no
-(advice-add #'doom-highlight-non-default-indentation-h :override #'ignore)
-#+end_src
 
 Don't ask for confirmation about running processes when killing Emacs.
 
@@ -325,6 +322,19 @@ Don't display async shell command process buffers
 (setq dired-dwim-target t)
 
 #+end_src
+
+** Dirvish
+
+#+begin_src emacs-lisp :tangle no
+;; This is *NECESSARY* for Doom users who enabled `dired' module
+(map! :map dired-mode-map :ng "q" #'quit-window)
+(use-package! dirvish
+:config
+(setq dirvish-hide-details t))
+
+#+end_src
+
+
 
 * Extensions
 
@@ -851,22 +861,6 @@ Use Deft for quick notes.
 
 *** Org Roam
 
-#+begin_src emacs-lisp :tangle no
-;; (use-package! org-roam
-;;   :init
-;;   (setq org-roam-v2-ack t)
-;;   :custom
-;;   (org-roam-directory (file-truename "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/roam/"))
-;;   ;; :bind (("C-c n l" . org-roam-buffer-toggle)
-;;   ;;            ("C-c n f" . org-roam-node-find)
-;;   ;;            ("C-c n g" . org-roam-graph)
-;;   ;;            ("C-c n i" . org-roam-node-insert)
-;;   ;;            ("C-c n c" . org-roam-capture)
-;;   ;;            ;; Dailies
-;;   ;;            ("C-c n j" . org-roam-dailies-capture-today))
-;;   :config
-;;   (org-roam-setup))
-#+end_src
 
 #+begin_src emacs-lisp :tangle yes
 (setq org-roam-dailies-directory "daily/")
@@ -918,7 +912,8 @@ Use Deft for quick notes.
           ))
   :config
   ;; (add-hook 'LaTeX-mode-hook #'turn-on-cdlatex)
-  ;; (add-hook 'org-mode-hook #'turn-on-org-cdlatex))
+  ;; (add-hook 'org-mode-hook #'turn-on-org-cdlatex)
+)
 
 (map! :map cdlatex-mode-map :i "TAB" #'cdlatex-tab)
 #+end_src
@@ -1002,7 +997,7 @@ Functions for cleaning and compiling with Arara.
 
 ** Markdown
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! markdown-mode
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
@@ -1460,7 +1455,7 @@ Key-chords
  "C-x 9" #'hydra-logic/body
 
  "s-/" #'avy-goto-char-timer
- "s-d" #'consult-dir
+ ;; "s-d" #'dirvish
  "s-=" #'endless/ispell-word-then-abbrev
  "<help> a" #'consult-apropos
  "C-x 4 b" #'consult-buffer-other-window

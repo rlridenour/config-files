@@ -79,3 +79,4 @@
   :recipe (:host github :repo "oantolin/math-delimiters" :branch "master"))
 (package! latex-change-env)
 (package! move-text)
+;; (unpin! dirvish)
