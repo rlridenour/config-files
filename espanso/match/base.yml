@@ -12,26 +12,71 @@ matches:
   - trigger: ":espanso"
     replace: "Hi there!"
 
-  # NOTE: espanso uses YAML to define matches, so pay attention to the indentation!
+  - trigger: "sntoe"
+    replace: "snote"
 
-  # But matches can also be dynamic:
+  # Dates
+  - trigger: ":dts"
+    replace: "{{datestamp}}"
+    vars:
+      - name: datestamp
+        type: date
+        params:
+          format: "%Y%m%d"
 
-  # Print the current date
   - trigger: ":date"
     replace: "{{mydate}}"
     vars:
       - name: mydate
         type: date
         params:
-          format: "%m/%d/%Y"
+          format: "%B %e, %Y"
 
-  # Print the output of a shell command
+  # Addresses
+  - trigger: "addrh"
+    replace: |
+              Randy Ridenour
+              1613 Central Pkwy
+              Norman, Oklahoma 73071
+          
+  - trigger: "addro"
+    replace: |
+              Randy Ridenour, PhD
+              Professor of Philosophy
+              Hobbs School of Theology and Ministry
+              Oklahoma Baptist University
+              215 Montgomery Hall
+              500 W. University Street
+              Shawnee, Oklahoma 74804
+ 
+
+  # Shell commands
   - trigger: ":shell"
     replace: "{{output}}"
     vars:
       - name: output
         type: shell
         params:
-          cmd: "echo 'Hello from your shell'"
+          cmd: "echo Hello from your shell"
+
+  # Exams
+  - trigger: ":bhw"
+    replace: "My handwriting is atrocious, so you won't find any substantive comments in your exam. I thought I would email some comments instead."
+
+
+  # Promotion
+  - trigger: ":etv"
+    replace: "Teaching evaluations are excellent."
+
+  - trigger: ":apv"
+    replace: "Candidate engages in good professional development activities."
+
+  # Grading
+  - trigger: ":sp"
+    replace: "Spelling"
+
+    
+
+    
 
   # And much more! For more information, visit the docs: https://espanso.org/docs/
