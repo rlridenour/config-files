@@ -183,7 +183,7 @@ Add my custom snippets to Yasnippet
 
 Use evil-snipe for f, F, t, and T searches.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;; Globally
 (evil-snipe-override-mode 1)
 #+end_src
@@ -275,7 +275,7 @@ Splits Org-mode list items
 
 ** Evil Settings
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! evil
   :init
   (setq evil-disable-insert-state-bindings t
@@ -347,7 +347,7 @@ Some changes to Evil mode:
 3. Don't send replaced text to the kill ring.
 4. Use emacs keybindings in insert mode.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (after! evil
   (setq evil-ex-substitute-global t    ; Make substition global by default.
         evil-move-cursor-back nil      ; Don't go back when turning normal mode on.
@@ -665,9 +665,9 @@ Use ebib for bibtex file management
 :defer
 :config
 (setq ebib-bibtex-dialect 'biblatex)
-(evil-set-initial-state 'ebib-index-mode 'emacs)
-(evil-set-initial-state 'ebib-entry-mode 'emacs)
-(evil-set-initial-state 'ebib-log-mode 'emacs)
+;;(evil-set-initial-state 'ebib-index-mode 'emacs)
+;;(evil-set-initial-state 'ebib-entry-mode 'emacs)
+;;(evil-set-initial-state 'ebib-log-mode 'emacs)
 :custom
 (ebib-preload-bib-files '("~/Dropbox/bibtex/rlr.bib")))
 #+end_src
@@ -888,7 +888,7 @@ Use Deft for quick notes.
 
 *** Keybindings
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (map! :map evil-org-mode-map
       :after evil-org
       :i "<return>" #'orgonomic-return ; Make return automatically create new headings and list items.
@@ -1109,7 +1109,7 @@ Unset some keys
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
-(define-key evil-normal-state-map (kbd "s-/") #'avy-goto-char-timer)
+;;(define-key evil-normal-state-map (kbd "s-/") #'avy-goto-char-timer)
 #+end_src
 
 
@@ -1207,8 +1207,8 @@ Key-chords
   :init
   (key-chord-mode 1)
   :config
-  (key-chord-define-global "kj" #'evil-escape)
-  (key-chord-define-global "jk" #'evil-escape)
+;;  (key-chord-define-global "kj" #'evil-escape)
+;;  (key-chord-define-global "jk" #'evil-escape)
   ;; (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
   ;; (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
   )

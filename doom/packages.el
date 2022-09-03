@@ -80,3 +80,4 @@
 (package! latex-change-env)
 (package! move-text)
 ;; (unpin! dirvish)
+(package! evil-nerd-commenter)
