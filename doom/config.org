@@ -1241,7 +1241,7 @@ Key-chords
     ("o" olivetti-mode "olivetti" :toggle t)
     ("r" read-only-mode "read-only" :toggle t)
     ("v" view-mode "view" :toggle t)
-    ("w" wc-mode "word-count" :toggle t)
+    ;; ("w" wc-mode "word-count" :toggle t)
     ("S" auto-save-visited-mode "auto-save" :toggle t)
     ("C" cua-selection-mode "rectangle" :toggle t))))
 #+end_src

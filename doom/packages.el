@@ -52,7 +52,7 @@
 (package! modus-themes
  :recipe (:host gitlab :repo "protesilaos/modus-themes" :branch "main"))
 (package! hungry-delete)
-(package! wc-mode)
+;; (package! wc-mode)
 (package! major-mode-hydra)
 (package! shrink-whitespace)
 (package! deadgrep)
@@ -81,3 +81,4 @@
 (package! move-text)
 ;; (unpin! dirvish)
 (package! evil-nerd-commenter)
+(package! denote)
