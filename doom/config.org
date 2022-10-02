@@ -842,11 +842,11 @@ Some functions for automating lecture notes and slides.
 *** Deft
 Use Deft for quick notes.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! deft
   :after org
   :bind
-  ("C-c n d" . deft)
+  ;; ("C-c n d" . deft)
   :custom
   (deft-recursive t)
   (deft-use-filename-as-title nil)
@@ -859,10 +859,43 @@ Use Deft for quick notes.
   (deft-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes/"))
 #+end_src
 
+
+*** Denote
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! denote
+  :config
+  (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes")
+  (setq denote-infer-keywords t)
+  (setq denote-sort-keywords t)
+  (setq denote-prompts '(title keywords))
+  (setq denote-date-format nil)
+  )
+
+(use-package! consult-notes
+  :config
+  (setq consult-notes-sources
+        `(("Notes"  ?n ,denote-directory)
+          ;; ("Books"  ?b "~/Documents/books")
+          )
+        )
+  )
+
+(defun my-denote-journal ()
+  "Create an entry tagged 'journal' with the date as its title."
+  (interactive)
+  (denote
+   (format-time-string "%A %B %d %Y") ; format like Tuesday June 14 2022
+   '("journal"))) ; multiple keywords are a list of strings: '("one" "two")
+
+#+end_src
+
+
+
 *** Org Roam
 
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (setq org-roam-dailies-directory "daily/")
 
 (setq org-roam-dailies-capture-templates
@@ -1105,6 +1138,7 @@ Unset some keys
 (global-unset-key (kbd "s-w"))
 (global-unset-key (kbd "M-;"))
 (global-unset-key (kbd "s-/"))
+(global-unset-key (kbd "s-/"))
 (global-unset-key (kbd "<S-return>"))
 #+end_src
 
@@ -1313,10 +1347,21 @@ Key-chords
     ("D" delete-frame "delete this frame")
     ("i" make-frame-invisible "invisible frame")
     ("f" toggle-frame-fullscreen "fullscreen")
+    ("n" make-frame-command "new frame")
     )))
 #+end_src
 
 
+*** Hydra New
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-new
+(:color teal :quit-key "q" title: "New")
+("Denote"
+(("n" denote-create-note "note")
+("j" my-denote-journal "journal"))
+))
+#+end_src
 *** Hydra Logic
 
 #+begin_src emacs-lisp :tangle yes
@@ -1413,7 +1458,7 @@ Key-chords
  "S-C-<up>" #'enlarge-window
  "C-x w" #'delete-frame
  "M-o" #'crux-other-window-or-switch-buffer
- "s-n" #'make-frame-command
+ ;; "s-n" #'make-frame-command
 
  ;; Files and buffers
  "C-x c" #'save-buffers-kill-emacs
@@ -1449,6 +1494,7 @@ Key-chords
 
  ;; Hydras
  "s-h" #'hydra-hydras/body
+ "s-n" #'hydra-new/body
  "s-t" #'hydra-toggle/body
  "s-w" #'hydra-window/body
  "s-b" #'hydra-buffer/body
@@ -1483,17 +1529,12 @@ Key-chords
  "C-c 2" #'rlr/find-file-below
  "C-c 3" #'rlr/find-file-right
  "C-c b" #'consult-bookmark
- "C-c c" #'org-capture
  ;; "C-c h" #'consult-history
  "C-c k" #'crux-kill-other-buffers
  "C-c m" #'consult-mark
  "C-c n b" #'hugo-draft-post
- "C-c n c" #'org-roam-capture
- "C-c n f" #'org-roam-node-find
- "C-c n g" #'org-roam-graph
- "C-c n i" #'org-roam-node-insert
- "C-c n j" #'org-roam-dailies-capture-today
- "C-c n t" #'org-roam-buffer-toggle
+ "C-c n d" #'denote
+ "C-c n j" #'my-denote-journal
  "C-c o" #'consult-outline
  "C-c s" #'goto-scratch
  "C-c S" #'crux-cleanup-buffer-or-region

@@ -82,3 +82,4 @@
 ;; (unpin! dirvish)
 (package! evil-nerd-commenter)
 (package! denote)
+(package! consult-notes)
