@@ -757,6 +757,17 @@ Some export settings.
   )
 
 (setq org-export-with-smart-quotes t)
+
+(with-eval-after-load 'ox-latex
+(add-to-list 'org-export-smart-quotes-alist 
+             '("en-us"
+               (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
+               (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+               (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+               (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+               (apostrophe        :utf-8 "’" :html "&rsquo;")))
+
+)
 #+end_src
 
 Ignore LaTeX when spell checking
