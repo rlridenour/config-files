@@ -215,6 +215,14 @@ Insert dates and times
 (setq ispell-silently-savep t)
 #+end_src
 
+Use [[dictionary.org]] for dictionary search.
+
+#+begin_src emacs-lisp :tangle yes
+(setq dictionary-server "dict.org")
+#+end_src
+
+
+
 ** Scratch
 
 Kill contents of scratch buffer, not the buffer itself. From [[http://emacswiki.org/emacs/RecreateScratchBuffer][TN]].
@@ -1491,6 +1499,7 @@ Key-chords
  "M-y" #'consult-yank-pop
  "M-q" #'reformat-paragraph
  "M-;" #'evilnc-comment-or-uncomment-lines
+ "M-#" #'dictionary-lookup-definition
 
  ;; Hydras
  "s-h" #'hydra-hydras/body
