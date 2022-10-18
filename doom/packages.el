@@ -83,3 +83,4 @@
 (package! evil-nerd-commenter)
 (package! denote)
 (package! consult-notes)
+(package! dired-subtree)
