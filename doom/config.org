@@ -28,6 +28,7 @@ Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
 #+begin_src emacs-lisp :tangle yes
 ;; Set some misc defaults
 (setq initial-major-mode 'org-mode
+      initial-scratch-message nil
       make-pointer-invisible t
       display-time-24hr-format t
       display-time-day-and-date t)
