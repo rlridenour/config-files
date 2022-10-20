@@ -1159,6 +1159,7 @@ Unset some keys
 #+begin_src emacs-lisp :tangle yes
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "s-p"))
+(global-unset-key (kbd "s-d"))
 (global-unset-key (kbd "s-m"))
 (global-unset-key (kbd "s-n"))
 (global-unset-key (kbd "s-h"))
@@ -1530,6 +1531,7 @@ Key-chords
 
  "s-/" #'avy-goto-char-timer
  ;; "s-d" #'dirvish
+ "s-d" #'crux-recentf-find-directory
  "s-=" #'endless/ispell-word-then-abbrev
  "<help> a" #'consult-apropos
  "C-x 4 b" #'consult-buffer-other-window
