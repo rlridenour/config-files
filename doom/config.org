@@ -428,6 +428,12 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 #+end_src
 
 
+** Fish Mode
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! fish-mode)
+#+end_src
+
 
 * Functions
 

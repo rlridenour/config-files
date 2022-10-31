@@ -84,3 +84,4 @@
 (package! denote)
 (package! consult-notes)
 (package! dired-subtree)
+(package! fish-mode)
