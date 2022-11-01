@@ -284,7 +284,7 @@ Splits Org-mode list items
 
 ** Evil Settings
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (use-package! evil
   :init
   (setq evil-disable-insert-state-bindings t
@@ -299,6 +299,8 @@ Splits Org-mode list items
   (evil-set-initial-state 'calendar-mode 'emacs))
 
 (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
+(defalias 'evil-insert-state 'evil-emacs-state)
+(define-key evil-emacs-state-map (kbd "<escape>") 'evil-normal-state)
 #+end_src
 
 
