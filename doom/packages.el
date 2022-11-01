@@ -85,3 +85,4 @@
 (package! consult-notes)
 (package! dired-subtree)
 (package! fish-mode)
+(package! ef-themes)

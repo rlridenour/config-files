@@ -58,7 +58,7 @@ I use  [[https://manytricks.com/moom/][Moom by Many Tricks]] to set window sizes
 
 The [[https://gitlab.com/protesilaos/modus-themes][modus-themes by Protesilaos Stavrou]] are highly customizable. I'm currently using the lighter theme, but it's nice to be able to switch to the darker version at night. Use ~counsel-load-theme~ (bound to ~C-h t~) to change the theme.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! modus-themes
   :init
   (setq modus-themes-italic-constructs t
@@ -67,7 +67,7 @@ The [[https://gitlab.com/protesilaos/modus-themes][modus-themes by Protesilaos S
   (setq doom-theme 'modus-operandi))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! almost-mono-themes
   :config
   ;; (load-theme 'almost-mono-black t)
@@ -76,6 +76,12 @@ The [[https://gitlab.com/protesilaos/modus-themes][modus-themes by Protesilaos S
   (load-theme 'almost-mono-white t)
 )
 #+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(setq doom-theme 'doom-homage-white)
+#+end_src
+
+
 
 When editing two files that have the same name, it's annoying to make changes in one thinking that it was the other. This helps to distinguish them by putting their path in the buffer name. Although both items are displayed in the menu bar, it's nice to be able to see the time and battery level in the mode-line. Finally, I always want to see matching parentheses and the current line highlighted.
 
