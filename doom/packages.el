@@ -86,3 +86,6 @@
 (package! dired-subtree)
 (package! fish-mode)
 (package! ef-themes)
+(package! tempel)
+(package! corfu)
+(package! cape)
