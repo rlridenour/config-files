@@ -390,7 +390,7 @@ Add my custom snippets to Yasnippet
 #+end_src
 
 ** Tempel
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 ;; Configure Tempel
 (use-package! tempel
   ;; Require trigger prefix before template name when completing.
@@ -402,7 +402,7 @@ Add my custom snippets to Yasnippet
 
   :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
          ("M-*" . tempel-insert))
-
+(:map tempel-map ("TAB" . tempel-next)) ;; progress through fields via `TAB'
   :init
 
   ;; Setup completion at point
@@ -459,7 +459,9 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 #+begin_src emacs-lisp :tangle no
 (use-package! company
   :init
-  (setq company-idle-delay 3)
+  (setq company-idle-delay 3
+        company-dabbrev-downcase nil
+        company-dabbrev-ignore-case nil)
   :config
   (add-hook 'after-init-hook 'global-company-mode)
   (add-hook 'after-init-hook 'company-tng-mode))

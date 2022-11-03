@@ -31,3 +31,11 @@ fundamental-mode ;; Available everywhere
 (ddate (format-time-string "%B %e, %Y"))
 (xds (format-time-string "%Y%m%d"))
 (xtime (current-time-string))
+
+
+latex-mode
+
+(begin "\\begin{" (s env) "}" r> n> "\\end{" (s env) "}")
+(frac "\\frac{" p "}{" q "}")
+(enumerate "\\begin{enumerate}\n  \\item " r> n> "\\end{enumerate}")
+(itemize "\\begin{itemize}\n  \\item " r> n> "\\end{itemize}")
