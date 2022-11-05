@@ -112,6 +112,8 @@ Show normal vim mode indicators in the modeline.
 Pulsar to find current line.
 
 #+begin_src emacs-lisp :tangle yes
+(use-package! pulsar
+:custom
 (setq pulsar-pulse-functions
       '(isearch-repeat-forward
         isearch-repeat-backward
@@ -146,12 +148,18 @@ Pulsar to find current line.
         outline-next-visible-heading
         outline-previous-visible-heading
         outline-up-heading))
-
-(setq pulsar-pulse t)
-(setq pulsar-delay 0.055)
-(setq pulsar-iterations 10)
-(setq pulsar-face 'pulsar-magenta)
-(setq pulsar-highlight-face 'pulsar-blue)
+:hook
+    (consult-after-jump . pulsar-recenter-top)
+    (consult-after-jump . pulsar-reveal-entry)
+    ;; integration with the built-in `imenu':
+    (imenu-after-jump . pulsar-recenter-top)
+    (imenu-after-jump . pulsar-reveal-entry)
+:config
+(setq pulsar-pulse t
+pulsar-delay 0.2
+pulsar-iterations 10
+pulsar-face 'pulsar-blue
+pulsar-highlight-face 'pulsar-blue))
 
 (pulsar-global-mode 1)
 
@@ -1409,7 +1417,8 @@ Key-chords
 (pretty-hydra-define hydra-locate
   (:color teal :quit-key "q" title: "Search")
   ("Buffer"
-   (("l" consult-goto-line "goto-line")
+   (("c" pulsar-highlight-dwim "find cursor")
+("l" consult-goto-line "goto-line")
     ("i" consult-imenu "imenu")
     ("m" consult-mark "mark")
     ("o" consult-outline "outline"))
@@ -1417,6 +1426,7 @@ Key-chords
    (("M" consult-global-mark "global-mark")
     ("r" consult-ripgrep "ripgrep"))
    ))
+
 #+end_src
 
 *** Hydra Window
