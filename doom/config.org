@@ -1327,7 +1327,7 @@ Unset some keys
   (:quit-key "q")
   ("Export"
    (("l" org-latex-export-to-latex "Org to LaTeX")
-    ("a" rlr/dwim-org-mkt "Make PDF with Arara")
+    ("a" rlr/org-mkt "Make PDF with Arara")
     ("w" rlr/org-mktc "Make PDF and Watch")
     ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
