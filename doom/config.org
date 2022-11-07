@@ -36,11 +36,9 @@ Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
 
 ** Font
 
-I prefer a font that has some heft to it, and having tried several, I've settled for now on Droid Sans. I'm using a variant that has a slashed zero.
-
 #+begin_src emacs-lisp :tangle yes
-(setq doom-font (font-spec :family "JuliaMono" :size 16)
-      doom-big-font (font-spec :family "JuliaMono" :size 22)
+(setq doom-font (font-spec :family "Fira Code" :size 16)
+      doom-big-font (font-spec :family "Fira Code" :size 22)
       doom-variable-pitch-font (font-spec :family "Fira Code" :size 16))
 #+end_src
 
@@ -55,27 +53,6 @@ I use  [[https://manytricks.com/moom/][Moom by Many Tricks]] to set window sizes
 #+end_src
 
 ** Theme
-
-The [[https://gitlab.com/protesilaos/modus-themes][modus-themes by Protesilaos Stavrou]] are highly customizable. I'm currently using the lighter theme, but it's nice to be able to switch to the darker version at night. Use ~counsel-load-theme~ (bound to ~C-h t~) to change the theme.
-
-#+begin_src emacs-lisp :tangle no
-(use-package! modus-themes
-  :init
-  (setq modus-themes-italic-constructs t
-        modus-themes-bold-constructs t)
-  :config
-  (setq doom-theme 'modus-operandi))
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(use-package! almost-mono-themes
-  :config
-  ;; (load-theme 'almost-mono-black t)
-  ;; (load-theme 'almost-mono-gray t)
-  ;; (load-theme 'almost-mono-cream t)
-  (load-theme 'almost-mono-white t)
-)
-#+end_src
 
 #+begin_src emacs-lisp :tangle yes
 (setq doom-theme 'doom-homage-white)
@@ -174,6 +151,15 @@ Ask which buffer to use after splitting a window.
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
   (consult-buffer))
+#+end_src
+
+
+** Zen mode
+
+Don't make the text quite so large.
+
+#+begin_src emacs-lisp :tangle yes
+(setq +zen-text-scale 0.8)
 #+end_src
 
 * Basic editing
@@ -495,6 +481,13 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 
 #+begin_src emacs-lisp :tangle yes
 (use-package! fish-mode)
+#+end_src
+
+
+** Dwim-shell-command
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! dwim-shell-command)
 #+end_src
 
 
@@ -913,11 +906,32 @@ Some functions for automating lecture notes and slides.
 
 (setq org-latex-pdf-process '("arara %f"))
 
+(defun rlr/dwim-mkt ()
+  "Run arara and open PDF."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Compile with arara"
+   "mkt <<f>>"
+   :silent-success t
+   )
+  )
 (defun rlr/org-mkt ()
   "Make PDF with Arara."
   (interactive)
   (org-latex-export-to-latex)
   (async-shell-command (concat "mkt " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+
+(defun rlr/dwim-org-mkt ()
+  "Make PDF with Arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (dwim-shell-command-on-marked-files
+   "Compile with arara"
+   "mkt <<fne>>.tex"
+   :silent-success t
+   )
+  )
+
 
 (defun rlr/org-mktc ()
   "Compile continuously with arara."
@@ -1260,6 +1274,21 @@ Unset some keys
 (map! "s-m" #'major-mode-hydra)
 #+end_src
 
+
+*** Doom Dashboard
+
+#+begin_src emacs-lisp :tangle yes
+(major-mode-hydra-define +doom-dashboard-mode
+(:quit-key "q")
+("Open"
+(("b" consult-bookmark "bookmarks")
+)))
+#+end_src
+
+
+
+
+
 *** Markdown Mode
 
 #+begin_src emacs-lisp :tangle yes
@@ -1298,7 +1327,7 @@ Unset some keys
   (:quit-key "q")
   ("Export"
    (("l" org-latex-export-to-latex "Org to LaTeX")
-    ("a" rlr/org-mkt "Make PDF with Arara")
+    ("a" rlr/dwim-org-mkt "Make PDF with Arara")
     ("w" rlr/org-mktc "Make PDF and Watch")
     ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
@@ -1374,7 +1403,7 @@ Key-chords
     ("s" whitespace-mode "whitespace" :toggle t))
    " "
    (("c" cdlatex-mode "cdlatex" :toggle t)
-    ("o" olivetti-mode "olivetti" :toggle t)
+    ("z" +zen/toggle "zen" :toggle t)
     ("r" read-only-mode "read-only" :toggle t)
     ("v" view-mode "view" :toggle t)
     ;; ("w" wc-mode "word-count" :toggle t)

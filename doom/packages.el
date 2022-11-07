@@ -89,3 +89,4 @@
 (package! tempel)
 (package! corfu)
 (package! cape)
+(package! dwim-shell-command)
