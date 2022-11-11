@@ -90,3 +90,4 @@
 (package! corfu)
 (package! cape)
 (package! dwim-shell-command)
+(package! mixed-pitch)

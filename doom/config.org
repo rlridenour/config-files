@@ -37,9 +37,14 @@ Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
 ** Font
 
 #+begin_src emacs-lisp :tangle yes
-(setq doom-font (font-spec :family "Fira Code" :size 16)
-      doom-big-font (font-spec :family "Fira Code" :size 22)
-      doom-variable-pitch-font (font-spec :family "Fira Code" :size 16))
+(setq doom-font (font-spec :family "Input Mono" :size 16 :weight 'normal)
+      doom-big-font (font-spec :family "Input Mono" :size 22 :weight 'normal)
+      doom-variable-pitch-font (font-spec :family "Input Sans" :size 16 :weight 'normal))
+
+(use-package! mixed-pitch
+  :hook
+  ;; If you want it in all text modes:
+  (text-mode . mixed-pitch-mode))
 #+end_src
 
 
@@ -766,6 +771,10 @@ Set org directory, along with a few org mode settings.
   (setq org-hide-leading-stars nil)
   (setq org-html-validation-link nil)
   (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
+
+;; (add-hook 'org-mode-hook 'variable-pitch-mode)
+;; (set-face-attribute 'org-table nil :inherit 'doom-font)
+
 #+end_src
 
 Org-tempo is need for structure templates like "<s".
