@@ -495,7 +495,6 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 (use-package! dwim-shell-command)
 #+end_src
 
-
 * Functions
 
 #+begin_src emacs-lisp :tangle yes
@@ -961,6 +960,8 @@ Some functions for automating lecture notes and slides.
         )
       )
 (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
+
+     (define-key global-map "\C-cc" 'org-capture)
 #+end_src
 
 *** Deft
