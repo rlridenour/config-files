@@ -1359,6 +1359,7 @@ Unset some keys
    (("N" hugo-draft-post "New draft")
     ("P" hugo-publish-post "Publish")
     ("T" hugo-timestamp "Update timestamp")
+    ("D" hugo-deploy "Deploy")
     ("E" org-hugo-auto-export-mode "Auto export"))
    "Other"
    (("I" org-toggle-inline-images "Inline images"))
@@ -1500,7 +1501,9 @@ Key-chords
 (pretty-hydra-define hydra-new
 (:color teal :quit-key "q" title: "New")
 ("Denote"
-(("n" denote-create-note "note")
+(("b" hugo-draft-post "blog post")
+("c" org-capture "capture")
+("n" denote-create-note "note")
 ("j" my-denote-journal "journal"))
 ))
 #+end_src
@@ -1556,14 +1559,27 @@ Key-chords
    ))
 #+end_src
 
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-hugo
+  (:color teal :quit-key "q" :title "Hugo")
+  ("Blog"
+   (("n" hugo-draft-post "New draft")
+    ("p" hugo-publish-post "Publish")
+    ("t" hugo-timestamp "Update timestamp")
+    ("e" org-hugo-auto-export-mode "Auto export")
+    ("d" hugo-deploy "Deploy"))
+   ))
+#+end_src
+
 *** Hydra Hydras
 
 #+begin_src emacs-lisp :tangle yes
 (pretty-hydra-define hydra-hydras
   (:color teal :quit-key "q" :title "Hydras")
-("System"
-(("t" hydra-toggle/body))
-  "Unicode"
+  ("System"
+   (("t" hydra-toggle/body)
+    ("h" hydra-hugo/body))
+   "Unicode"
    (("l" hydra-logic/body "logic")
     ("m" hydra-math/body)
     )
