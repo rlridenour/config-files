@@ -1464,6 +1464,7 @@ Key-chords
     ("o" consult-outline "outline"))
    "Global"
    (("M" consult-global-mark "global-mark")
+    ("n" consult-notes "notes")
     ("r" consult-ripgrep "ripgrep"))
    ))
 #+end_src
