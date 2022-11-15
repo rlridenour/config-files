@@ -1671,6 +1671,7 @@ Key-chords
  "C-x r x" #'consult-register
  "M-s m" #'consult-multi-occur
  "<f8>" #'insert-standard-date
+"<f7>" #'spell-fu-goto-previous-error
  "M-u" #'upcase-dwim
  "M-l" #'downcase-dwim
  "M-c" #'capitalize-dwim
