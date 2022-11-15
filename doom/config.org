@@ -1354,6 +1354,7 @@ Unset some keys
     ("f" org-footnote-action "footnote")
     ("r" citar-insert-citation "citation")
     ("u" org-toggle-pretty-entities "org-pretty")
+    ("I" org-toggle-inline-images "Inline images")
     ("L" org-cycle-list-bullet "cycle bullets" :exit nil))
    "Blog"
    (("N" hugo-draft-post "New draft")
@@ -1361,8 +1362,8 @@ Unset some keys
     ("T" hugo-timestamp "Update timestamp")
     ("D" hugo-deploy "Deploy")
     ("E" org-hugo-auto-export-mode "Auto export"))
-   "Other"
-   (("I" org-toggle-inline-images "Inline images"))
+   "Notes"
+   (("1" denote-link "link to note"))
    ))
 #+end_src
 
