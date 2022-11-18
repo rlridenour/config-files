@@ -91,3 +91,4 @@
 (package! cape)
 (package! dwim-shell-command)
 (package! mixed-pitch)
+(package! org-super-agenda)
