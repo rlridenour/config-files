@@ -891,9 +891,10 @@ Set org directory, along with a few org mode settings.
   (setq org-html-validation-link nil)
   (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
 
+;; (add-hook 'org-agenda-mode-hook #'turn-off-evil-mode nil)
+
 ;; (add-hook 'org-mode-hook 'variable-pitch-mode)
 ;; (set-face-attribute 'org-table nil :inherit 'doom-font)
-
 #+end_src
 
 Org-tempo is need for structure templates like "<s".
@@ -1086,6 +1087,8 @@ Some functions for automating lecture notes and slides.
 
 *** Org Super Agenda
 
+From [[https://www.rousette.org.uk/archives/doom-emacs-tweaks-org-journal-and-org-super-agenda/][BSAG » Doom Emacs tweaks: Org Journal and Super Agenda]]
+
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-super-agenda
   :after org-agenda
@@ -1109,14 +1112,9 @@ Some functions for automating lecture notes and slides.
             (alltodo "" ((org-agenda-overriding-header "")
                          (org-super-agenda-groups
                           '((:log t)
-                            (:name "To refile"
-                                   :file-path "refile\\.org")
-                            (:name "Next to do"
-                                   :todo "NEXT"
-                                   :order 1)
                             (:name "Important"
                                    :priority "A"
-                                   :order 6)
+                                   :order 4)
                             (:name "Today's tasks"
                                    :file-path "journal/")
                             (:name "Due Today"
@@ -1127,14 +1125,18 @@ Some functions for automating lecture notes and slides.
                                    :order 8)
                             (:name "Overdue"
                                    :deadline past
-                                   :order 7)
-                            (:name "Meetings"
-                                   :and (:todo "MEET" :scheduled future)
-                                   :order 10)
+                                   :order 3)
                             (:discard (:not (:todo "TODO")))))))))))
   :config
   (org-super-agenda-mode))
 #+end_src
+
+Display 7 full days in the agenda.
+
+#+begin_src emacs-lisp :tangle yes
+(setq org-agenda-span 7)
+#+end_src
+
 
 *** Deft
 Use Deft for quick notes.
@@ -1556,10 +1558,10 @@ Key-chords
   :init
   (key-chord-mode 1)
   :config
-;;  (key-chord-define-global "kj" #'evil-escape)
-;;  (key-chord-define-global "jk" #'evil-escape)
-  ;; (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
-  ;; (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
+  (key-chord-define-global "kj" #'evil-escape)
+  (key-chord-define-global "jk" #'evil-escape)
+  (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
+  (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
   )
 #+end_src
 
