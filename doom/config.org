@@ -163,6 +163,16 @@ pulsar-highlight-face 'pulsar-blue))
 )
 #+end_src
 
+#+begin_src emacs-lisp :tangle yes
+(defun goto-dashboard ()
+  "this sends you to the dashboard buffer"
+  (interactive)
+  (let ((goto-dashboard-buffer (get-buffer "*dashboard*")))
+    (switch-to-buffer goto-dashboard-buffer)
+    (org-mode)))
+
+#+end_src
+
 
 ** Windows
 
@@ -1850,7 +1860,7 @@ Key-chords
 
  "s-/" #'avy-goto-char-timer
  ;; "s-d" #'dirvish
- "s-d" #'crux-recentf-find-directory
+ "s-d" #'goto-dashboard
  "s-=" #'endless/ispell-word-then-abbrev
  "<help> a" #'consult-apropos
  "C-x 4 b" #'consult-buffer-other-window
