@@ -148,6 +148,22 @@ pulsar-highlight-face 'pulsar-blue))
 #+end_src
 
 
+** Dashboard
+
+#+begin_src emacs-lisp :tangle yes
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook)
+(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+(setq doom-fallback-buffer-name "*dashboard*")
+(setq dashboard-week-agenda nil)
+(setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
+(setq dashboard-set-footer nil)
+(setq dashboard-banner-logo-title nil)
+)
+#+end_src
+
+
 ** Windows
 
 Ask which buffer to use after splitting a window.
