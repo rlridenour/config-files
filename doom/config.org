@@ -168,9 +168,8 @@ pulsar-highlight-face 'pulsar-blue))
   "this sends you to the dashboard buffer"
   (interactive)
   (let ((goto-dashboard-buffer (get-buffer "*dashboard*")))
-    (switch-to-buffer goto-dashboard-buffer)
-    (org-mode)))
-
+    (switch-to-buffer goto-dashboard-buffer))
+(dashboard-refresh-buffer))
 #+end_src
 
 
