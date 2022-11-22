@@ -1274,7 +1274,6 @@ Use Deft for quick notes.
 
 [[https://github.com/oantolin/math-delimiters][Math-delimiters]]
 
-
 #+begin_src emacs-lisp :tangle yes
 (autoload 'math-delimiters-insert "math-delimiters")
 
