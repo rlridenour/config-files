@@ -1270,6 +1270,8 @@ Use Deft for quick notes.
 )
 
 (map! :map cdlatex-mode-map :i "TAB" #'cdlatex-tab)
+(map! :map cdlatex-mode-map :e "TAB" #'cdlatex-tab)
+
 #+end_src
 
 [[https://github.com/oantolin/math-delimiters][Math-delimiters]]
