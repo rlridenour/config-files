@@ -47,6 +47,14 @@ Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
   (text-mode . mixed-pitch-mode))
 #+end_src
 
+** Cursor
+
+#+begin_src emacs-lisp :tangle yes
+(setq evil-normal-state-cursor '(box "red2")
+      evil-emacs-state-cursor '(box "blue4")
+      evil-visual-state-cursor '(hollow "red2"))
+#+end_src
+
 
 ** Initial screen size
 
@@ -447,6 +455,7 @@ Splits Org-mode list items
   :config
   (evil-set-initial-state 'dired-mode 'emacs)
   (evil-set-initial-state '+doom-dashboard-mode 'normal) 
+  (evil-set-initial-state 'dashboard-mode 'normal) 
   (evil-set-initial-state 'calendar-mode 'emacs))
 
 (define-key evil-visual-state-map (kbd "v") 'er/expand-region)
@@ -1099,8 +1108,8 @@ Some functions for automating lecture notes and slides.
 #+begin_src emacs-lisp :tangle yes
 (setq org-capture-templates
       '(
-        ("t" "Todo" entry (file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org")
-         "* TODO %?\n  %i\n  %a")
+        ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
+         "** TODO %?\n  %i\n  %a")
         ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
          "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
         )
@@ -1109,6 +1118,9 @@ Some functions for automating lecture notes and slides.
 
 (define-key global-map "\C-cc" 'org-capture)
 #+end_src
+
+#+RESULTS:
+: org-capture
 
 *** Org Super Agenda
 
@@ -1489,7 +1501,8 @@ Unset some keys
   (:quit-key "q")
   ("Open"
    (("m" consult-bookmark "bookmarks")
-("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
+    ("a" consult-org-agenda "consult-agenda")
+    ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
     )))
 #+end_src
 
@@ -1534,32 +1547,42 @@ Unset some keys
 (major-mode-hydra-define org-mode
   (:quit-key "q")
   ("Export"
-   (("l" org-latex-export-to-latex "Org to LaTeX")
+   (
     ("a" rlr/org-mkt "Make PDF with Arara")
-    ("w" rlr/org-mktc "Make PDF and Watch")
-    ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
-    ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
+    ("el" org-latex-export-to-latex "Org to LaTeX")
+    ("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
+    ("eB" org-beamer-export-to-latex "Org to Beamer-LaTeX")
     ("s" lecture-slides "Lecture slides")
     ("n" lecture-notes "Lecture notes")
-    ("p" present "Present slides")
-    ("h" canvas-copy "Copy html for Canvas")
+    ("ep" present "Present slides")
+    ("eh" canvas-copy "Copy html for Canvas")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all")
     )
    "Edit"
-   (("d" rlr/org-date "update date stamp")
-    ("i" consult-org-heading "iMenu")
-    ("f" org-footnote-action "footnote")
-    ("r" citar-insert-citation "citation")
-    ("u" org-toggle-pretty-entities "org-pretty")
-    ("I" org-toggle-inline-images "Inline images")
-    ("L" org-cycle-list-bullet "cycle bullets" :exit nil))
+   (
+    ("d" org-deadline "deadline")
+    ("s" org-schedule "schedule")
+    ("r" org-refile "refile")
+    ("u" rlr/org-date "update date stamp")
+    ("fn" org-footnote-new "insert footnote")
+    ("ff" org-footnote-action "edit footnote")
+    ("fc" citar-insert-citation "citation")
+    ("b" org-cycle-list-bullet "cycle bullets" :exit nil)
+    ("lc" org-cliplink "insert cliplink")
+    )
+   "View"
+   (
+    ("vi" consult-org-heading "iMenu")
+    ("vu" org-toggle-pretty-entities "org-pretty")
+    ("vI" org-toggle-inline-images "Inline images")
+    )
    "Blog"
-   (("N" hugo-draft-post "New draft")
-    ("P" hugo-publish-post "Publish")
-    ("T" hugo-timestamp "Update timestamp")
-    ("D" hugo-deploy "Deploy")
-    ("E" org-hugo-auto-export-mode "Auto export"))
+   (("hn" hugo-draft-post "New draft")
+    ("hp" hugo-publish-post "Publish")
+    ("ht" hugo-timestamp "Update timestamp")
+    ("hd" hugo-deploy "Deploy")
+    ("he" org-hugo-auto-export-mode "Auto export"))
    "Notes"
    (("1" denote-link "link to note"))
    ))
