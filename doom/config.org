@@ -1566,7 +1566,7 @@ Unset some keys
     ("n" latex-word-count "word count"))))
 #+end_src
 
-*** Org Mode
+*** Hydra Org Mode
 
 #+begin_src emacs-lisp :tangle yes
 (major-mode-hydra-define org-mode
@@ -1577,8 +1577,8 @@ Unset some keys
     ("el" org-latex-export-to-latex "Org to LaTeX")
     ("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("eB" org-beamer-export-to-latex "Org to Beamer-LaTeX")
-    ("s" lecture-slides "Lecture slides")
-    ("n" lecture-notes "Lecture notes")
+    ("es" lecture-slides "Lecture slides")
+    ("en" lecture-notes "Lecture notes")
     ("ep" present "Present slides")
     ("eh" canvas-copy "Copy html for Canvas")
     ("c" tex-clean "clean aux")
