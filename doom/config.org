@@ -93,6 +93,31 @@ Don't ask for confirmation about running processes when killing Emacs.
 (setq confirm-kill-processes nil)
 #+end_src
 
+Don't ask for confirmation when killing individual buffers, either.
+
+#+begin_src emacs-lisp :tangle yes
+(setq kill-buffer-query-functions nil)
+#+end_src
+
+
+Save buffers when losing focus:
+
+#+begin_src emacs-lisp :tangle yes
+(defun save-all ()
+  (interactive)
+  (save-some-buffers t))
+(add-hook 'focus-out-hook 'save-all)
+#+end_src
+
+Auto-save every 20 characters.
+
+
+#+begin_src emacs-lisp :tangle yes
+(setq auto-save-interval 20)
+#+end_src
+
+
+
 Show normal vim mode indicators in the modeline.
 
 #+begin_src emacs-lisp :tangle yes
