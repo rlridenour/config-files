@@ -951,6 +951,8 @@ Set org directory, along with a few org mode settings.
   (setq org-adapt-indentation nil)
   (setq org-hide-leading-stars nil)
   (setq org-html-validation-link nil)
+  (setq org-todo-keyword-faces
+        '(("DONE" . "green4")))
   (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
 
 ;; (add-hook 'org-agenda-mode-hook #'turn-off-evil-mode nil)
