@@ -76,8 +76,9 @@ I use  [[https://manytricks.com/moom/][Moom by Many Tricks]] to set window sizes
 When editing two files that have the same name, it's annoying to make changes in one thinking that it was the other. This helps to distinguish them by putting their path in the buffer name. Although both items are displayed in the menu bar, it's nice to be able to see the time and battery level in the mode-line. Finally, I always want to see matching parentheses and the current line highlighted.
 
 #+begin_src emacs-lisp :tangle yes
-(setq-default
- uniquify-buffer-name-style 'forward)
+;; (setq-default
+ ;; uniquify-buffer-name-style 'forward)
+;; (setq uniquify-buffer-name-style 'forward)
 (display-time-mode 1)
 (display-battery-mode 1)
 (show-smartparens-global-mode t)
