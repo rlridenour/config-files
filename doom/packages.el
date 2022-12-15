@@ -49,8 +49,6 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-(package! modus-themes
- :recipe (:host gitlab :repo "protesilaos/modus-themes" :branch "main"))
 (package! hungry-delete)
 ;; (package! wc-mode)
 (package! major-mode-hydra)
@@ -73,7 +71,6 @@
 (package! unfill)
 (package! key-chord)
 (package! dired+)
-(package! almost-mono-themes)
 (package! pulsar)
 (package! math-delimiters
   :recipe (:host github :repo "oantolin/math-delimiters" :branch "master"))
@@ -85,7 +82,6 @@
 (package! consult-notes)
 (package! dired-subtree)
 (package! fish-mode)
-(package! ef-themes)
 (package! tempel)
 (package! corfu)
 (package! cape)
