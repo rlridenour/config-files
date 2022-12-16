@@ -226,6 +226,22 @@ Don't make the text quite so large.
 (setq +zen-text-scale 0.8)
 #+end_src
 
+
+Left-truncate recentf filenames. From [[https://github.com/minad/vertico/wiki][Home · minad/vertico Wiki · GitHub]]
+#+begin_src emacs-lisp :tangle yes
+(defun my/vertico-truncate-candidates (args)
+  (if-let ((arg (car args))
+           (type (get-text-property 0 'multi-category arg))
+           ((eq (car-safe type) 'file))
+           (w (max 30 (- (window-width) 38)))
+           (l (length arg))
+           ((> l w)))
+      (setcar args (concat "…" (truncate-string-to-width arg l (- l w)))))
+  args)
+(advice-add #'vertico--format-candidate :filter-args #'my/vertico-truncate-candidates)
+#+end_src
+
+
 * Basic editing
 
 #+begin_src emacs-lisp :tangle yes
