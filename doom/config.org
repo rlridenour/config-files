@@ -1506,6 +1506,25 @@ Functions for cleaning and compiling with Arara.
 (global-set-key (kbd "C-c h d") 'hugo-deploy)
 #+end_src
 
+
+* EWW
+
+#+begin_src emacs-lisp :tangle yes
+(defun rrnet ()
+(interactive)
+(eww-browse-url "randyridenour.net")
+)
+
+(defun sep ()
+(interactive)
+(eww-browse-url "plato.stanford.edu")
+)
+#+end_src
+
+#+RESULTS:
+: rrnet
+
+
 * Keybindings
 
 Unset some keys
@@ -1591,11 +1610,8 @@ Unset some keys
 "C"
 (
 
-    ("1" hackernews "Hackernews")
-    ("2" hackernews-button-browse-internal "Hackernews browse link eww (t)")
-    ("3" hackernews-new-stories "Hackernews New Stories")
-    ("5" hackernews-switch-feed "Hackernews Switch Feed")
-    ("6" hackernews-best-stories "Hackernews Best Stories")
+    ("1" rrnet "randyridenour.net")
+    ("2" sep "SEP")
     ("F" eww-toggle-fonts "Toggle Fonts")
     ("D" eww-toggle-paragraph-direction "Toggle Paragraph Direction")
     ("c" eww-toggle-colors "Toggle Colors")
@@ -1603,7 +1619,6 @@ Unset some keys
     ("B" eww-list-bookmarks "List Bookmarks")
     ("=" eww-next-bookmark "Next Bookmark")
     ("-" eww-previous-bookmark "Previous Bookmark")
-    ("h" hydra-helm/body "Return To Helm" :color blue )
     ("<SPC>" nil "Quit" :color pink)
 );end other
 ))
