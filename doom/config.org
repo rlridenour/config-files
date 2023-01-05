@@ -511,11 +511,20 @@ Splits Org-mode list items
 
 ** Shell Command Buffers
 
-Don't display async shell command process buffers
+Don't display async shell command process buffers. For some reason this is not working.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (add-to-list 'display-buffer-alist '("^*Async Shell Command*" . (display-buffer-no-window)))
+(add-to-list 'display-buffer-alist
+  (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 #+end_src
+
+Make the async shell command process buffers small.
+
+#+begin_src emacs-lisp :tangle no
+(set-popup-rule! "*Async Shell Command*" :side 'bottom :size .1 :quit 'current)
+#+end_src
+
 
 
 
@@ -695,6 +704,22 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 #+end_src
 
 * Functions
+
+Helper function to suppress the output window of asynchronous shell commands. From [[https://dotdoom.rgoswami.me/config.html][Literate doom-emacs config]].
+
+#+begin_src emacs-lisp :tangle yes
+(defun async-shell-command-no-window
+    (command)
+  (interactive)
+  (let
+      ((display-buffer-alist
+        (list
+         (cons
+          "\\*Async Shell Command\\*.*"
+          (cons #'display-buffer-no-window nil)))))
+    (async-shell-command
+     command)))
+#+end_src
 
 #+begin_src emacs-lisp :tangle yes
 (defun delete-window-balance ()
@@ -1387,8 +1412,11 @@ Functions for cleaning and compiling with Arara.
 (defun rlr/tex-mktc ()
   "Compile continuously with arara."
   (interactive)
-  (async-shell-command (concat "mktc " (shell-quote-argument(buffer-file-name)))))
+  (async-shell-command-no-window (concat "mktc " (shell-quote-argument(buffer-file-name))))
+)
+
 ;;   (TeX-view))
+
 
 (defun latex-word-count ()
   (interactive)
