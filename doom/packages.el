@@ -89,3 +89,4 @@
 (package! mixed-pitch)
 (package! org-super-agenda)
 (package! dashboard)
+(package! citar-denote)

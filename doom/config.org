@@ -961,7 +961,9 @@ Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-o
          :map minibuffer-local-map
          ("M-b" . citar-insert-preset))
   :custom
-  (citar-bibliography '("~/Dropbox/bibtex/rlr.bib")))
+  (org-cite-global-bibliography '("~/Dropbox/bibtex/rlr.bib"))
+  (citar-bibliography '("~/Dropbox/bibtex/rlr.bib"))
+  (org-cite-csl-styles-dir "/usr/local/texlive/2022/texmf-dist/tex/latex/citation-style-language/styles"))
 #+end_src
 
 Use ebib for bibtex file management
@@ -1293,6 +1295,12 @@ Use Deft for quick notes.
    (format-time-string "%A %B %d %Y") ; format like Tuesday June 14 2022
    '("journal"))) ; multiple keywords are a list of strings: '("one" "two")
 
+
+(use-package! citar-denote
+  :after citar denote
+  :config
+  (citar-denote-mode)
+  (setq citar-open-always-create-notes t))
 #+end_src
 
 
@@ -1405,7 +1413,7 @@ Functions for cleaning and compiling with Arara.
 (defun rlr/tex-mkt ()
   "Compile with arara."
   (interactive)
-  (async-shell-command (concat "mkt " (shell-quote-argument(buffer-file-name)))))
+  (async-shell-command-no-window (concat "mkt " (shell-quote-argument(buffer-file-name)))))
 
 ;; Run continuously
 
