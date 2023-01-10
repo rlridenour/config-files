@@ -267,6 +267,13 @@ Use evil-snipe for f, F, t, and T searches.
 #+begin_src emacs-lisp :tangle no
 ;; Globally
 (evil-snipe-override-mode 1)
+(setq evil-snipe-spillover-scope 'visible)
+
+(define-key evil-snipe-parent-transient-map (kbd "C-;")
+  (evilem-create 'evil-snipe-repeat
+                 :bind ((evil-snipe-scope 'buffer)
+                        (evil-snipe-enable-highlight)
+                        (evil-snipe-enable-incremental-highlight))))
 #+end_src
 
 
@@ -1156,7 +1163,7 @@ Some functions for automating lecture notes and slides.
   "Make PDF with Arara."
   (interactive)
   (org-latex-export-to-latex)
-  (async-shell-command (concat "mkt " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+  (async-shell-command-no-window (concat "mkt " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
 
 (defun rlr/dwim-org-mkt ()
   "Make PDF with Arara."
