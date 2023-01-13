@@ -1339,6 +1339,23 @@ Use Deft for quick notes.
                   (insert (concat " " (format-time-string "%B %e, %Y")))))
 #+end_src
 
+*** Hyperbole
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! hyperbole
+  :bind
+  ("C-c C-/" . hui-search-web)  ;; bind before calling require
+  :custom-face
+  (hbut       ((t (:foreground "green yellow"))))
+  (hbut-flash ((t (:foreground "dark gray" :background "green yellow"))))
+  :config
+  (setq hbmap:dir-user org-directory)
+  (setq hbmap:filename "personal-buttons.hypb")
+(setq hsys-org-enable-smart-keys 'buttons)
+)
+#+end_src
+
+
 *** Keybindings
 
 #+begin_src emacs-lisp :tangle no
@@ -1767,8 +1784,8 @@ Key-chords
   :init
   (key-chord-mode 1)
   :config
-  (key-chord-define-global "kj" #'evil-escape)
-  (key-chord-define-global "jk" #'evil-escape)
+  (key-chord-define-global "kj" #'doom/escape)
+  (key-chord-define-global "jk" #'doom/escape)
   (key-chord-define evil-insert-state-map "kj" 'evil-normal-state)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state)
   )

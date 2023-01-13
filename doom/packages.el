@@ -90,3 +90,4 @@
 (package! org-super-agenda)
 (package! dashboard)
 (package! citar-denote)
+(package! hyperbole)
