@@ -223,7 +223,7 @@ Ask which buffer to use after splitting a window.
 Don't make the text quite so large.
 
 #+begin_src emacs-lisp :tangle yes
-(setq +zen-text-scale 0.8)
+(setq +zen-text-scale 0.6)
 #+end_src
 
 
@@ -640,11 +640,87 @@ Add my custom snippets to Yasnippet
   ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
   ;; (global-tempel-abbrev-mode)
   )
+#+end_src
 
+#+begin_src emacs-lisp :tangle no
 ;; Optional: Use the Corfu completion UI
 (use-package! corfu
+  :bind
+  (:keymaps 'corfu-map
+   :states 'insert
+   "C-n" #'corfu-next
+   "C-p" #'corfu-previous
+   "<escape>" #'corfu-quit
+   "<return>" #'corfu-insert
+   "M-d" #'corfu-show-documentation
+   "M-l" #'corfu-show-location)
+  ;; Optional customizations
+  :custom
+  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-auto-delay 1.25)
+  (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  (corfu-scroll-margin 5)        ;; Use scroll margin
   :init
   (global-corfu-mode))
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(use-package emacs
+  :init
+  ;; TAB cycle if there are only few candidates
+  (setq completion-cycle-threshold 3)
+
+  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
+  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable indentation+completion using the TAB key.
+  ;; `completion-at-point' is often bound to M-TAB.
+  (setq tab-always-indent 'complete))
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(use-package! cape
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("C-c p p" . completion-at-point) ;; capf
+         ("C-c p t" . complete-tag)        ;; etags
+         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("C-c p h" . cape-history)
+         ("C-c p f" . cape-file)
+         ("C-c p k" . cape-keyword)
+         ("C-c p s" . cape-symbol)
+         ("C-c p a" . cape-abbrev)
+         ("C-c p i" . cape-ispell)
+         ("C-c p l" . cape-line)
+         ("C-c p w" . cape-dict)
+         ("C-c p \\" . cape-tex)
+         ("C-c p _" . cape-tex)
+         ("C-c p ^" . cape-tex)
+         ("C-c p &" . cape-sgml)
+         ("C-c p r" . cape-rfc1345))
+  :init
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  ;;(add-to-list 'completion-at-point-functions #'cape-history)
+  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;;(add-to-list 'completion-at-point-functions #'cape-ispell)
+  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+  ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
 #+end_src
 
 ** Hungry Delete
@@ -670,15 +746,18 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 
 ** Company Mode
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (use-package! company
   :init
-  (setq company-idle-delay 3
+  (setq company-idle-delay 0.5
         company-dabbrev-downcase nil
-        company-dabbrev-ignore-case nil)
+        company-dabbrev-ignore-case nil
+        company-minimum-prefix-length 2
+        company-show-numbers t)
   :config
   (add-hook 'after-init-hook 'global-company-mode)
-  (add-hook 'after-init-hook 'company-tng-mode))
+  (add-hook 'after-init-hook 'company-tng-mode)
+  (add-hook 'evil-normal-state-entry-hook #'company-abort))
 #+end_src
 
 ** WS-Butler
@@ -710,6 +789,27 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 (use-package! dwim-shell-command)
 #+end_src
 
+** Vundo
+
+(use-package! vundo
+  :defer t
+  :init
+  (defconst +vundo-unicode-symbols
+   '((selected-node   . ?●)
+     (node            . ?○)
+     (vertical-stem   . ?│)
+     (branch          . ?├)
+     (last-branch     . ?╰)
+     (horizontal-stem . ?─)))
+
+  (map! :leader
+        (:prefix ("o")
+         :desc "vundo" "v" #'vundo))
+
+  :config
+  (setq vundo-glyph-alist +vundo-unicode-symbols
+        vundo-compact-display t
+        vundo-window-max-height 6))
 * Functions
 
 Helper function to suppress the output window of asynchronous shell commands. From [[https://dotdoom.rgoswami.me/config.html][Literate doom-emacs config]].
@@ -1341,7 +1441,7 @@ Use Deft for quick notes.
 
 *** Hyperbole
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! hyperbole
   :bind
   ("C-c C-/" . hui-search-web)  ;; bind before calling require
@@ -1349,11 +1449,12 @@ Use Deft for quick notes.
   (hbut       ((t (:foreground "green yellow"))))
   (hbut-flash ((t (:foreground "dark gray" :background "green yellow"))))
   :config
-  (setq hbmap:dir-user org-directory)
+  (setq hbmap:dir-user "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org")
   (setq hbmap:filename "personal-buttons.hypb")
-(setq hsys-org-enable-smart-keys 'buttons)
 )
 #+end_src
+
+
 
 
 *** Keybindings
@@ -2111,9 +2212,7 @@ Key-chords
  )
 #+end_src
 
-#+RESULTS:
 
-#+end_src
 
 
 * Final Steps
