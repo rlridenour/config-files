@@ -1584,9 +1584,6 @@ Functions for cleaning and compiling with Arara.
   (shell-command (concat "mkt " (shell-quote-argument(buffer-file-name))))
 (TeX-view))
 
-(map! :after latex
-:map LaTeX-mode-map
-"s-s" #'rlr/tex-mkt)
 
 
 ;; Run continuously
@@ -1865,7 +1862,7 @@ Unset some keys
   ("Bibtex"
    (("r" citar-insert-citation "citation"))
    "LaTeXmk"
-   (("a" rlr/tex-mkt "arara")
+   (("m" rlr/tex-mkt "arara")
     ("w" rlr/tex-mktc "arara watch")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all")

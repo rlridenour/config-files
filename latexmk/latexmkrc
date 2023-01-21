@@ -1,0 +1,23 @@
+# LaTeXmk configuration file
+
+# Usage example
+# latexmk file.tex
+
+# Main command line options
+# -pdflatex : compile with pdflatex
+# -lualatex : compile with luaflatex
+# -pv       : run file previewer
+# -pvc      : run file previewer and continually recompile on change
+# -c        :
+# -C        :clean up auxiliary and output files
+
+# Use bibtex if a .bib file exists
+$bibtex_use = 1;
+
+# Define commands to compile with pdfsync support and nonstopmode
+$pdflatex = 'pdflatex -synctex=1 --interaction=nonstopmode %O %S';
+
+$lualatex = 'lualatex -synctex=1 --interaction=nonstopmode %O %S';
+
+# Also remove pdfsync files on clean
+$clean_ext = '%R.synctex.gz';
