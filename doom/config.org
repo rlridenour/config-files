@@ -516,6 +516,47 @@ Splits Org-mode list items
 #+end_src
 
 
+** Undo
+
+#+begin_src emacs-lisp :tangle yes
+;; Increase undo history limits even more
+(after! undo-fu
+  ;; Emacs undo defaults
+  (setq undo-limit        10000000    ;; 1MB   (default is 160kB, Doom's default is 400kB)
+        undo-strong-limit 100000000   ;; 100MB (default is 240kB, Doom's default is 3MB)
+        undo-outer-limit  1000000000) ;; 1GB   (default is 24MB,  Doom's default is 48MB)
+
+  ;; Undo-fu customization options
+  (setq undo-fu-allow-undo-in-region t ;; Undoing with a selection will use undo within that region.
+        undo-fu-ignore-keyboard-quit t)) ;; Use the `undo-fu-disable-checkpoint' command instead of Ctrl-G `keyboard-quit' for non-linear behavior.
+
+;; Evil undo
+(after! evil
+  (setq evil-want-fine-undo t)) ;; By default while in insert all changes are one big blob
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! vundo
+  :defer t
+  :init
+  (defconst +vundo-unicode-symbols
+   '((selected-node   . ?●)
+     (node            . ?○)
+     (vertical-stem   . ?│)
+     (branch          . ?├)
+     (last-branch     . ?╰)
+     (horizontal-stem . ?─)))
+
+  (map! :leader
+        (:prefix ("o")
+         :desc "vundo" "v" #'vundo))
+
+  :config
+  (setq vundo-glyph-alist +vundo-unicode-symbols
+        vundo-compact-display t
+        vundo-window-max-height 6))
+#+end_src
+
 ** Shell Command Buffers
 
 Don't display async shell command process buffers. For some reason this is not working.
@@ -789,27 +830,7 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 (use-package! dwim-shell-command)
 #+end_src
 
-** Vundo
 
-(use-package! vundo
-  :defer t
-  :init
-  (defconst +vundo-unicode-symbols
-   '((selected-node   . ?●)
-     (node            . ?○)
-     (vertical-stem   . ?│)
-     (branch          . ?├)
-     (last-branch     . ?╰)
-     (horizontal-stem . ?─)))
-
-  (map! :leader
-        (:prefix ("o")
-         :desc "vundo" "v" #'vundo))
-
-  :config
-  (setq vundo-glyph-alist +vundo-unicode-symbols
-        vundo-compact-display t
-        vundo-window-max-height 6))
 * Functions
 
 Helper function to suppress the output window of asynchronous shell commands. From [[https://dotdoom.rgoswami.me/config.html][Literate doom-emacs config]].
@@ -1410,6 +1431,9 @@ Use Deft for quick notes.
   (setq citar-open-always-create-notes t))
 #+end_src
 
+#+begin_src emacs-lisp :tangle yes
+(use-package! denote-menu)
+#+end_src
 
 
 *** Org Roam
@@ -1467,6 +1491,19 @@ Use Deft for quick notes.
 #+end_src
 
 ** LaTeX
+
+#+begin_src emacs-lisp :tangle yes
+;; use Skim as default pdf viewer
+;; Skim's displayline is used for forward search (from .tex to .pdf)
+;; option -b highlights the current line; option -g opens Skim in the background  
+(after! tex
+(setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+(setq TeX-view-program-list
+     '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b"))))
+#+end_src
+
+
+
 
 #+begin_src emacs-lisp :tangle yes
 (use-package! cdlatex
@@ -1535,10 +1572,22 @@ Functions for cleaning and compiling with Arara.
 
 ;; Run once
 
+;; (defun rlr/tex-mkt ()
+;;   "Compile with arara."
+;;   (interactive)
+;;   (async-shell-command-no-window (concat "mkt " (shell-quote-argument(buffer-file-name)))))
+
 (defun rlr/tex-mkt ()
   "Compile with arara."
   (interactive)
-  (async-shell-command-no-window (concat "mkt " (shell-quote-argument(buffer-file-name)))))
+(save-buffer)
+  (shell-command (concat "mkt " (shell-quote-argument(buffer-file-name))))
+(TeX-view))
+
+(map! :after latex
+:map LaTeX-mode-map
+"s-s" #'rlr/tex-mkt)
+
 
 ;; Run continuously
 
@@ -1561,6 +1610,9 @@ Functions for cleaning and compiling with Arara.
     (string-match "\n$" word-count)
     (message (replace-match "" nil nil word-count))))
 #+end_src
+
+#+RESULTS:
+: latex-word-count
 
 #+begin_src emacs-lisp :tangle yes
 (use-package! latex-change-env
@@ -2007,6 +2059,7 @@ Key-chords
 (("b" hugo-draft-post "blog post")
 ("c" org-capture "capture")
 ("n" denote-create-note "note")
+("v" list-denotes "view notes")
 ("j" my-denote-journal "journal"))
 ))
 #+end_src
@@ -2211,7 +2264,6 @@ Key-chords
  "C-c z" #'+macos/reveal-in-finder
  )
 #+end_src
-
 
 
 

@@ -79,6 +79,8 @@
 ;; (unpin! dirvish)
 (package! evil-nerd-commenter)
 (package! denote)
+(package! denote-menu
+  :recipe (:host github :repo "namilus/denote-menu"))
 (package! consult-notes)
 (package! dired-subtree)
 (package! fish-mode)
