@@ -94,3 +94,5 @@
 (package! citar-denote)
 ;; (package! hyperbole)
 (package! vundo)
+(package! deadgrep)
+(package! yankpad)

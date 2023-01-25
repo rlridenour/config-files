@@ -790,7 +790,7 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 #+begin_src emacs-lisp :tangle yes
 (use-package! company
   :init
-  (setq company-idle-delay 0.5
+  (setq company-idle-delay 3
         company-dabbrev-downcase nil
         company-dabbrev-ignore-case nil
         company-minimum-prefix-length 2
@@ -828,6 +828,24 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
 
 #+begin_src emacs-lisp :tangle yes
 (use-package! dwim-shell-command)
+#+end_src
+
+
+** Deadgrep
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! deadgrep
+:config
+(global-set-key (kbd "<f5>") #'deadgrep)
+)
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! yankpad
+:init
+  (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
+:config
+  (bind-key "<f6>" 'yankpad-insert))
 #+end_src
 
 
@@ -1122,6 +1140,7 @@ Set org directory, along with a few org mode settings.
   (setq org-startup-indented nil)
   (setq org-adapt-indentation nil)
   (setq org-hide-leading-stars nil)
+  ;; (setq org-footnote-section nil)
   (setq org-html-validation-link nil)
   (setq org-todo-keyword-faces
         '(("DONE" . "green4")))
@@ -1608,9 +1627,6 @@ Functions for cleaning and compiling with Arara.
     (message (replace-match "" nil nil word-count))))
 #+end_src
 
-#+RESULTS:
-: latex-word-count
-
 #+begin_src emacs-lisp :tangle yes
 (use-package! latex-change-env
   :after latex
@@ -1636,12 +1652,6 @@ Functions for cleaning and compiling with Arara.
 * Hugo
 
 #+begin_src emacs-lisp :tangle yes
-(use-package! ox-hugo
-  :after org
-  :init
-  (setq org-hugo-delete-trailing-ws nil
-        org-hugo-auto-set-lastmod t
-        org-hugo-suppress-lastmod-period 86400.0))
 
 (defun hugo-timestamp ()
   "Update existing date: timestamp on a Hugo post."
@@ -1652,13 +1662,12 @@ Functions for cleaning and compiling with Arara.
                   (let ((beg (point)))
                     (end-of-line)
                     (delete-region beg (point)))
-                  (insert (concat " " (format-time-string "\"%Y-%m-%dT%H:%M:%S\"")))))
+                  (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
 
 (defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
 (defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
-(defvar hugo-org-dir "content-org/" "Relative path to posts directory.")
 (defvar hugo-post-ext ".org"  "File extension of Hugo posts.")
-(defvar hugo-post-template "#+TITLE: \"%s\"\n#+hugo_draft: true\n#+hugo_tags: \n#+date: \n\n"
+(defvar hugo-post-template "#+TITLE: \%s\n#+draft: true\n#+tags[]: \n#+date: \n#+mathjax: \n\n"
   "Default template for Hugo posts. %s will be replace by the post title.")
 
 (defun hugo-make-slug (s) "Turn a string into a slug."
@@ -1669,27 +1678,28 @@ Functions for cleaning and compiling with Arara.
 
 (defun hugo-draft-post (title) "Create a new Hugo blog post."
        (interactive "sPost Title: ")
-       (let ((draft-file (concat hugo-directory hugo-org-dir
+       (let ((draft-file (concat hugo-directory hugo-posts-dir
                                  (format-time-string "%Y-%m-%d-")
                                  (hugo-make-slug title)
                                  hugo-post-ext)))
          (if (file-exists-p draft-file)
              (find-file draft-file)
            (find-file draft-file)
-           (insert (format hugo-post-template (hugo-yaml-escape title))))))
+           (insert (format hugo-post-template (hugo-yaml-escape title)))
+           (hugo-timestamp))))
 
 (defun hugo-publish-post ()
-  "Update timestamp and set draft to false."
+  "Set draft to false, update the timestamp, and save."
   (interactive)
-  (hugo-timestamp)
   (save-excursion (
                    goto-char 1)
-                  (re-search-forward "^#\\+hugo_draft:")
+                  (re-search-forward "^#\\+draft:")
                   (let ((beg (point)))
                     (end-of-line)
                     (delete-region beg (point)))
-                  (insert " false"))
-  (org-hugo-export-to-md))
+                  (insert " false")
+                  (hugo-timestamp))
+  (save-buffer))
 
 (defmacro with-dir (DIR &rest FORMS)
   "Execute FORMS in DIR."
@@ -1711,10 +1721,14 @@ Functions for cleaning and compiling with Arara.
 (global-set-key (kbd "C-c h p") 'hugo-publish-post)
 (global-set-key (kbd "C-c h t") 'hugo-timestamp)
 (global-set-key (kbd "C-c h O") (lambda () (interactive) (find-file "~/Sites/blog/")))
-(global-set-key (kbd "C-c h P") (lambda () (interactive) (find-file "~/Sites/blog/content/posts/")))
+(global-set-key (kbd "C-c h P") (lambda () (interactive) (find-file "~/Sites/blog/content/post/")))
 
 (global-set-key (kbd "C-c h d") 'hugo-deploy)
 #+end_src
+
+#+RESULTS:
+: hugo-deploy
+
 
 
 * EWW
@@ -1893,11 +1907,12 @@ Unset some keys
     ("ds" org-schedule "schedule")
     ("r" org-refile "refile")
     ("du" rlr/org-date "update date stamp")
-    ("fn" org-footnote-new "insert footnote")
+    ;; ("fn" org-footnote-new "insert footnote")
     ("ff" org-footnote-action "edit footnote")
     ("fc" citar-insert-citation "citation")
     ("b" org-cycle-list-bullet "cycle bullets" :exit nil)
     ("lc" org-cliplink "insert cliplink")
+("y" yankpad-set-category "set yankpad")
     )
    "View"
    (
