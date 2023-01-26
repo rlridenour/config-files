@@ -1250,12 +1250,12 @@ Some functions for automating lecture notes and slides.
 (defun  
     arara-slides ()
   ;; (interactive)
-  (async-shell-command "mkslides"))
+  (async-shell-command-no-window "mkslides"))
 
 (defun  
     arara-notes ()
   ;; (interactive)
-  (async-shell-command "mknotes"))
+  (async-shell-command-no-window "mknotes"))
 
 
 (defun lecture-slides ()
