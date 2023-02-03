@@ -194,6 +194,14 @@ Pulsar to find current line.
   (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
   (setq dashboard-set-footer nil)
   (setq dashboard-banner-logo-title nil)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons nil)
+  (setq dashboard-set-navigator nil)
+  (setq dashboard-items '((recents  . 5)
+                          (bookmarks . 10)
+                          (projects . 5)
+                          (agenda . 5)
+                          (registers . 5)))
   )
 #+end_src
 
@@ -241,6 +249,13 @@ Left-truncate recentf filenames. From [[https://github.com/minad/vertico/wiki][H
 (advice-add #'vertico--format-candidate :filter-args #'my/vertico-truncate-candidates)
 #+end_src
 
+** Context menus
+
+#+begin_src emacs-lisp :tangle yes
+(add-hook 'text-mode-hook 'context-menu-mode)
+(add-hook 'shell-mode-hook 'context-menu-mode)
+(add-hook 'dired-mode-hook 'context-menu-mode)
+#+end_src
 
 * Basic editing
 
