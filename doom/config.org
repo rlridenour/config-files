@@ -197,10 +197,10 @@ Pulsar to find current line.
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons nil)
   (setq dashboard-set-navigator nil)
-  (setq dashboard-items '((recents  . 5)
+  (setq dashboard-items '((agenda . 5)
+                          (recents  . 5)
                           (bookmarks . 10)
                           (projects . 5)
-                          (agenda . 5)
                           (registers . 5)))
   )
 #+end_src
