@@ -1678,7 +1678,9 @@ Functions for cleaning and compiling with Arara.
                     (end-of-line)
                     (delete-region beg (point)))
                   (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
+#+end_src
 
+#+begin_src emacs-lisp :tangle yes
 (defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
 (defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
 (defvar hugo-post-ext ".org"  "File extension of Hugo posts.")
@@ -1690,7 +1692,9 @@ Functions for cleaning and compiling with Arara.
 
 (defun hugo-yaml-escape (s) "Escape a string for YAML."
        (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
+#+end_src
 
+#+begin_src emacs-lisp :tangle yes
 (defun hugo-draft-post (title) "Create a new Hugo blog post."
        (interactive "sPost Title: ")
        (let ((draft-file (concat hugo-directory hugo-posts-dir
@@ -1702,7 +1706,9 @@ Functions for cleaning and compiling with Arara.
            (find-file draft-file)
            (insert (format hugo-post-template (hugo-yaml-escape title)))
            (hugo-timestamp))))
+#+end_src
 
+#+begin_src emacs-lisp :tangle yes
 (defun hugo-publish-post ()
   "Set draft to false, update the timestamp, and save."
   (interactive)
@@ -1721,7 +1727,9 @@ Functions for cleaning and compiling with Arara.
   (let ((orig-dir (gensym)))
     `(progn (setq ,orig-dir default-directory)
             (cd ,DIR) ,@FORMS (cd ,orig-dir))))
+#+end_src
 
+#+begin_src emacs-lisp :tangle yes
 (defun hugo-deploy ()
   "Push changes upstream."
   (interactive)
@@ -1731,13 +1739,58 @@ Functions for cleaning and compiling with Arara.
                  (concat "git commit -m \"" it "\"")
                  (shell-command it))
             (magit-push-current-to-upstream nil)))
+#+end_src
 
+#+begin_src emacs-lisp :tangle yes
+(defun hugo-select-tags ()
+  "Select tags from the hugo org files in the current dir.
+
+Note that it only extracts tags from lines like the below:
+,#+tags[]: Emacs Org-mode"
+  (interactive)
+  ;; Move to end of tag line.
+  (save-excursion
+    (goto-char 1)
+    (re-search-forward "^#\\+tags")
+    (end-of-line)
+
+    (let ((files (directory-files-recursively default-directory "\\.org$")))
+      (let ((source (with-temp-buffer
+                      (while files
+                        (when (file-exists-p (car files))
+                          (insert-file-contents (car files)))
+                        (pop files))
+                      (buffer-string))))
+        (save-match-data
+          (let ((pos 0)
+                matches)
+            (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
+              (push (match-string 1 source) matches)
+              (setq pos (match-end 0)))
+            (insert
+             (completing-read
+              "Insert a tag: "
+              (sort
+               (delete-dups
+                (delete "" (split-string
+                            (replace-regexp-in-string "[\"\']" " "
+                                                      (replace-regexp-in-string
+                                                       "[,()]" ""
+                                                       (format "%s" matches)))
+                            " ")))
+               (lambda (a b)
+                 (string< (downcase a) (downcase b))))))))))
+    (insert " ")
+    )
+  )
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
 (global-set-key (kbd "C-c h n") 'hugo-draft-post)
 (global-set-key (kbd "C-c h p") 'hugo-publish-post)
 (global-set-key (kbd "C-c h t") 'hugo-timestamp)
 (global-set-key (kbd "C-c h O") (lambda () (interactive) (find-file "~/Sites/blog/")))
 (global-set-key (kbd "C-c h P") (lambda () (interactive) (find-file "~/Sites/blog/content/post/")))
-
 (global-set-key (kbd "C-c h d") 'hugo-deploy)
 #+end_src
 
