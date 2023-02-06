@@ -1666,6 +1666,8 @@ Functions for cleaning and compiling with Arara.
 
 * Hugo
 
+This updates the time stamp on a Hugo post.
+
 #+begin_src emacs-lisp :tangle yes
 
 (defun hugo-timestamp ()
@@ -1680,11 +1682,13 @@ Functions for cleaning and compiling with Arara.
                   (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
 #+end_src
 
+Set a few variables and some utility functions that are used later.
+
 #+begin_src emacs-lisp :tangle yes
 (defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
 (defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
 (defvar hugo-post-ext ".org"  "File extension of Hugo posts.")
-(defvar hugo-post-template "#+TITLE: \%s\n#+draft: true\n#+tags[]: \n#+date: \n#+mathjax: \n\n"
+(defvar hugo-post-template "#+TITLE: \%s\n#+draft: true\n#+tags[]: \n#+date: \n#+lastmod: \n#+mathjax: \n\n"
   "Default template for Hugo posts. %s will be replace by the post title.")
 
 (defun hugo-make-slug (s) "Turn a string into a slug."
@@ -1693,6 +1697,8 @@ Functions for cleaning and compiling with Arara.
 (defun hugo-yaml-escape (s) "Escape a string for YAML."
        (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
 #+end_src
+
+Create a new blog post.
 
 #+begin_src emacs-lisp :tangle yes
 (defun hugo-draft-post (title) "Create a new Hugo blog post."
@@ -1708,12 +1714,14 @@ Functions for cleaning and compiling with Arara.
            (hugo-timestamp))))
 #+end_src
 
+This sets the draft tag to false, updates the timestamp, and saves the buffer.
+
 #+begin_src emacs-lisp :tangle yes
 (defun hugo-publish-post ()
   "Set draft to false, update the timestamp, and save."
   (interactive)
-  (save-excursion (
-                   goto-char 1)
+  (save-excursion 
+                   (goto-char 1)
                   (re-search-forward "^#\\+draft:")
                   (let ((beg (point)))
                     (end-of-line)
@@ -1729,6 +1737,24 @@ Functions for cleaning and compiling with Arara.
             (cd ,DIR) ,@FORMS (cd ,orig-dir))))
 #+end_src
 
+Update the last modified date.
+
+#+begin_src emacs-lisp :tangle yes
+(defun hugo-update-lastmod ()
+  "Update the `lastmod' value for a hugo org-mode buffer."
+  (interactive)
+  (save-excursion
+    (goto-char 1)
+    (re-search-forward "^#\\+lastmod:")
+    (let ((beg (point)))
+      (end-of-line)
+      (delete-region beg (point)))
+    (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S"))))
+  (save-buffer))
+#+end_src
+
+Deploy the blog.
+
 #+begin_src emacs-lisp :tangle yes
 (defun hugo-deploy ()
   "Push changes upstream."
@@ -1740,6 +1766,23 @@ Functions for cleaning and compiling with Arara.
                  (shell-command it))
             (magit-push-current-to-upstream nil)))
 #+end_src
+
+Update the last modified date of a post, save the buffer, and deploy.
+
+#+begin_src emacs-lisp :tangle yes
+(defun hugo-org-deploy ()
+  "Push changes upstream."
+  (interactive)
+  (hugo-update-lastmod)
+  (save-buffer)
+  (with-dir hugo-directory
+            (shell-command "git add .")
+            (--> (current-time-string)
+                 (concat "git commit -m \"" it "\"")
+                 (shell-command it))
+            (magit-push-current-to-upstream nil)))
+#+end_src
+Insert a tag into a Hugo post. From [[https://whatacold.io/blog/2022-10-10-emacs-hugo-blogging/][Hugo Blogging in Emacs - whatacold's space]] 
 
 #+begin_src emacs-lisp :tangle yes
 (defun hugo-select-tags ()
@@ -1785,6 +1828,76 @@ Note that it only extracts tags from lines like the below:
   )
 #+end_src
 
+Add multiple tags to a Hugo post. I need to try to make it work with consult--read.
+
+#+begin_src emacs-lisp :tangle no
+(defun w/hugo--collect-tags ()
+  "Collect hugo tags from the org files in the current dir.
+
+Note that it only extracts tags from lines like the below:
+#+tags[]: Emacs Org-mode"
+  (interactive)
+  (let ((files (directory-files-recursively default-directory "\\.org$")))
+    (let ((source (with-temp-buffer
+		    (while files
+                      (when (file-exists-p (car files))
+                        (insert-file-contents (car files)))
+		      (pop files))
+		    (buffer-string))))
+      (save-match-data
+	(let ((pos 0)
+	      matches)
+	  (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
+	    (push (match-string 1 source) matches)
+	    (setq pos (match-end 0)))
+          (sort
+	   (delete-dups
+	    (delete "" (split-string
+			(replace-regexp-in-string "[\"\']" " "
+						  (replace-regexp-in-string
+						   "[,()]" ""
+						   (format "%s" matches)))
+			" ")))
+           (lambda (a b)
+             (string< (downcase a) (downcase b)))))))))
+
+(defun w/hugo-select-tags ()
+  "Select tags for the current hugo post."
+  (interactive)
+  (ivy-read "Insert tags: "
+            (w/hugo--collect-tags)
+            :action
+            (lambda (tag)
+              (insert (if (char-equal (preceding-char) 32)
+                          ""
+                        " ")
+                      tag))))
+#+end_src
+
+Insert internal links using C-c C-l. From [[https://lucidmanager.org/productivity/create-websites-with-org-mode-and-hugo/][Create Websites with Emacs: Blogging with Org mode and Hugo]]
+
+#+begin_src emacs-lisp :tangle yes
+;; Follow Hugo links
+  (defun org-hugo-follow (link)
+    "Follow Hugo link shortcodes"
+    (org-link-open-as-file
+     (string-trim "{{< ref test.org >}}" "{{< ref " ">}}")))
+
+  ;; New link type for Org-Hugo internal links
+  (org-link-set-parameters
+   "hugo"
+   :complete (lambda ()
+               (concat "{{< ref "
+                       (file-name-nondirectory
+                        (read-file-name "File: "))
+                       " >}}"))
+   :follow #'org-hugo-follow)
+#+end_src
+
+
+Set some keybindings for the Hugo functions.
+
+
 #+begin_src emacs-lisp :tangle yes
 (global-set-key (kbd "C-c h n") 'hugo-draft-post)
 (global-set-key (kbd "C-c h p") 'hugo-publish-post)
@@ -1792,10 +1905,10 @@ Note that it only extracts tags from lines like the below:
 (global-set-key (kbd "C-c h O") (lambda () (interactive) (find-file "~/Sites/blog/")))
 (global-set-key (kbd "C-c h P") (lambda () (interactive) (find-file "~/Sites/blog/content/post/")))
 (global-set-key (kbd "C-c h d") 'hugo-deploy)
+(global-set-key (kbd "C-c h g") 'hugo-select-tags)
+(global-set-key (kbd "C-c h m") 'hugo-update-lastmod)
 #+end_src
 
-#+RESULTS:
-: hugo-deploy
 
 
 
@@ -1992,7 +2105,7 @@ Unset some keys
    (("hn" hugo-draft-post "New draft")
     ("hp" hugo-publish-post "Publish")
     ("ht" hugo-timestamp "Update timestamp")
-    ("hd" hugo-deploy "Deploy")
+    ("hd" hugo-org-deploy "Deploy")
     ("he" org-hugo-auto-export-mode "Auto export"))
    "Notes"
    (("1" denote-link "link to note"))
