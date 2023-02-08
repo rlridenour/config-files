@@ -618,6 +618,74 @@ Make the async shell command process buffers small.
 
 #+end_src
 
+
+From [[https://www.n16f.net/blog/decluttering-dired-for-peace-of-mind/][Brain dump – Decluttering Dired for peace of mind]]
+
+#+begin_src emacs-lisp :tangle yes
+(setq g-dired-minimal-view t)
+
+(defun g-dired-setup-view ()
+  (dired-hide-details-mode (if g-dired-minimal-view 1 -1)))
+
+(defun g-dired-switch-view ()
+  (interactive)
+  (setq g-dired-minimal-view (not g-dired-minimal-view))
+  (g-dired-setup-view))
+
+(use-package dired
+  :config
+  (setq dired-hide-details-hide-symlink-targets nil)
+  :hook
+  ((dired-mode-hook . g-dired-setup-view))
+  :bind
+  (:map dired-mode-map
+        ("<tab>" . g-dired-switch-view)))
+
+(defun g-dired-postprocess-ls-output ()
+  "Postprocess the list of files printed by the ls program when
+executed by Dired."
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      ;; Go to the beginning of the next line representing a file
+      (while (null (dired-get-filename nil t))
+        (dired-next-line 1))
+      (beginning-of-line)
+      ;; Narrow to the line and process it
+      (let ((start (line-beginning-position))
+            (end (line-end-position)))
+        (save-restriction
+          (narrow-to-region start end)
+          (setq inhibit-read-only t)
+          (unwind-protect
+              (g-dired-postprocess-ls-line)
+            (setq inhibit-read-only nil))))
+      ;; Next line
+      (dired-next-line 1))))
+
+(defun g-dired-disable-line-wrapping ()
+  (setq truncate-lines t))
+
+(defun g-dired-postprocess-ls-line ()
+  "Postprocess a single line in the ls output, i.e. the information
+about a single file. This function is called with the buffer
+narrowed to the line."
+  ;; Highlight everything but the filename
+  (when (re-search-forward directory-listing-before-filename-regexp nil t 1)
+    (add-text-properties (point-min) (match-end 0) '(font-lock-face shadow)))
+  ;; Hide the link count
+  (beginning-of-line)
+  (when (re-search-forward " +[0-9]+" nil t 1)
+    (add-text-properties (match-beginning 0) (match-end 0) '(invisible t))))
+
+(use-package dired
+  :config
+  (setq dired-listing-switches "-alh --time-style=long-iso")
+  :hook
+  ((dired-mode-hook . g-dired-disable-line-wrapping)
+   (dired-after-readin-hook . g-dired-postprocess-ls-output)))
+#+end_src
+
 ** Dirvish
 
 #+begin_src emacs-lisp :tangle no
@@ -1499,7 +1567,7 @@ Use Deft for quick notes.
 
 *** Hyperbole
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
 (use-package! hyperbole
   :bind
   ("C-c C-/" . hui-search-web)  ;; bind before calling require
@@ -1509,7 +1577,8 @@ Use Deft for quick notes.
   :config
   (setq hbmap:dir-user "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org")
   (setq hbmap:filename "personal-buttons.hypb")
-)
+  (setq hyrolo-file-list '("~/.emacs.d/hyperb/notes.org"))
+  (setq hyrolo-date-format "%Y-%m-%d %H:%M:%S"))
 #+end_src
 
 

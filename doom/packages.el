@@ -92,7 +92,7 @@
 (package! org-super-agenda)
 (package! dashboard)
 (package! citar-denote)
-;; (package! hyperbole)
+(package! hyperbole)
 (package! vundo)
 (package! deadgrep)
 (package! yankpad)
