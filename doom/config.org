@@ -1574,12 +1574,15 @@ Use Deft for quick notes.
   :custom-face
   (hbut       ((t (:foreground "green yellow"))))
   (hbut-flash ((t (:foreground "dark gray" :background "green yellow"))))
-  :config
+:config
   (setq hbmap:dir-user "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org")
   (setq hbmap:filename "personal-buttons.hypb")
   (setq hyrolo-file-list '("~/.emacs.d/hyperb/notes.org"))
-  (setq hyrolo-date-format "%Y-%m-%d %H:%M:%S"))
+  (setq hyrolo-date-format "%Y-%m-%d %H:%M:%S")
+)
 #+end_src
+
+ 
 
 
 
@@ -2230,6 +2233,7 @@ Key-chords
     ("s" whitespace-mode "whitespace" :toggle t))
    " "
    (("c" cdlatex-mode "cdlatex" :toggle t)
+    ("h" hyperbole-mode "hyperbole" :toggle t)
     ("z" +zen/toggle "zen" :toggle t)
     ("r" read-only-mode "read-only" :toggle t)
     ("v" view-mode "view" :toggle t)
