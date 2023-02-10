@@ -1655,6 +1655,7 @@ Use Deft for quick notes.
 
 
 
+
 Functions for cleaning and compiling with Arara.
 
 #+begin_src emacs-lisp :tangle yes
@@ -1717,7 +1718,9 @@ Functions for cleaning and compiling with Arara.
 #+begin_src emacs-lisp :tangle yes
 (use-package! latex-change-env
   :after latex
-  :bind (:map LaTeX-mode-map ("C-c r" . latex-change-env))
+  :bind 
+  (:map LaTeX-mode-map ("C-c r" . latex-change-env))
+  (:map LaTeX-mode-map ("s-<return>" . LaTeX-insert-item))
   :config
   (setq latex-change-env-display math-delimiters-display))
 #+end_src
