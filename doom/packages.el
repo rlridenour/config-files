@@ -93,3 +93,4 @@
 (package! vundo)
 (package! deadgrep)
 (package! yankpad)
+;; (package! corfu)
