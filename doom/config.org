@@ -1166,7 +1166,7 @@ Some export settings.
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
                '("org-handout"
-                 "\\documentclass{rlrhandout}
+                 "\\documentclass{pdfhandout}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
