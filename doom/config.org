@@ -2031,7 +2031,7 @@ Unset some keys
   (:quit-key "q")
   ("Export"
    (
-    ("a" rlr/org-mkt "Make PDF with Arara")
+    ("m" rlr/org-mkt "Make PDF with Arara")
     ("el" org-latex-export-to-latex "Org to LaTeX")
     ("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("eB" org-beamer-export-to-latex "Org to Beamer-LaTeX")
