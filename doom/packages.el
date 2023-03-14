@@ -94,3 +94,5 @@
 (package! deadgrep)
 (package! yankpad)
 ;; (package! corfu)
+;; (package! ekg)
+;; (package! emacsql)

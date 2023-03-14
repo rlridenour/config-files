@@ -1423,6 +1423,22 @@ Use Deft for quick notes.
 #+end_src
 
 
+*** EKG
+
+#+begin_src emacs-lisp :tangle no
+(use-package! emacsql)
+#+end_src
+
+
+
+#+begin_src emacs-lisp :tangle no
+(use-package ekg
+  :bind (([f9] . ekg-capture))
+:init
+(setq ekg-db-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/.ekg/ekg.db"))
+#+end_src
+
+
 *** Org Roam
 
 
@@ -2052,7 +2068,7 @@ Unset some keys
     ("ff" org-footnote-action "edit footnote")
     ("fc" citar-insert-citation "citation")
     ("b" org-cycle-list-bullet "cycle bullets" :exit nil)
-    ("lc" org-cliplink "insert cliplink")
+    ("l" org-mac-link-safari-insert-frontmost-url "insert safari link")
 ("y" yankpad-set-category "set yankpad")
     )
    "View"
