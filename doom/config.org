@@ -698,6 +698,14 @@ narrowed to the line."
 #+end_src
 
 
+** Embark
+
+#+begin_src emacs-lisp :tangle yes
+(define-key embark-heading-map "T" #'titlecase-line)
+(define-key embark-region-map "T" #'titlecase-region)
+#+end_src
+
+
 
 * Extensions
 
@@ -814,6 +822,15 @@ The Shrink Whitespace package reduces all whitespace surrounding the point to on
   (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
 :config
   (bind-key "<f6>" 'yankpad-insert))
+#+end_src
+
+
+** Titlecase
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! titlecase
+:config
+(setq titlecase-style "chicago"))
 #+end_src
 
 

@@ -96,3 +96,4 @@
 ;; (package! corfu)
 ;; (package! ekg)
 ;; (package! emacsql)
+(package! titlecase)
