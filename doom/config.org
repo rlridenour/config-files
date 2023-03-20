@@ -277,6 +277,12 @@ Add my custom snippets to Yasnippet
                                  '("~/.config/doom/snippets"))))
 #+end_src
 
+Show number of isearch matches.
+
+#+begin_src emacs-lisp :tangle yes
+(setq-default isearch-lazy-count t)
+#+end_src
+
 Use evil-snipe for f, F, t, and T searches.
 
 #+begin_src emacs-lisp :tangle no
@@ -701,8 +707,10 @@ narrowed to the line."
 ** Embark
 
 #+begin_src emacs-lisp :tangle yes
+(use-package! embark
+:config
 (define-key embark-heading-map "T" #'titlecase-line)
-(define-key embark-region-map "T" #'titlecase-region)
+(define-key embark-region-map "T" #'titlecase-region))
 #+end_src
 
 
