@@ -29,3 +29,12 @@ emacs/eln-cache/
 emacs/pomm
 iCanHazShortcut/
 espanso/match/nogit.yml
+legacy/bookmarks
+legacy/recentf
+legacy/custom.el
+legacy/snippets
+legacy/straight/
+legacy/pomm
+legacy/.org-id-locations
+legacy/.mc-lists.el
+legacy/*~

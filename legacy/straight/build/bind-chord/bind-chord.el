@@ -1,1 +1,0 @@
-/Users/rlridenour/.config/legacy/straight/repos/use-package/bind-chord.el
