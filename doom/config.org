@@ -200,8 +200,7 @@ Pulsar to find current line.
   (setq dashboard-items '((agenda . 5)
                           (recents  . 5)
                           (bookmarks . 10)
-                          (projects . 5)
-                          (registers . 5)))
+                          (projects . 5)))
   )
 #+end_src
 
@@ -1493,7 +1492,7 @@ Use Deft for quick notes.
 
 *** Hyperbole
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! hyperbole
   :bind
   ("C-c C-/" . hui-search-web)  ;; bind before calling require
