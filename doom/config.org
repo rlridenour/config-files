@@ -49,7 +49,7 @@ Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
 
 ** Cursor
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (setq evil-normal-state-cursor '(box "red2")
       evil-emacs-state-cursor '(box "blue4")
       evil-visual-state-cursor '(hollow "red2"))
@@ -218,7 +218,7 @@ Pulsar to find current line.
 
 Ask which buffer to use after splitting a window.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
   (consult-buffer))
@@ -514,7 +514,7 @@ Splits Org-mode list items
 
 ** Evil Settings
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
 (use-package! evil
   :init
   (setq evil-disable-insert-state-bindings t
@@ -551,8 +551,8 @@ Splits Org-mode list items
         undo-fu-ignore-keyboard-quit t)) ;; Use the `undo-fu-disable-checkpoint' command instead of Ctrl-G `keyboard-quit' for non-linear behavior.
 
 ;; Evil undo
-(after! evil
-  (setq evil-want-fine-undo t)) ;; By default while in insert all changes are one big blob
+;;(after! evil
+;;  (setq evil-want-fine-undo t)) ;; By default while in insert all changes are one big blob
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -1645,7 +1645,7 @@ Functions for cleaning and compiling with Arara.
   :after latex
   :bind 
   (:map LaTeX-mode-map ("C-c r" . latex-change-env))
-  (:map LaTeX-mode-map ("s-<return>" . LaTeX-insert-item))
+  ;; (:map LaTeX-mode-map ("s-<return>" . LaTeX-insert-item))
   :config
   (setq latex-change-env-display math-delimiters-display))
 #+end_src
