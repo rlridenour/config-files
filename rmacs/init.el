@@ -1,6 +1,8 @@
 ;; init.el -*- lexical-binding: t; -*-
 ;; This is the main init file for Randy Ridenour's Emacs configuration.
 
+(setq gc-cons-threshold (* 50 1000 1000))
+
 (setq user-full-name "Randy Ridenour")
 (setq user-mail-address "rlridenour@gmail.com")
 
@@ -8,19 +10,16 @@
 ;; Silence the "Package cl is deprecated" warning.
 (setq byte-compile-warnings '(cl-functions))
 
-
 ;; Silence native compilation warnings
 (setq native-comp-async-report-warnings-errors nil)
 (setq warning-minimum-level :error)
 ;; Code
-
 ;; compile elisp
 (when (fboundp 'native-compile-async)
   (setq comp-deferred-compilation t
         comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
 
 ;; Package management using straight.el
-
 (defvar bootstrap-version)
 (let ((bootstrap-file
        (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -44,7 +43,9 @@
 
 ;; Allow key chords in use-package bindings.
 (use-package use-package-chords
-  :config (key-chord-mode 1))
+    :config (key-chord-mode 1))
+
+(use-package org)
 
 ;; Suppress ad-handle definition warnings
 ;; https://andrewjamesjohnson.com/suppressing-ad-handle-definition-warnings-in-emacs/
@@ -52,17 +53,13 @@
 
 
 ;; Set the path variable to match the shell.
-
-
 (use-package exec-path-from-shell
-  :config (exec-path-from-shell-initialize))
+    :config (exec-path-from-shell-initialize))
 
 (setq custom-file "~/.config/rmacs/custom.el")
 (load custom-file)
 
-
-
-;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
+;; Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.backups/.
 (custom-set-variables
  '(auto-save-file-name-transforms '((".*" "~/.backups/emacs/autosaves/\\1" t)))
  '(backup-directory-alist '((".*" . "~/.backups/emacs/backups/"))))
@@ -90,16 +87,14 @@
   "A friendlier visual bell effect."
   (invert-face 'mode-line)
   (run-with-timer 0.1 nil 'invert-face 'mode-line))
-
 (setq visible-bell nil
       ring-bell-function 'my-terminal-visible-bell)
 
 ;; Show file path in frame title
-
 (setq frame-title-format
       '((:eval (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
-                 "%b"))))
+                   "%b"))))
 
 ;; Turn on syntax highlighting for all buffers
 (global-font-lock-mode t)
@@ -111,20 +106,12 @@
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 
-;; (if (display-graphic-p)
-;;     (progn
-;;       (tool-bar-mode -1)
-;;       (scroll-bar-mode -1)))
-
 ;; Show line numbers and column numbers in mode line
 (line-number-mode 1)
 (column-number-mode 1)
 
 ;; Turn off winner mode
 (winner-mode 0)
-
-;; Display line numbers
-(global-display-line-numbers-mode)
 
 ;; Set the modifier keys in OS X
 (setq mac-command-modifier 'super)
@@ -149,35 +136,28 @@
 ;; Auto-save open files. This can be toggled off with the toggle hydra.
 (auto-save-visited-mode)
 
-
 ;; Use "y" and "n":
 (defalias 'yes-or-no-p 'y-or-n-p)
-
 
 ;; Confirm killing emacs on graphical sessions:
 (when (window-system)
   (setq confirm-kill-emacs 'yes-or-no-p))
 
-
 ;; Edit by Visual Lines
 (global-visual-line-mode t)
-
 
 ;; Navigate visual lines:
 (setq line-move-visual t)
 
-
 ;; Single space ends sentence:
 (setq sentence-end-double-space nil)
-
 
                                         ; Map escape to cancel (like C-g)
 (define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
 (global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
 
-;; Save backups and auto-saves to a temp directory.
-
-
+;; Show number of isearch matches.
+(setq-default isearch-lazy-count t)
 
 ;; Recent files
 (require 'recentf)
@@ -186,61 +166,102 @@
 (recentf-mode)
 
 ;; Use spotlight for locate.
-
 (setq locate-command "mdfind")
 
-
 ;; Open links in default Mac browser.
-
 (setq browse-url-browser-function 'browse-url-default-macosx-browser)
 
 ;; Don't ask for confirmation to kill processes when exiting Emacs. Credit to [[http://timothypratley.blogspot.com/2015/07/seven-specialty-emacs-settings-with-big.html][Timothy Pratley]].
-
-
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   (cl-flet ((process-list ())) ad-do-it))
 
 ;; Flash pasted text — from https://christiantietze.de/posts/2020/12/emacs-pulse-highlight-yanked-text/
 
-(require 'pulse)
-(defun ct/yank-pulse-advice (orig-fn &rest args)
-  ;; Define the variables first
-  (let (begin end)
-    ;; Initialize `begin` to the current point before pasting
-    (setq begin (point))
-    ;; Forward to the decorated function (i.e. `yank`)
-    (apply orig-fn args)
-    ;; Initialize `end` to the current point after pasting
-    (setq end (point))
-    ;; Pulse to highlight!
-    (pulse-momentary-highlight-region begin end)))
-(advice-add 'yank :around #'ct/yank-pulse-advice)
+;; (require 'pulse)
+;; (defun ct/yank-pulse-advice (orig-fn &rest args)
+;;   ;; Define the variables first
+;;   (let (begin end)
+;;     ;; Initialize `begin` to the current point before pasting
+;;     (setq begin (point))
+;;     ;; Forward to the decorated function (i.e. `yank`)
+;;     (apply orig-fn args)
+;;     ;; Initialize `end` to the current point after pasting
+;;     (setq end (point))
+;;     ;; Pulse to highlight!
+;;     (pulse-momentary-highlight-region begin end)))
+;; (advice-add 'yank :around #'ct/yank-pulse-advice)
+
+
+(use-package pulsar
+    :custom
+  (setq pulsar-pulse-functions
+        '(isearch-repeat-forward
+          isearch-repeat-backward
+          yank
+          recenter-top-bottom
+          move-to-window-line-top-bottom
+          reposition-window
+          bookmark-jump
+          other-window
+          crux-other-window-or-switch-buffer
+          delete-window
+          delete-other-windows
+          forward-page
+          backward-page
+          scroll-up-command
+          scroll-down-command
+          windmove-right
+          windmove-left
+          windmove-up
+          windmove-down
+          windmove-swap-states-right
+          windmove-swap-states-left
+          windmove-swap-states-up
+          windmove-swap-states-down
+          tab-new
+          tab-close
+          tab-next
+          org-next-visible-heading
+          org-previous-visible-heading
+          org-forward-heading-same-level
+          org-backward-heading-same-level
+          outline-backward-same-level
+          outline-forward-same-level
+          outline-next-visible-heading
+          outline-previous-visible-heading
+          outline-up-heading))
+  :hook
+  (consult-after-jump . pulsar-recenter-top)
+  (consult-after-jump . pulsar-reveal-entry)
+  ;; integration with the built-in `imenu':
+  (imenu-after-jump . pulsar-recenter-top)
+  (imenu-after-jump . pulsar-reveal-entry)
+  :config
+  (setq pulsar-pulse t
+        pulsar-delay 0.2
+        pulsar-iterations 10
+        pulsar-face 'pulsar-blue
+        pulsar-highlight-face 'pulsar-blue))
+
+(pulsar-global-mode 1)
 
 ;; Don't display async shell command process buffers
-
 (add-to-list 'display-buffer-alist
              (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
 ;; ibuffer
-
 ;; Don't ask for unnecessary confirmations
-
-
 (setq ibuffer-expert t)
 
 
 ;; Auto-update buffer list
-
-
 (add-hook 'ibuffer-mode-hook
           '(lambda ()
-             (ibuffer-auto-mode 1)
-             (ibuffer-switch-to-saved-filter-groups "home")))
+            (ibuffer-auto-mode 1)
+            (ibuffer-switch-to-saved-filter-groups "home")))
 
 ;; Shell
-
 ;; This kills the buffer after closing the terminal.
-
 (defun oleh-term-exec-hook ()
   (let* ((buff (current-buffer))
          (proc (get-buffer-process buff)))
@@ -251,51 +272,35 @@
             (kill-buffer ,buff))))))
 (add-hook 'term-exec-hook 'oleh-term-exec-hook)
 
-
 ;; To paste into term.
-
-
 (eval-after-load "term"
   '(define-key term-raw-map (kbd "C-c C-y") 'term-paste))
 
-
 ;; Make completion case-insensitive in eshell
-
-
 (setq eshell-cmpl-ignore-case t)
 (setq pcomplete-ignore-case t)
 
-
 ;; Start eshell
-
-
 (global-set-key (kbd "C-x m") (lambda () (interactive) (eshell t)))
 ;; Start a new eshell even if one is active
 (global-set-key (kbd "C-x M") (lambda () (interactive) (eshell t)))
 
 
 ;; Start a regular shell
-
-
 (global-set-key (kbd "C-x M-m") 'shell)
-
-
 
 ;; Misc
 
 ;; Kill contents of scratch buffer, not the buffer itself. From [[http://emacswiki.org/emacs/RecreateScratchBuffer][TN]].
-
-
 (defun unkillable-scratch-buffer ()
   (if (equal (buffer-name (current-buffer)) "*scratch*")
       (progn
         (delete-region (point-min) (point-max))
         nil)
-    t))
+      t))
 (add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
 
 ;; Create new scratch buffer after saving.
-
 (defun goto-scratch ()
   "this sends you to the scratch buffer"
   (interactive)
@@ -304,26 +309,19 @@
     (org-mode)))
 
 ;; Mark date and time that files were saved.
-
-
 (add-hook 'before-save-hook 'time-stamp)
 
-
 ;; Move deleted files to system trash.
-
-
 (setq delete-by-moving-to-trash t
       trash-directory "~/.Trash/emacs")
 
 ;; Use GNU ls to avoid "Listing directory failed but 'access-file' worked" error.
-
-
 (setq insert-directory-program "gls"); use proper GNU ls
 
-                                        ;Auto refresh buffers including dired
+;; Auto refresh buffers including dired
 (setq global-auto-revert-non-file-buffers t)
 
-                                        ; Do not generate any messages (be quiet about refreshing Dired).
+;; Do not generate any messages (be quiet about refreshing Dired).
 (setq auto-revert-verbose nil)
 
 ;; Allow recursive minibuffers
@@ -331,14 +329,14 @@
 ;;show recursion depth in minibuffer
 (minibuffer-depth-indicate-mode t)
 
-                                        ;two identical buffers get uniquely numbered names
+;; Two identical buffers get uniquely numbered names
 (require 'uniquify)
 
 ;; From [[https://dougie.io/emacs/indentation/#tldr-the-full-configuration]]
 
 
 
-                                        ; START TABS CONFIG
+;; START TABS CONFIG
 ;; Create a variable for our preferred tab width
 (setq custom-tab-width 2)
 
@@ -355,17 +353,12 @@
 (add-hook 'lisp-mode-hook 'disable-tabs)
 (add-hook 'emacs-lisp-mode-hook 'disable-tabs)
 
-;; Language-Specific Tweaks
-(setq-default python-indent-offset custom-tab-width) ;; Python
-(setq-default js-indent-level custom-tab-width)      ;; Javascript
-
 ;; Making electric-indent behave sanely
 (setq-default electric-indent-inhibit t)
 
 ;; Make the backspace properly erase the tab instead of
 ;; removing 1 space at a time.
 (setq backward-delete-char-untabify-method 'hungry)
-
 
 ;; Prevent escape from closing other windows
 (defun my-keyboard-escape-quit (fun &rest args)
@@ -374,31 +367,45 @@
 (advice-add 'keyboard-escape-quit :around #'my-keyboard-escape-quit)
 
 
-                                        ; Abbreviations and Bookmarks
+;; Abbreviations and Bookmarks
 
 ;; Load Abbreviations
-
 (load "~/Dropbox/emacs/my-emacs-abbrev")
 
-
 ;; Bookmarks
-
 (require 'bookmark)
 (bookmark-bmenu-list)
 
 ;; CUA mode for easy rectangle editing.
 (cua-selection-mode t)
 
+(use-package doom-themes
+    :ensure t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-homage-white t)
 
-(use-package lambda-themes
-  :straight (:type git :host github :repo "lambda-emacs/lambda-themes")
-  :custom
-  (lambda-themes-set-italic-comments t)
-  (lambda-themes-set-italic-keywords t)
-  (lambda-themes-set-variable-pitch t)
-  :config
-  ;; load preferred theme
-  (load-theme 'lambda-light))
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Enable custom neotree theme (all-the-icons must be installed!)
+    (doom-themes-neotree-config)
+    ;; or for treemacs users
+    (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
+    (doom-themes-treemacs-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+
+;; Visually distinguish pop-up windows
+(use-package solaire-mode
+    :config
+  (solaire-global-mode +1))
+
+;; Use a minimal modeline
+(use-package doom-modeline
+    :ensure t
+    :init (doom-modeline-mode 1))
 
 
 (setq frame-resize-pixelwise t)
@@ -423,15 +430,44 @@
 ;;   (telephone-line-mode 1))
 
 (use-package rainbow-delimiters
-  :config
+    :config
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
+(use-package dashboard
+    :config
+  (dashboard-setup-startup-hook)
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (setq doom-fallback-buffer-name "*dashboard*")
+  (setq dashboard-week-agenda nil)
+  (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
+  (setq dashboard-set-footer nil)
+  (setq dashboard-banner-logo-title nil)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons nil)
+  (setq dashboard-set-navigator nil)
+  (setq dashboard-items '((agenda . 5)
+                          (recents  . 5)
+                          (bookmarks . 10)
+                          (projects . 5)))
+  )
+
+
+;; Dashboard
+(use-package all-the-icons
+    :if (display-graphic-p))
+
+(defun goto-dashboard ()
+  "this sends you to the dashboard buffer"
+  (interactive)
+  (let ((goto-dashboard-buffer (get-buffer "*dashboard*")))
+    (switch-to-buffer goto-dashboard-buffer))
+  (dashboard-refresh-buffer))
 
 ;; Vertico
 
 ;; Enable vertico
 (use-package vertico
-  :init
+    :init
   (vertico-mode)
 
   ;; Different scroll margin
@@ -449,12 +485,12 @@
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
-  :init
+    :init
   (savehist-mode))
 
 ;; A few more useful configurations...
 (use-package emacs
-  :init
+    :init
   ;; Add prompt indicator to `completing-read-multiple'.
   ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
   (defun crm-indicator (args)
@@ -482,7 +518,7 @@
 
 ;; Optionally use the `orderless' completion style.
 (use-package orderless
-  :init
+    :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
@@ -495,203 +531,216 @@
 
 ;; Example configuration for Consult
 (use-package consult
-  ;; Replace bindings. Lazily loaded due by `use-package'.
-  :bind (;; C-c bindings (mode-specific-map)
-         ("C-c M-x" . consult-mode-command)
-         ("C-c h" . consult-history)
-         ("C-c k" . consult-kmacro)
-         ("C-c m" . consult-man)
-         ("C-c i" . consult-info)
-         ([remap Info-search] . consult-info)
-         ;; C-x bindings (ctl-x-map)
-         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
-         ;; Custom M-# bindings for fast register access
-         ("M-#" . consult-register-load)
-         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-         ("C-M-#" . consult-register)
-         ;; Other custom bindings
-         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ;; M-g bindings (goto-map)
-         ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-         ("M-g g" . consult-goto-line)             ;; orig. goto-line
-         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-         ("M-g m" . consult-mark)
-         ("M-g k" . consult-global-mark)
-         ("M-g i" . consult-imenu)
-         ("M-g I" . consult-imenu-multi)
-         ;; M-s bindings (search-map)
-         ("M-s d" . consult-find)
-         ("M-s D" . consult-locate)
-         ("M-s g" . consult-grep)
-         ("M-s G" . consult-git-grep)
-         ("M-s r" . consult-ripgrep)
-         ("M-s l" . consult-line)
-         ("M-s L" . consult-line-multi)
-         ("M-s k" . consult-keep-lines)
-         ("M-s u" . consult-focus-lines)
-         ;; Isearch integration
-         ("M-s e" . consult-isearch-history)
-         :map isearch-mode-map
-         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-         ;; Minibuffer history
-         :map minibuffer-local-map
-         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+    ;; Replace bindings. Lazily loaded due by `use-package'.
+    :bind (;; C-c bindings (mode-specific-map)
+           ("C-c M-x" . consult-mode-command)
+           ("C-c h" . consult-history)
+           ("C-c k" . consult-kmacro)
+           ("C-c m" . consult-man)
+           ("C-c i" . consult-info)
+           ([remap Info-search] . consult-info)
+           ;; C-x bindings (ctl-x-map)
+           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+           ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+           ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+           ;; Custom M-# bindings for fast register access
+           ("M-#" . consult-register-load)
+           ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+           ("C-M-#" . consult-register)
+           ;; Other custom bindings
+           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+           ;; M-g bindings (goto-map)
+           ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+           ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+           ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+           ("M-g m" . consult-mark)
+           ("M-g k" . consult-global-mark)
+           ("M-g i" . consult-imenu)
+           ("M-g I" . consult-imenu-multi)
+           ;; M-s bindings (search-map)
+           ("M-s d" . consult-find)
+           ("M-s D" . consult-locate)
+           ("M-s g" . consult-grep)
+           ("M-s G" . consult-git-grep)
+           ("M-s r" . consult-ripgrep)
+           ("M-s l" . consult-line)
+           ("M-s L" . consult-line-multi)
+           ("M-s k" . consult-keep-lines)
+           ("M-s u" . consult-focus-lines)
+           ;; Isearch integration
+           ("M-s e" . consult-isearch-history)
+           :map isearch-mode-map
+           ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+           ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+           ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+           ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+           ;; Minibuffer history
+           :map minibuffer-local-map
+           ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+           ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
-  ;; Enable automatic preview at point in the *Completions* buffer. This is
-  ;; relevant when you use the default completion UI.
-  :hook (completion-list-mode . consult-preview-at-point-mode)
+    ;; Enable automatic preview at point in the *Completions* buffer. This is
+    ;; relevant when you use the default completion UI.
+    :hook (completion-list-mode . consult-preview-at-point-mode)
 
-  ;; The :init configuration is always executed (Not lazy)
-  :init
+    ;; The :init configuration is always executed (Not lazy)
+    :init
 
-  ;; Optionally configure the register formatting. This improves the register
-  ;; preview for `consult-register', `consult-register-load',
-  ;; `consult-register-store' and the Emacs built-ins.
-  (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
+    ;; Optionally configure the register formatting. This improves the register
+    ;; preview for `consult-register', `consult-register-load',
+    ;; `consult-register-store' and the Emacs built-ins.
+    (setq register-preview-delay 0.5
+          register-preview-function #'consult-register-format)
 
-  ;; Optionally tweak the register preview window.
-  ;; This adds thin lines, sorting and hides the mode line of the window.
-  (advice-add #'register-preview :override #'consult-register-window)
+    ;; Optionally tweak the register preview window.
+    ;; This adds thin lines, sorting and hides the mode line of the window.
+    (advice-add #'register-preview :override #'consult-register-window)
 
-  ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+    ;; Use Consult to select xref locations with preview
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
 
-  ;; Configure other variables and modes in the :config section,
-  ;; after lazily loading the package.
-  :config
+    ;; Configure other variables and modes in the :config section,
+    ;; after lazily loading the package.
+    :config
 
-  ;; Optionally configure preview. The default value
-  ;; is 'any, such that any key triggers the preview.
-  ;; (setq consult-preview-key 'any)
-  ;; (setq consult-preview-key "M-.")
-  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
-  ;; For some commands and buffer sources it is useful to configure the
-  ;; :preview-key on a per-command basis using the `consult-customize' macro.
-  (consult-customize
-   consult-theme :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-file-register
-   consult--source-recent-file consult--source-project-recent-file
-   ;; :preview-key "M-."
-   :preview-key '(:debounce 0.4 any))
+    ;; Optionally configure preview. The default value
+    ;; is 'any, such that any key triggers the preview.
+    ;; (setq consult-preview-key 'any)
+    ;; (setq consult-preview-key "M-.")
+    ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+    ;; For some commands and buffer sources it is useful to configure the
+    ;; :preview-key on a per-command basis using the `consult-customize' macro.
+    (consult-customize
+     consult-theme :preview-key '(:debounce 0.2 any)
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-bookmark consult--source-file-register
+     consult--source-recent-file consult--source-project-recent-file
+     ;; :preview-key "M-."
+     :preview-key '(:debounce 0.4 any))
 
-  ;; Optionally configure the narrowing key.
-  ;; Both < and C-+ work reasonably well.
-  (setq consult-narrow-key "<") ;; "C-+"
+    ;; Optionally configure the narrowing key.
+    ;; Both < and C-+ work reasonably well.
+    (setq consult-narrow-key "<") ;; "C-+"
 
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+    ;; Optionally make narrowing help available in the minibuffer.
+    ;; You may want to use `embark-prefix-help-command' or which-key instead.
+    ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
 
-  ;; By default `consult-project-function' uses `project-root' from project.el.
-  ;; Optionally configure a different project root function.
+    ;; By default `consult-project-function' uses `project-root' from project.el.
+    ;; Optionally configure a different project root function.
   ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
+    ;; (setq consult-project-function #'consult--default-project--function)
   ;;;; 2. vc.el (vc-root-dir)
-  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+    ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 3. locate-dominating-file
-  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+    ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
   ;;;; 4. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+    ;; (autoload 'projectile-project-root "projectile")
+    ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
   ;;;; 5. No project support
-  ;; (setq consult-project-function nil)
-  )
+    ;; (setq consult-project-function nil)
+    )
 
 (use-package marginalia
-  :ensure t
-  :config
-  (marginalia-mode))
+    :ensure t
+    :config
+    (marginalia-mode))
 
 (use-package embark
-  :ensure t
+    :ensure t
 
-  :bind
-  (("C-." . embark-act)         ;; pick some comfortable binding
-   ("C-;" . embark-dwim)        ;; good alternative: M-.
-   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+    :bind
+    (("C-." . embark-act)         ;; pick some comfortable binding
+     ("C-;" . embark-dwim)        ;; good alternative: M-.
+     ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
 
-  :init
+    :init
 
-  ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
+    ;; Optionally replace the key help with a completing-read interface
+    (setq prefix-help-command #'embark-prefix-help-command)
 
-  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
-  ;; strategy, if you want to see the documentation from multiple providers.
-  (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
-  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+    ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+    ;; strategy, if you want to see the documentation from multiple providers.
+    (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+    ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
 
-  :config
+    :config
 
-  ;; Hide the mode line of the Embark live/completions buffers
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
+    ;; Hide the mode line of the Embark live/completions buffers
+    (add-to-list 'display-buffer-alist
+                 '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                   nil
+                   (window-parameters (mode-line-format . none)))))
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
+    :ensure t ; only need to install it, embark loads it after consult if found
+    :hook
+    (embark-collect-mode . consult-preview-at-point-mode))
 
 
 
 (use-package consult-dir
-  :straight (:host github :repo "karthink/consult-dir" :branch "master")
-  :bind (("C-x C-d" . consult-dir)
-         :map vertico-map
-         ("C-x C-d" . consult-dir)
-         ("C-x C-j" . consult-dir-jump-file)))
+    :straight (:host github :repo "karthink/consult-dir" :branch "master")
+    :bind (("C-x C-d" . consult-dir)
+           :map vertico-map
+           ("C-x C-d" . consult-dir)
+           ("C-x C-j" . consult-dir-jump-file)))
 
 
 (use-package avy
-  :bind
+    :bind
   ("C-c SPC" . avy-goto-char))
 
 (use-package  ace-window
-  :bind ("C-c w" . ace-window)
-  :config
-  ;; (setq aw-leading-char-style 'path)
-  (setq aw-background nil)
-  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+    :bind ("C-c w" . ace-window)
+    :config
+    ;; (setq aw-leading-char-style 'path)
+    (setq aw-background nil)
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 (use-package shrink-whitespace
-  :bind ("M-=" . shrink-whitespace))
+    :bind ("M-=" . shrink-whitespace))
 
-(use-package company
-  :init
-  (setq company-idle-delay 3)
-  :config
-  (add-hook 'after-init-hook 'global-company-mode)
-  (add-hook 'after-init-hook 'company-tng-mode))
+;; Insert dates and times
+(defun insert-date-string ()
+  "Insert current date yyyymmdd."
+  (interactive)
+  (insert (format-time-string "%Y%m%d")))
+
+(defun insert-standard-date ()
+  "Inserts standard date time string."
+  (interactive)
+  (insert (format-time-string "%B %e, %Y")))
+(global-set-key (kbd "<f8>") 'insert-standard-date)
+(global-set-key (kbd "C-c d") 'insert-date-string)
+
+
+;; (use-package company
+;;   :init
+;;   (setq company-idle-delay 3)
+;;   :config
+;;   (add-hook 'after-init-hook 'global-company-mode)
+;;   (add-hook 'after-init-hook 'company-tng-mode))
 
 ;; Highlight current line when idle
 (use-package hl-line+
-  :config
+    :config
   (toggle-hl-line-when-idle))
 
-
 (use-package expand-region
-  :bind
+    :bind
   ("C-=" . er/expand-region))
 
 (use-package general
-  :config
+    :config
   (general-auto-unbind-keys)
   )
 
@@ -700,57 +749,47 @@
 (use-package smex)
 
 (use-package magit
-  :defer t
-  :bind ("C-x g" . magit-status)
-  :config
-  (global-auto-revert-mode))
+    :defer t
+    :bind ("C-x g" . magit-status)
+    :config
+    (global-auto-revert-mode))
 
 (use-package reveal-in-osx-finder
-  :bind ("C-c z" . reveal-in-osx-finder))
-
-(use-package multiple-cursors
-  :bind
-  ("C-S-c C-S-c" . mc/edit-lines)
-  ("C->" . mc/mark-next-like-this)
-  ("C-<" . mc/mark-previous-like-this)
-  ("C-c C->" . mc/mark-all-like-this))
+    :bind ("C-c z" . reveal-in-osx-finder))
 
 (use-package hungry-delete
-  :diminish hungry-delete-mode
-  :config
-  (global-hungry-delete-mode))
+    :diminish hungry-delete-mode
+    :config
+    (global-hungry-delete-mode))
 
 (use-package smartparens
-  :diminish smartparens-mode)
+    :diminish smartparens-mode)
 (require 'smartparens-config)
 (smartparens-global-mode t)
-
 
 (use-package aggressive-indent)
 
 ;; Undo-fu and undo-fu session mode for undo and redo.
-
 (use-package undo-fu
-  :general
+    :general
   ("s-z"   'undo-fu-only-undo
-   "s-Z" 'undo-fu-only-redo))
+           "s-Z" 'undo-fu-only-redo))
 
 (use-package undo-fu-session
-  :config
+    :config
   (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
 
 (global-undo-fu-session-mode)
 
-
 (use-package evil-nerd-commenter
-  :bind (("M-;" . evilnc-comment-or-uncomment-lines)))
+    :bind (("M-;" . evilnc-comment-or-uncomment-lines)))
 
 (use-package which-key
-  :config
+    :config
   (which-key-mode))
 
 (use-package windmove
-  :bind
+    :bind
   ("C-x <up>" . windmove-up)
   ("C-x <down>" . windmove-down)
   ("C-x <left>" . windmove-left)
@@ -758,20 +797,20 @@
 
 (use-package wgrep)
 
-(use-package yasnippet
-  :config
-  (setq yas-snippet-dirs (append yas-snippet-dirs
-                                 '("~/.config/emacs/snippets")))
-  (yas-global-mode 1))
+;; (use-package yasnippet
+;;     :config
+;;   (setq yas-snippet-dirs (append yas-snippet-dirs
+;;                                  '("~/.config/emacs/snippets")))
+;;   (yas-global-mode 1))
 
-;; With this code, yasnippet will expand the snippet if company didn't complete the word
-;; replace company-complete-common with company-complete if you're using it
+;; ;; With this code, yasnippet will expand the snippet if company didn't complete the word
+;; ;; replace company-complete-common with company-complete if you're using it
 
-(advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
+;; (advice-add 'company-complete-common :before (lambda () (setq my-company-point (point))))
 
-(advice-add 'company-complete-common :after (lambda ()
-                                              (when (equal my-company-point (point))
-                                                (yas-expand))))
+;; (advice-add 'company-complete-common :after (lambda ()
+;;                                               (when (equal my-company-point (point))
+;;                                                 (yas-expand))))
 
 (use-package wc-mode)
 
@@ -780,83 +819,80 @@
 (use-package fish-mode)
 
 (use-package projectile
-  :ensure t
-  :init
-  (projectile-mode +1)
-  :bind (:map projectile-mode-map
-              ("s-p" . projectile-command-map)
-              ("C-c p" . projectile-command-map)))
+    :ensure t
+    :init
+    (projectile-mode +1)
+    :bind (:map projectile-mode-map
+                ("s-p" . projectile-command-map)
+                ("C-c p" . projectile-command-map)))
 
 (use-package dogears
-  :straight (dogears :host github :repo "alphapapa/dogears.el")
-  :bind (:map global-map
-              ("M-g d" . dogears-go)
-              ("M-g M-b" . dogears-back)
-              ("M-g M-f" . dogears-forward)
-              ("M-g M-d" . dogears-list)
-              ("M-g M-D" . dogears-sidebar)))
+    :straight (dogears :host github :repo "alphapapa/dogears.el")
+    :bind (:map global-map
+                ("M-g d" . dogears-go)
+                ("M-g M-b" . dogears-back)
+                ("M-g M-f" . dogears-forward)
+                ("M-g M-d" . dogears-list)
+                ("M-g M-D" . dogears-sidebar)))
 
 (use-package pomm
-  :straight (:host github :repo "SqrtMinusOne/pomm.el" :files (:defaults "resources"))
-  :commands (pomm))
+    :straight (:host github :repo "SqrtMinusOne/pomm.el" :files (:defaults "resources"))
+    :commands (pomm))
 
 (use-package anki-editor)
 
 (use-package pdf-tools
-  :pin manual
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-width)
-  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-  :custom
-  (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+    :pin manual
+    :config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-width)
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+    :custom
+    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
 
 (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1)))
 
 ;; Enable Corfu completion UI
 ;; See the Corfu README for more configuration tips.
 (use-package corfu
-  :init
+    :init
   (global-corfu-mode))
 
 ;; Add extensions
 (use-package cape
-  ;; Bind dedicated completion commands
-  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p i" . cape-ispell)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
-  :init
-  ;; Add `completion-at-point-functions', used by `completion-at-point'.
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-  (add-to-list 'completion-at-point-functions #'cape-file)
-  ;;(add-to-list 'completion-at-point-functions #'cape-history)
-  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
-  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
-  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
-  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
-  ;;(add-to-list 'completion-at-point-functions #'cape-ispell)
-  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
-  ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
-  ;;(add-to-list 'completion-at-point-functions #'cape-line)
-)
-
-
-
+    ;; Bind dedicated completion commands
+    ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+    :bind (("C-c p p" . completion-at-point) ;; capf
+           ("C-c p t" . complete-tag)        ;; etags
+           ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
+           ("C-c p h" . cape-history)
+           ("C-c p f" . cape-file)
+           ("C-c p k" . cape-keyword)
+           ("C-c p s" . cape-symbol)
+           ("C-c p a" . cape-abbrev)
+           ("C-c p i" . cape-ispell)
+           ("C-c p l" . cape-line)
+           ("C-c p w" . cape-dict)
+           ("C-c p \\" . cape-tex)
+           ("C-c p _" . cape-tex)
+           ("C-c p ^" . cape-tex)
+           ("C-c p &" . cape-sgml)
+           ("C-c p r" . cape-rfc1345))
+    :init
+    ;; Add `completion-at-point-functions', used by `completion-at-point'.
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    ;;(add-to-list 'completion-at-point-functions #'cape-history)
+    ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
+    ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+    ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
+    ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
+    ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+    ;;(add-to-list 'completion-at-point-functions #'cape-ispell)
+    ;;(add-to-list 'completion-at-point-functions #'cape-dict)
+    ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
+    ;;(add-to-list 'completion-at-point-functions #'cape-line)
+    )
 
 (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
@@ -946,15 +982,563 @@
 
 
 (use-package meow
-:config
-(meow-setup)
-(meow-global-mode 1)
+    :config
+  (meow-setup)
+  (meow-global-mode 1)
+  )
+
+;; Spelling
+
+(setq ispell-program-name "/opt/homebrew/bin/aspell")
+(setq ispell-extra-args '("--sug-mode=ultra"))
+(setq ispell-personal-dictionary "/Users/rlridenour/Dropbox/emacs/spelling/.aspell.en.pws")
+(setq ispell-silently-savep t)
+(global-set-key (kbd "<f7>") 'flyspell-correct-wrapper)
+
+;; Use dictionary.org for dictionary search
+(setq dictionary-server "dict.org")
+
+
+;; Deadgrep
+(use-package deadgrep
+    :config
+  (global-set-key (kbd "<f5>") #'deadgrep)
+  )
+
+;; Yankpad
+(use-package yankpad
+    :init
+  (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
+  :config
+  (bind-key "<f6>" 'yankpad-insert))
+
+
+;; Titlecase
+(use-package titlecase
+    :config
+  (setq titlecase-style "chicago"))
+
+
+;; Functions
+
+;; Helper function to suppress the output window of asynchronous shell commands. From https://dotdoom.rgoswami.me/config.html][Literate doom-emacs config.
+(defun async-shell-command-no-window
+    (command)
+  (interactive)
+  (let
+      ((display-buffer-alist
+        (list
+         (cons
+          "\\*Async Shell Command\\*.*"
+          (cons #'display-buffer-no-window nil)))))
+    (async-shell-command
+     command)))
+
+
+(defun delete-window-balance ()
+  "Delete window and rebalance the remaining ones."
+  (interactive)
+  (delete-window)
+  (balance-windows))
+
+
+
+(defun split-window-below-focus ()
+  "Split window horizontally and move focus to other window."
+  (interactive)
+  (split-window-below)
+  (balance-windows)
+  (other-window 1))
+
+
+
+(defun split-window-right-focus ()
+  "Split window vertically and move focus to other window."
+  (interactive)
+  (split-window-right)
+  (balance-windows)
+  (other-window 1))
+
+
+
+(defun rlr/find-file-right ()
+  "Split window vertically and select recent file."
+  (interactive)
+  (split-window-right-focus)
+  (consult-buffer))
+
+
+
+(defun rlr/find-file-below ()
+  "Split window horizontally and select recent file."
+  (interactive)
+  (split-window-below-focus)
+  (consult-buffer))
+
+
+;; Fullscreen
+
+
+(defun toggle-frame-maximized-undecorated () (interactive) (let* ((frame (selected-frame)) (on? (and (frame-parameter frame 'undecorated) (eq (frame-parameter frame 'fullscreen) 'maximized))) (geom (frame-monitor-attribute 'geometry)) (x (nth 0 geom)) (y (nth 1 geom)) (display-height (nth 3 geom)) (display-width (nth 2 geom)) (cut (if on? (if ns-auto-hide-menu-bar 26 50) (if ns-auto-hide-menu-bar 4 26)))) (set-frame-position frame x y) (set-frame-parameter frame 'fullscreen-restore 'maximized) (set-frame-parameter nil 'fullscreen 'maximized) (set-frame-parameter frame 'undecorated (not on?)) (set-frame-height frame (- display-height cut) nil t) (set-frame-width frame (- display-width 20) nil t) (set-frame-position frame x y)))
+
+
+
+(defun insert-date-string ()
+  "Insert current date yyyymmdd."
+  (interactive)
+  (insert (format-time-string "%Y%m%d")))
+
+
+(defun insert-standard-date ()
+  "Inserts standard date time string."
+  (interactive)
+  (insert (format-time-string "%B %e, %Y")))
+(global-set-key (kbd "<f8>") 'insert-standard-date)
+(global-set-key (kbd "C-c d") 'insert-date-string)
+
+
+
+;; Open files in dired mode using 'open' in OS X
+(eval-after-load "dired"
+  '(progn
+    (define-key dired-mode-map (kbd "z")
+     (lambda () (interactive)
+       (let ((fn (dired-get-file-for-visit)))
+         (start-process "default-app" nil "open" fn))))))
+
+
+
+(defun rlr-count-words (&optional begin end)
+  "count words between BEGIN and END (region); if no region defined, count words in buffer"
+  (interactive "r")
+  (let ((b (if mark-active begin (point-min)))
+        (e (if mark-active end (point-max))))
+    (message "Word count: %s" (how-many "\\w+" b e))))
+
+
+
+
+(defun transpose-windows ()
+  "Transpose two windows.  If more or less than two windows are visible, error."
+  (interactive)
+  (unless (= 2 (count-windows))
+    (error "There are not 2 windows."))
+  (let* ((windows (window-list))
+         (w1 (car windows))
+         (w2 (nth 1 windows))
+         (w1b (window-buffer w1))
+         (w2b (window-buffer w2)))
+    (set-window-buffer w1 w2b)
+    (set-window-buffer w2 w1b)))
+
+
+
+
+(defun occur-non-ascii ()
+  "Find any non-ascii characters in the current buffer."
+  (interactive)
+  (occur "[^[:ascii:]]"))
+
+
+
+;; From https://github.com/ocodo/.emacs.d/blob/master/custom/handy-functions.el
+(defun nuke-all-buffers ()
+  "Kill all the open buffers except the current one.
+  Leave *scratch*, *dashboard* and *Messages* alone too."
+  (interactive)
+  (mapc
+   (lambda (buffer)
+     (unless (or
+              (string= (buffer-name buffer) "*scratch*")
+              (string= (buffer-name buffer) "*dashboard*")
+              (string= (buffer-name buffer) "*Messages*"))
+       (kill-buffer buffer)))
+   (buffer-list))
+  (delete-other-windows))
+
+
+
+(defun toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                  'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
+
+
+
+(defun make-parent-directory ()
+  "Make sure the directory of `buffer-file-name' exists."
+  (make-directory (file-name-directory buffer-file-name) t))
+(add-hook 'find-file-not-found-functions #'make-parent-directory)
+
+
+;; Fill functions from https://schauderbasis.de/posts/reformat_paragraph/
+
+
+(use-package unfill)
+
+(defun fill-sentences-in-paragraph ()
+  "Put a newline at the end of each sentence in the current paragraph."
+  (interactive)
+  (save-excursion
+    (mark-paragraph)
+    (call-interactively 'fill-sentences-in-region)
+    )
+  )
+
+(defun fill-sentences-in-region (start end)
+  "Put a newline at the end of each sentence in the region maked by (start end)."
+  (interactive "*r")
+  (call-interactively 'unfill-region)
+  (save-excursion
+    (goto-char start)
+    (while (< (point) end)
+      (forward-sentence)
+      (if (looking-at-p " ")
+          (newline-and-indent)
+          )
+      )
+    )
+  )
+
+(defvar repetition-counter 0
+  "How often cycle-on-repetition was called in a row using the same command.")
+
+(defun cycle-on-repetition (list-of-expressions)
+  "Return the first element from the list on the first call,
+   the second expression on the second consecutive call etc"
+  (interactive)
+  (if (equal this-command last-command)
+      (setq repetition-counter (+ repetition-counter 1)) ;; then
+      (setq repetition-counter 0) ;; else
+      )
+  (nth
+   (mod repetition-counter (length list-of-expressions))
+   list-of-expressions) ;; implicit return of the last evaluated value
+  )
+
+(defun reformat-paragraph ()
+  "Cycles the paragraph between three states: filled/unfilled/fill-sentences."
+  (interactive)
+  (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
   )
 
 
-;; Keybindings
 
-(global-unset-key (kbd "C-z"))
+;; Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/][Bozhidar Batsov]]
+
+
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
+
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+
+
+
+;; Org Mode
+
+;; Set org directory, along with a few org mode settings.
+(use-package org
+    :init
+  ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
+  (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
+  :config
+  (setq org-highlight-latex-and-related '(latex script entities))
+  (setq org-startup-indented nil)
+  (setq org-adapt-indentation nil)
+  (setq org-hide-leading-stars nil)
+  ;; (setq org-footnote-section nil)
+  (setq org-html-validation-link nil)
+  (setq org-todo-keyword-faces
+        '(("DONE" . "green4")))
+  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
+
+;; Org-tempo is need for structure templates like "<s".
+(require 'org-tempo)
+
+;; Return adds new heading or list item. From https://github.com/aaronjensen/emacs-orgonomic
+(use-package orgonomic
+    :defer t
+    :hook (org-mode . orgonomic-mode)
+    :bind (
+           :map orgonomic-mode-map
+           ("<S-s-return>" . orgonomic-shift-return)
+           ("<S-return>" . crux-smart-open-line)))
+
+;; Some export settings.
+(with-eval-after-load 'ox-latex
+  (add-to-list 'org-latex-classes
+               '("org-article"
+                 "\\documentclass{article}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("org-handout"
+                 "\\documentclass{pdfhandout}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("org-beamer"
+                 "\\documentclass{beamer}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  )
+
+(setq org-export-with-smart-quotes t)
+
+(with-eval-after-load 'ox-latex
+  (add-to-list 'org-export-smart-quotes-alist
+               '("en-us"
+                 (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
+                 (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+                 (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+                 (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+                 (apostrophe        :utf-8 "’" :html "&rsquo;")))
+  )
+
+;; Ignore LaTeX when spell checking
+(defun flyspell-ignore-tex ()
+  (interactive)
+  (set (make-variable-buffer-local 'ispell-parser) 'tex))
+(add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
+(add-hook 'org-mode-hook 'flyspell-ignore-tex)
+
+;; Some functions for automating lecture notes and slides.
+(defun  
+    arara-slides ()
+  ;; (interactive)
+  (async-shell-command-no-window "mkslides"))
+
+(defun  
+    arara-notes ()
+  ;; (interactive)
+  (async-shell-command-no-window "mknotes"))
+
+
+(defun lecture-slides ()
+  "publish org data file as beamer slides"
+  (interactive)
+  (find-file "*-slides.org" t)
+  (org-beamer-export-to-latex)
+  (kill-buffer)
+  (arara-slides)
+  (find-file "*-data.org" t))
+
+
+(defun lecture-notes ()
+  "publish org data file as beamer notes"
+  (interactive)
+  (find-file "*-notes.org" t)
+  (org-beamer-export-to-latex)
+  (kill-buffer)
+  (arara-notes)
+  (find-file "*-data.org" t))
+
+(defun present ()
+  (interactive)
+  (async-shell-command "present"))
+
+(defun canvas-copy ()
+  "Copy html for canvas pages"
+  (interactive)
+  (org-html-export-to-html)
+  (shell-command "canvas")
+  )
+
+(setq org-latex-pdf-process '("arara %f"))
+
+(defun rlr/dwim-mkt ()
+  "Run arara and open PDF."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Compile with arara"
+   "mkt <<f>>"
+   :silent-success t
+   )
+  )
+(defun rlr/org-mkt ()
+  "Make PDF with Arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (async-shell-command-no-window (concat "mkt " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+
+(defun rlr/dwim-org-mkt ()
+  "Make PDF with Arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (dwim-shell-command-on-marked-files
+   "Compile with arara"
+   "mkt <<fne>>.tex"
+   :silent-success t
+   )
+  )
+
+
+(defun rlr/org-mktc ()
+  "Compile continuously with arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (start-process-shell-command (concat "mktc-" (buffer-file-name)) (concat "mktc-" (buffer-file-name)) (concat "mktc " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+
+;; Org Capture
+
+(setq org-capture-templates
+      '(
+        ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
+         "** TODO %?\n  %i\n  %a")
+        ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
+         "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+        )
+      )
+(setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
+
+(define-key global-map "\C-cc" 'org-capture)
+
+;; Org Super Agenda
+
+(use-package org-super-agenda
+  :after org-agenda
+  :init
+  (setq org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
+        org-agenda-include-deadlines t
+        org-agenda-block-separator nil
+        org-agenda-compact-blocks t
+        org-agenda-start-day nil ;; i.e. today
+        org-agenda-span 1
+        org-agenda-start-on-weekday nil)
+  (setq org-agenda-custom-commands
+        '(("c" "Super view"
+           ((agenda "" ((org-agenda-overriding-header "")
+                        (org-super-agenda-groups
+                         '((:name "Today"
+                            :time-grid t
+                            :date today
+                            :order 1)))))
+            (alltodo "" ((org-agenda-overriding-header "")
+                         (org-super-agenda-groups
+                          '((:log t)
+                            (:name "Important"
+                             :priority "A"
+                             :order 4)
+                            (:name "Today's tasks"
+                             :file-path "journal/")
+                            (:name "Due Today"
+                             :deadline today
+                             :order 2)
+                            (:name "Overdue"
+                             :deadline past
+                             :order 3)
+                            (:discard (:not (:todo "TODO")))))))))))
+  :config
+  (org-super-agenda-mode))
+
+;; Display 7 full days in the agenda.
+(setq org-agenda-span 7)
+
+;; Bibtex
+(use-package citar
+    :bind (("C-c C-b" . citar-insert-citation)
+           :map minibuffer-local-map
+           ("M-b" . citar-insert-preset))
+    :custom
+    (org-cite-global-bibliography '("~/Dropbox/bibtex/rlr.bib"))
+    (citar-bibliography '("~/Dropbox/bibtex/rlr.bib"))
+    (org-cite-csl-styles-dir "/usr/local/texlive/2022/texmf-dist/tex/latex/citation-style-language/styles"))
+
+(use-package ebib
+    :defer
+  :config
+  (setq ebib-bibtex-dialect 'biblatex)
+  ;;(evil-set-initial-state 'ebib-index-mode 'emacs)
+  ;;(evil-set-initial-state 'ebib-entry-mode 'emacs)
+  ;;(evil-set-initial-state 'ebib-log-mode 'emacs)
+  :custom
+  (ebib-preload-bib-files '("~/Dropbox/bibtex/rlr.bib")))
+
+
+;; Denote
+(use-package denote
+  :config
+  (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes")
+  (setq denote-infer-keywords t)
+  (setq denote-sort-keywords t)
+  (setq denote-prompts '(title keywords))
+  (setq denote-date-format nil)
+  )
+
+(use-package consult-notes
+  :config
+  (setq consult-notes-sources
+        `(("Notes"  ?n ,denote-directory)
+          ;; ("Books"  ?b "~/Documents/books")
+          )
+        )
+  )
+
+(defun my-denote-journal ()
+  "Create an entry tagged 'journal' with the date as its title."
+  (interactive)
+  (denote
+   (format-time-string "%A %B %d %Y") ; format like Tuesday June 14 2022
+   '("journal"))) ; multiple keywords are a list of strings: '("one" "two")
+
+
+(use-package
+  :after citar denote
+  :config
+  (citar-denote-mode)
+  (setq citar-open-always-create-notes t))
+
+(use-package denote-menu)
+
+
+;; #+begin_src emacs-lisp :tangle yes
 (global-unset-key (kbd "s-p"))
 (global-unset-key (kbd "s-q"))
 (global-unset-key (kbd "s-w"))
@@ -964,9 +1548,9 @@
 
 
 (use-package key-chord
-  :defer t
-  :config
-  (key-chord-mode 1))
+    :defer t
+    :config
+    (key-chord-mode 1))
 
 
 ;; Hydras
@@ -977,7 +1561,7 @@
 (use-package hydra)
 
 (use-package major-mode-hydra
-  :bind
+    :bind
   ("s-m" . major-mode-hydra))
 
 
@@ -989,7 +1573,7 @@
   (insert-char (gethash unicode-name (ucs-names))))
 
 (pretty-hydra-define hydra-toggle
-  (:color teal :quit-key "q" :title "Toggle")
+    (:color teal :quit-key "q" :title "Toggle")
   (" "
    (("a" abbrev-mode "abbrev" :toggle t)
     ("d" toggle-debug-on-error "debug" (default value 'debug-on-error))
@@ -1011,7 +1595,7 @@
     ("C" cua-selection-mode "rectangle" :toggle t))))
 
 (pretty-hydra-define hydra-buffer
-  (:color teal :quit-key "q" :title "Buffers and Files")
+    (:color teal :quit-key "q" :title "Buffers and Files")
   ("Open"
    (("b" ibuffer "ibuffer")
     ("m" consult-bookmark "bookmark")
@@ -1033,7 +1617,7 @@
    ))
 
 (pretty-hydra-define hydra-locate
-  (:color teal :quit-key "q" title: "Search")
+    (:color teal :quit-key "q" title: "Search")
   ("Buffer"
    (("l" consult-goto-line "goto-line")
     ("i" consult-imenu "imenu")
@@ -1045,7 +1629,7 @@
    ))
 
 (pretty-hydra-define hydra-window
-  (:color teal :quit-key "q" title: "Windows")
+    (:color teal :quit-key "q" title: "Windows")
   ("Windows"
    (("w" other-window "cycle windows" :exit nil)
     ("a" ace-window "ace window")
@@ -1054,8 +1638,8 @@
     ("S" shrink-window-if-larger-than-buffer "shrink to fit")
     ("b" balance-windows "balance windows")
     ("t" toggle-window-split "toggle split")
-   ("T" enlarge-window" grow taller" :exit nil)
-   ("G" enlarge-window-horizontally "grow wider" :exit nil)
+    ("T" enlarge-window" grow taller" :exit nil)
+    ("G" enlarge-window-horizontally "grow wider" :exit nil)
     ("o" delete-other-windows "other windows"))
    "Frames"
    (("M" iconify-frame "minimize frame")
@@ -1063,10 +1647,10 @@
     ("D" delete-frame "delete this frame")
     ("i" make-frame-invisible "invisible frame")
     ("f" toggle-frame-fullscreen "fullscreen")
-   )))
+    )))
 
 (pretty-hydra-define hydra-logic
-  (:color pink :quit-key "0" :title "Logic")
+    (:color pink :quit-key "0" :title "Logic")
   ("Operators"
    (("1" (my/insert-unicode "NOT SIGN") "¬")
     ("2" (my/insert-unicode "AMPERSAND") "&")
@@ -1082,9 +1666,9 @@
    "Quit"
    (("0" quit-window "quit" :color blue))
    ))
-    
+
 (pretty-hydra-define hydra-math
-  (:color pink :quit-key "?" :title "Math")
+    (:color pink :quit-key "?" :title "Math")
   ("Operators"
    (("1" (my/insert-unicode "NOT SIGN") "¬")
     ("2" (my/insert-unicode "AMPERSAND") "&")
@@ -1099,19 +1683,19 @@
    (("R" (my/insert-unicode "DOUBLE-STRUCK CAPITAL R") "ℝ real")
     ("N" (my/insert-unicode "DOUBLE-STRUCK CAPITAL N") "ℕ natural")
     ("Z" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Z") "ℤ integer")
-   ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
-   ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
-   ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
+    ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
+    ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
+    ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
     )
    "Space"
    (("?" (my/insert-unicode "MEDIUM MATHEMATICAL SPACE") "Narrow space"))
    "Quit"
    (("?" quit-window "quit" :color blue))
    ))
- 
+
 
 (pretty-hydra-define hydra-hydras
-  (:color teal :quit-key "q" :title "Hydras")
+    (:color teal :quit-key "q" :title "Hydras")
   ("Unicode"
    (("l" hydra-logic/body "logic")
     ("m" hydra-math/body))
@@ -1124,7 +1708,7 @@
 
 
 (major-mode-hydra-define markdown-mode
-  (:quit-key "q")
+    (:quit-key "q")
   ("Format"
    (("h" markdown-insert-header-dwim "header")
     ("l" markdown-insert-link "link")
@@ -1137,7 +1721,7 @@
 
 
 (major-mode-hydra-define latex-mode
-  (:quit-key "q")
+    (:quit-key "q")
   ("Bibtex"
    (("r" citar-insert-citation "citation"))
    "LaTeXmk"
@@ -1148,7 +1732,7 @@
     ("n" latex-word-count "word count"))))
 
 (major-mode-hydra-define org-mode
-  (:quit-key "q")
+    (:quit-key "q")
   ("Export"
    (("l" org-latex-export-to-latex "Org to LaTeX")
     ("a" rlr/org-mkt "Make PDF with Arara")
@@ -1170,8 +1754,8 @@
     ("p" hugo-publish-post "Publish")
     ("t" hugo-timestamp "Update timestamp")
     ("e" org-hugo-auto-export-mode "Auto export"))
-"Other"
-(("I" org-toggle-inline-images "Inline images"))
+   "Other"
+   (("I" org-toggle-inline-images "Inline images"))
    ))
 
 
@@ -1180,7 +1764,7 @@
 
 
 (major-mode-hydra-define dired-mode
-  (:quit-key "q")
+    (:quit-key "q")
   ("Tools"
    (("d" crux-open-with "Open in default program")
     ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
@@ -1262,7 +1846,7 @@
  "M-y" 'consult-yank-pop
  "M-q" 'reformat-paragraph
 
-  ;; Hydras
+ ;; Hydras
  "s-h" 'hydra-hydras/body
  "s-t" 'hydra-toggle/body
  "s-w" 'hydra-window/body
@@ -1312,7 +1896,7 @@
  "n g" 'org-roam-graph
  "n i" 'org-roam-node-insert
  "n j" 'org-roam-dailies-capture-today
- "n t" 'org-roam-buffer-toggle 
+ "n t" 'org-roam-buffer-toggle
  "o" 'consult-outline
  "r" 'crux-rename-file-and-buffer
  "s" 'goto-scratch

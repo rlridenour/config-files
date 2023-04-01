@@ -536,6 +536,14 @@ Splits Org-mode list items
 #+end_src
 
 
+** Meow
+
+#+begin_src emacs-lisp :tangle yes
+(add-to-list 'meow-mode-state-list '(text-mode . insert))
+(add-to-list 'meow-mode-state-list '(prog-mode . insert))
+#+end_src
+
+
 ** Undo
 
 #+begin_src emacs-lisp :tangle yes
@@ -715,6 +723,15 @@ narrowed to the line."
 
 
 * Extensions
+
+** Which-Key 
+
+#+begin_src emacs-lisp :tangle no
+(after! which-key
+(setq which-key-use-C-h-commands t))
+#+end_src
+
+
 
 ** Evil
 
@@ -1332,8 +1349,6 @@ Some functions for automating lecture notes and slides.
 (define-key global-map "\C-cc" 'org-capture)
 #+end_src
 
-#+RESULTS:
-: org-capture
 
 *** Org Super Agenda
 
