@@ -860,22 +860,22 @@ Add my custom snippets to Yasnippet
 
 #+begin_src emacs-lisp :tangle yes
 (use-package aas
-  :hook (LaTeX-mode . aas-activate-for-major-mode)
-  :hook (org-mode . aas-activate-for-major-mode)
-  :config
-  (aas-set-snippets 'text-mode
-    ;; expand unconditionally
-    ";o-" "ō"
-    ";i-" "ī"
-    ";a-" "ā"
-    ";u-" "ū"
-    ";e-" "ē")
+:hook (LaTeX-mode . aas-activate-for-major-mode)
+:hook (org-mode . aas-activate-for-major-mode)
+:config
+(aas-set-snippets 'text-mode
+;; expand unconditionally
+";o-" "ō"
+";i-" "ī"
+";a-" "ā"
+";u-" "ū"
+";e-" "ē")
 (aas-set-snippets 'org-mode
 "srcel" '(tempel "#+begin_src emacs-lisp :tangle yes" n q n "#+end_src")
 )
-  (aas-set-snippets 'latex-mode
-    ;; set condition!
-    :cond #'texmathp ; expand only while in math
+(aas-set-snippets 'latex-mode
+;; set condition!
+:cond #'texmathp ; expand only while in math
 ".." "\\land"
 ">>" "\\lif"
 "==" "\\liff"
@@ -884,9 +884,11 @@ Add my custom snippets to Yasnippet
 "EE" "\\exists"
 "AA" "\\forall"
 )
-  ;; disable snippets by redefining them with a nil expansion
-  (aas-set-snippets 'latex-mode
-    "supp" nil))
+;; disable snippets by redefining them with a nil expansion
+(aas-set-snippets 'latex-mode
+";sn" '(tempel "\\section{" q "}")
+";ssn" '(tempel "\\subsection{" q "}")
+"supp" nil))
 #+end_src
 
 ** Hungry Delete
