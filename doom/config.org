@@ -872,17 +872,18 @@ Add my custom snippets to Yasnippet
 ";e-" "ē")
 (aas-set-snippets 'org-mode
 "srcel" '(tempel "#+begin_src emacs-lisp :tangle yes" n q n "#+end_src")
+"bnote" '(tempel "***" n ":PROPERTIES:" n ":BEAMER_ENV: note" n ":END:" n n q n "** Notes :B_ignoreheading:" n ":PROPERTIES:" n ":BEAMER_env: ignoreheading" n ":END:" n n)
 )
 (aas-set-snippets 'latex-mode
 ;; set condition!
 :cond #'texmathp ; expand only while in math
-".." "\\land"
-">>" "\\lif"
+"." "\\land"
+">" "\\lif"
 "==" "\\liff"
-"vv" "\\lor"
-"~~" "\\lnot"
-"EE" "\\exists"
-"AA" "\\forall"
+"v" "\\lor"
+"~" "\\lnot"
+"#" "\\exists"
+"@" "\\forall"
 )
 ;; disable snippets by redefining them with a nil expansion
 (aas-set-snippets 'latex-mode

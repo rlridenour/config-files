@@ -35,11 +35,13 @@ fundamental-mode ;; Available everywhere
 
 org-mode
 
-(article "#+TITLE: " p n "drawer:" n "#+AUTHOR: Randy Ridenour" n "#+DATE: "(format-time-string "%B %d, %Y") n "#+LANGUAGE: en-us" n "#+LaTeX_CLASS: org-article" n "#+LaTeX_CLASS_OPTIONS: [11pt]" n "#+LaTeX_HEADER: % arara: latexmk: { engine: pdflatex }" n "#+LaTeX_HEADER: \\usepackage{amsmath,amssymb}" n "#+LaTeX_HEADER: \\usepackage{csquotes}" n "#+LaTeX_HEADER: \\usepackage{graphicx}" n "#+LaTeX_HEADER: \\usepackage{longtable}" n "#+LaTeX_HEADER: \\usepackage{wrapfig}" n "#+LaTeX_HEADER: \\usepackage{rotating}" n "#+LaTeX_HEADER: \\usepackage{url}" n "#+LaTeX_HEADER: \\usepackage[normalem]{ulem}" n "#+LaTeX_HEADER: \\usepackage{microtype}" n "#+LaTeX_HEADER: \\usepackage[american]{babel}" n "#+LaTeX_HEADER: \\usepackage[letterpaper,centering]{geometry}" n "#+LaTeX_HEADER: \\usepackage[sf,sc]{titlesec}" n "#+LaTeX_HEADER: \\usepackage[parfill]{parskip} % Line between paragraphs" n "#+LaTeX_HEADER: % \\usepackage[authordate,url=false,isbn=false,backend=biber]{biblatex-chicago} %Change authordate to notes if desired." n "#+LaTeX_HEADER: % \\addbibresource{/Users/rlridenour/Dropbox/bibtex/rlr.bib}" n "#+LaTeX_HEADER: \\clubpenalty = 10000 % Reduce orphans and widows" n "#+LaTeX_HEADER: \\widowpenalty = 10000" n "#+LaTeX_HEADER: \\usepackage{enumitem}" n "#+LaTeX_HEADER: \\setlist{nosep}" n "#+LaTeX_HEADER: \\usepackage{libertinus-type1}" n "#+LaTeX_HEADER: \\usepackage{libertinust1math}" n "#+LaTeX_HEADER: \\usepackage[T1]{fontenc}" n "#+LaTeX_HEADER: \\usepackage{hyperref}" n "#+OPTIONS: toc:nil" n "end:" n n)
+(article "#+TITLE: " p n ":drawer:" n "#+AUTHOR: Randy Ridenour" n "#+DATE: "(format-time-string "%B %d, %Y") n "#+LANGUAGE: en-us" n "#+LaTeX_CLASS: org-article" n "#+LaTeX_CLASS_OPTIONS: [11pt]" n "#+LaTeX_HEADER: % arara: latexmk: { engine: pdflatex }" n "#+LaTeX_HEADER: \\usepackage{amsmath,amssymb}" n "#+LaTeX_HEADER: \\usepackage{csquotes}" n "#+LaTeX_HEADER: \\usepackage{graphicx}" n "#+LaTeX_HEADER: \\usepackage{longtable}" n "#+LaTeX_HEADER: \\usepackage{wrapfig}" n "#+LaTeX_HEADER: \\usepackage{rotating}" n "#+LaTeX_HEADER: \\usepackage{url}" n "#+LaTeX_HEADER: \\usepackage[normalem]{ulem}" n "#+LaTeX_HEADER: \\usepackage{microtype}" n "#+LaTeX_HEADER: \\usepackage[american]{babel}" n "#+LaTeX_HEADER: \\usepackage[letterpaper,centering]{geometry}" n "#+LaTeX_HEADER: \\usepackage[sf,sc]{titlesec}" n "#+LaTeX_HEADER: \\usepackage[parfill]{parskip} % Line between paragraphs" n "#+LaTeX_HEADER: % \\usepackage[authordate,url=false,isbn=false,backend=biber]{biblatex-chicago} %Change authordate to notes if desired." n "#+LaTeX_HEADER: % \\addbibresource{/Users/rlridenour/Dropbox/bibtex/rlr.bib}" n "#+LaTeX_HEADER: \\clubpenalty = 10000 % Reduce orphans and widows" n "#+LaTeX_HEADER: \\widowpenalty = 10000" n "#+LaTeX_HEADER: \\usepackage{enumitem}" n "#+LaTeX_HEADER: \\setlist{nosep}" n "#+LaTeX_HEADER: \\usepackage{libertinus-type1}" n "#+LaTeX_HEADER: \\usepackage{libertinust1math}" n "#+LaTeX_HEADER: \\usepackage[T1]{fontenc}" n "#+LaTeX_HEADER: \\usepackage{hyperref}" n "#+OPTIONS: toc:nil" n ":end:" n n)
 
 
 latex-mode
 
+(article "% arara: latexmk: { engine: pdflatex }" n n "\\documentclass[11pt]{article}" n n "\\usepackage{graphicx,epstopdf,amsmath,amssymb,url,tabularray}" n "\\UseTblrLibrary{booktabs}" n "%\\usepackage{mathastext} % Make math use roman type." n "\\usepackage[normalem]{ulem}" n "\\usepackage{microtype,todonotes}" n "\\usepackage[american]{babel}" n "\\usepackage[autostyle]{csquotes}" n "\\usepackage[letterpaper,centering]{geometry}" n "\\usepackage[sf,sc]{titlesec}" n "\\usepackage[parfill]{parskip} % Line between paragraphs" n "% \\usepackage{tikz}" n "% \\usetikzlibrary{shapes,backgrounds}" n "% \\usepackage[authordate,url=false,isbn=false,backend=biber]{biblatex-chicago}" n "%Change authordate to notes if desired." n "% \\addbibresource{/Users/rlridenour/Dropbox/bibtex/rlr.bib}" n "\\clubpenalty = 10000 % Reduce orphans and widows" n "\\widowpenalty = 10000" n n "\\usepackage{enumitem}" n "\\setlist{nosep}" n "\\usepackage{libertinus-type1}" n "\\usepackage{libertinust1math}" n "\\usepackage[T1]{fontenc}" n "\\usepackage{hyperref}" n n "\\title{" p "}" n "\\author{Randy Ridenour}" n "%\\date{}  % Activate to display a given date or no date" n n "\\begin{document}" n "\\maketitle" n n q n "%\\printbibliography" n n "\\end{document}")
+; Math and logic
 (begin "\\begin{" (s env) "}" r> n> "\\end{" (s env) "}")
 (frac "\\frac{" p "}{" q "}")
 (enumerate "\\begin{enumerate}\n  \\item " p n  "\\end{enumerate}")
@@ -48,55 +50,5 @@ latex-mode
 (fpf "\\(" n "\\begin{nd}" n> "\\hypo {" p "} {" p "}" n> q n "\\end{nd}" n "\\)")
 (fpr "\\hypo {" p "} {" q "}")
 (fln "\have {" p "} {" p "} \\ " p "{" p "}")
-(exam "% arara: pdflatex: { interaction: nonstopmode, synctex: yes }" n
- n
-"\\documentclass{examdesign}" n
-"\\Fullpages" n
-"\\NumberOfVersions{1}" n
-"\\class{" p "}" n
-"\\examname{" q "}" n
- n
-"\\usepackage{enumitem}" n
-"\\setlist{nosep}" n
-"\\usepackage{libertinus-type1}" n
-"\\usepackage{libertinust1math}" n
-"\\usepackage[T1]{fontenc}" n
- n
-"\\begin{document}" n
- n
-"\\begin{examtop}" n
-"\\noindent \\textbf{\\classdata} \\hfill  \\textbf{Name:} \\rule{2.5in}{.4pt}\\\\" n
-"\\textbf{\\examtype,  Version \\Alph{version}} \\\\" n
-"\\textbf{Oklahoma Baptist University} \\\\" n
-"\\textbf{Dr. Ridenour}\\hfill \\textbf{Date:} \\rule{2.5in}{.4pt} \\\\" n
-"\\bigskip" n
-"\\end{examtop}" n
-
-
-
-"\\begin{truefalse}[title={True or False (2 points each)},resetcounter=yes]" n
-"	Write ``textbf{T}'' or ``textbf{F}'' in the blank provided." n
- n
- n
- n
-"\\end{truefalse}" n
- n
-"\\begin{multiplechoice}[title={Multiple Choice (2 points each)},resetcounter=yes]" n
-"	Circle the correct answer." n
- n
- n
- n
-"\\end{multiplechoice}" n
- n
- n
-"\\begin{shortanswer}[title={Short Answer (10 pts each)}]" n
- n
- n
- n
- n
-"\\end{shortanswer}" n
- n
- n
- n
-"\\end{document}"
-)
+;; Exam snippets
+(exam "% arara: pdflatex: { interaction: nonstopmode, synctex: yes }" n n "\\documentclass{examdesign}" n "\\Fullpages" n "\\NumberOfVersions{1}" n "\\class{" p "}" n "\\examname{" q "}" n n "\\usepackage{enumitem}" n "\\setlist{nosep}" n "\\usepackage{libertinus-type1}" n "\\usepackage{libertinust1math}" n "\\usepackage[T1]{fontenc}" n n "\\begin{document}" n n "\\begin{examtop}" n "\\noindent \\textbf{\\classdata} \\hfill  \\textbf{Name:} \\rule{2.5in}{.4pt}\\\\" n "\\textbf{\\examtype,  Version \\Alph{version}} \\\\" n "\\textbf{Oklahoma Baptist University} \\\\" n "\\textbf{Dr. Ridenour}\\hfill \\textbf{Date:} \\rule{2.5in}{.4pt} \\\\" n "\\bigskip" n "\\end{examtop}" n "\\begin{truefalse}[title={True or False (2 points each)},resetcounter=yes]" n "	Write ``textbf{T}'' or ``textbf{F}'' in the blank provided." n n n n "\\end{truefalse}" n n "\\begin{multiplechoice}[title={Multiple Choice (2 points each)},resetcounter=yes]" n "	Circle the correct answer." n n n n "\\end{multiplechoice}" n n n "\\begin{shortanswer}[title={Short Answer (10 pts each)}]" n n n n n "\\end{shortanswer}" n n n n "\\end{document}")
