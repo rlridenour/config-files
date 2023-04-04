@@ -48,3 +48,55 @@ latex-mode
 (fpf "\\(" n "\\begin{nd}" n> "\\hypo {" p "} {" p "}" n> q n "\\end{nd}" n "\\)")
 (fpr "\\hypo {" p "} {" q "}")
 (fln "\have {" p "} {" p "} \\ " p "{" p "}")
+(exam "% arara: pdflatex: { interaction: nonstopmode, synctex: yes }" n
+ n
+"\\documentclass{examdesign}" n
+"\\Fullpages" n
+"\\NumberOfVersions{1}" n
+"\\class{" p "}" n
+"\\examname{" q "}" n
+ n
+"\\usepackage{enumitem}" n
+"\\setlist{nosep}" n
+"\\usepackage{libertinus-type1}" n
+"\\usepackage{libertinust1math}" n
+"\\usepackage[T1]{fontenc}" n
+ n
+"\\begin{document}" n
+ n
+"\\begin{examtop}" n
+"\\noindent \\textbf{\\classdata} \\hfill  \\textbf{Name:} \\rule{2.5in}{.4pt}\\\\" n
+"\\textbf{\\examtype,  Version \\Alph{version}} \\\\" n
+"\\textbf{Oklahoma Baptist University} \\\\" n
+"\\textbf{Dr. Ridenour}\\hfill \\textbf{Date:} \\rule{2.5in}{.4pt} \\\\" n
+"\\bigskip" n
+"\\end{examtop}" n
+
+
+
+"\\begin{truefalse}[title={True or False (2 points each)},resetcounter=yes]" n
+"	Write ``textbf{T}'' or ``textbf{F}'' in the blank provided." n
+ n
+ n
+ n
+"\\end{truefalse}" n
+ n
+"\\begin{multiplechoice}[title={Multiple Choice (2 points each)},resetcounter=yes]" n
+"	Circle the correct answer." n
+ n
+ n
+ n
+"\\end{multiplechoice}" n
+ n
+ n
+"\\begin{shortanswer}[title={Short Answer (10 pts each)}]" n
+ n
+ n
+ n
+ n
+"\\end{shortanswer}" n
+ n
+ n
+ n
+"\\end{document}"
+)

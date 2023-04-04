@@ -888,6 +888,8 @@ Add my custom snippets to Yasnippet
 (aas-set-snippets 'latex-mode
 ";sn" '(tempel "\\section{" q "}")
 ";ssn" '(tempel "\\subsection{" q "}")
+"mcq" '(tempel "\\begin{question}" n p n "\\choice {" p "}" n "\\choice {" p "}" n "\\choice {" p "}" n "\\choice {" q "}" n "\\end{question}")
+"saq" '(tempel "\\begin{question}" n p n "\\examvspace*{0in}" n "\\begin{answer}" n p n "\\end{answer}" n "\\end{question}")
 "supp" nil))
 #+end_src
 
