@@ -70,7 +70,7 @@ I use  [[https://manytricks.com/moom/][Moom by Many Tricks]] to set window sizes
 ** Theme
 
 #+begin_src emacs-lisp :tangle yes
-(setq doom-theme 'doom-homage-white)
+(setq doom-theme 'modus-operandi)
 #+end_src
 
 
@@ -222,7 +222,7 @@ Ask which buffer to use after splitting a window.
 
 #+begin_src emacs-lisp :tangle no
 (defadvice! prompt-for-buffer (&rest _)
-  :after '(evil-window-split evil-window-vsplit)
+  :after '(split-window-right split-window-below)
   (consult-buffer))
 #+end_src
 
@@ -543,6 +543,7 @@ Splits Org-mode list items
 #+begin_src emacs-lisp :tangle yes
 (add-to-list 'meow-mode-state-list '(text-mode . insert))
 (add-to-list 'meow-mode-state-list '(prog-mode . insert))
+(setq meow-use-clipboard t)
 #+end_src
 
 
