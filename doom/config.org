@@ -37,10 +37,12 @@ Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
 ** Font
 
 #+begin_src emacs-lisp :tangle yes
-(setq doom-font (font-spec :family "Input Mono" :size 16 :weight 'normal)
-      doom-big-font (font-spec :family "Input Mono" :size 22 :weight 'normal)
-      doom-variable-pitch-font (font-spec :family "Input Sans" :size 16 :weight 'normal))
+(setq doom-font (font-spec :family "Droid Sans Mono Slashed" :size 16 :weight 'medium)
+      doom-big-font (font-spec :family "Droid Sans Mono Slashed" :size 22 :weight 'normal)
+      doom-variable-pitch-font (font-spec :family "Droid Sans Mono Slashed" :size 16 :weight 'normal))
+#+end_src
 
+#+begin_src emacs-lisp :tangle no
 (use-package! mixed-pitch
   :hook
   ;; If you want it in all text modes:
