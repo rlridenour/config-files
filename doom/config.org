@@ -37,9 +37,9 @@ Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
 ** Font
 
 #+begin_src emacs-lisp :tangle yes
-(setq doom-font (font-spec :family "Monaco" :size 16 :weight 'medium)
+(setq doom-font (font-spec :family "Monaco" :size 15 :weight 'normal)
       doom-big-font (font-spec :family "Monaco" :size 22 :weight 'normal)
-      doom-variable-pitch-font (font-spec :family "Monaco" :size 16 :weight 'normal))
+      doom-variable-pitch-font (font-spec :family "Monaco" :size 15 :weight 'normal))
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
