@@ -70,7 +70,7 @@ I use  [[https://manytricks.com/moom/][Moom by Many Tricks]] to set window sizes
 ** Theme
 
 #+begin_src emacs-lisp :tangle yes
-(setq doom-theme 'doom-zenburn)
+(setq doom-theme 'modus-operandi)
 #+end_src
 
 
