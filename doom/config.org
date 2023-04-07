@@ -1336,7 +1336,8 @@ Some export settings.
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("org-article"
-                 "\\documentclass{article}
+                 "% arara: latexmk: { engine: pdflatex }
+                 \\documentclass{article}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
@@ -1346,7 +1347,8 @@ Some export settings.
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
                '("org-handout"
-                 "\\documentclass{pdfhandout}
+                 "% arara: latexmk: { engine: pdflatex }
+                 \\documentclass{pdfhandout}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
@@ -1356,7 +1358,8 @@ Some export settings.
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
                '("org-beamer"
-                 "\\documentclass{beamer}
+                 "% arara: latexmk: { engine: pdflatex }
+                 \\documentclass{beamer}
       [NO-DEFAULT-PACKAGES]
       [NO-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
