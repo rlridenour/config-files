@@ -1333,7 +1333,7 @@ Insert Org headings at point.
 Some export settings.
 
 #+begin_src emacs-lisp :tangle yes
-(with-eval-after-load 'ox-latex
+(with-eval-after-load ox-latex
   (add-to-list 'org-latex-classes
                '("org-article"
                  "% arara: latexmk: { engine: pdflatex }
