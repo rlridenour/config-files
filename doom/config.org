@@ -875,7 +875,7 @@ Add my custom snippets to Yasnippet
 ";e-" "ē")
 (aas-set-snippets 'org-mode
 "srcel" '(tempel "#+begin_src emacs-lisp :tangle yes" n q n "#+end_src")
-"bnote" '(tempel "***" n ":PROPERTIES:" n ":BEAMER_ENV: note" n ":END:" n n q n "** Notes :B_ignoreheading:" n ":PROPERTIES:" n ":BEAMER_env: ignoreheading" n ":END:" n n)
+"bnote" '(tempel "*** " n ":PROPERTIES:" n ":BEAMER_ENV: note" n ":END:" n n q n "** Notes :B_ignoreheading:" n ":PROPERTIES:" n ":BEAMER_env: ignoreheading" n ":END:" n n)
 "bp" "#+ATTR_BEAMER: :overlay +-"
 )
 (aas-set-snippets 'latex-mode
