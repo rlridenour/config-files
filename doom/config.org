@@ -891,6 +891,8 @@ Add my custom snippets to Yasnippet
 )
 ;; disable snippets by redefining them with a nil expansion
 (aas-set-snippets 'latex-mode
+"enm" '(tempel "\\begin{enumerate}" n "  \\item " q n  "\\end{enumerate}")
+"itm" '(tempel "\\begin{itemize}" n "  \\item " q n "\\end{itemize}")
 ";sn" '(tempel "\\section{" q "}")
 ";ssn" '(tempel "\\subsection{" q "}")
 "mcq" '(tempel "\\begin{question}" n p n "\\choice {" p "}" n "\\choice {" p "}" n "\\choice {" p "}" n "\\choice {" q "}" n "\\end{question}")
@@ -1333,7 +1335,7 @@ Insert Org headings at point.
 Some export settings.
 
 #+begin_src emacs-lisp :tangle yes
-(with-eval-after-load ox-latex
+(with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("org-article"
                  "% arara: latexmk: { engine: pdflatex }
