@@ -101,3 +101,4 @@
 (package! tempel)
 (unpin! compat)
 (package! aas)
+(package! laas)
