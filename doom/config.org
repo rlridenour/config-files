@@ -2377,8 +2377,6 @@ Key-chords
    ))
 #+end_src
 
-#+RESULTS:
-: hydra-buffer/body
 
 *** Hydra locate
 
