@@ -295,6 +295,91 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 )
 
+
+(use-package tempel
+  ;; Require trigger prefix before template name when completing.
+  ;; :custom
+  ;; (tempel-trigger-prefix "<")
+
+  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+         ("M-*" . tempel-insert))
+
+  :init
+
+  ;; Setup completion at point
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
+
+  ;; Optionally make the Tempel templates available to Abbrev,
+  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  ;; (global-tempel-abbrev-mode)
+
+:config
+(setq tempel-path "~/.config/doom/templates.el")
+)
+
+;; Optional: Add tempel-collection.
+;; The package is young and doesn't have comprehensive coverage.
+;; (use-package tempel-collection)
+
+
+(use-package aas
+:hook (LaTeX-mode . aas-activate-for-major-mode)
+:hook (org-mode . aas-activate-for-major-mode)
+:config
+(aas-set-snippets 'text-mode
+;; expand unconditionally
+";o-" "ō"
+";i-" "ī"
+";a-" "ā"
+";u-" "ū"
+";e-" "ē")
+(aas-set-snippets 'org-mode
+"srcel" '(tempel "#+begin_src emacs-lisp :tangle yes" n q n "#+end_src")
+"bnote" '(tempel "*** " n ":PROPERTIES:" n ":BEAMER_ENV: note" n ":END:" n n q n "** Notes :B_ignoreheading:" n ":PROPERTIES:" n ":BEAMER_env: ignoreheading" n ":END:" n n)
+"bp" "#+ATTR_BEAMER: :overlay +-"
+)
+(aas-set-snippets 'latex-mode
+;; set condition!
+:cond #'texmathp ; expand only while in math
+"." "\\land"
+">" "\\lif"
+"==" "\\liff"
+"v" "\\lor"
+"~" "\\lnot"
+"#" "\\exists"
+"@" "\\forall"
+)
+;; disable snippets by redefining them with a nil expansion
+(aas-set-snippets 'latex-mode
+"enm" '(tempel "\\begin{enumerate}" n "  \\item " q n  "\\end{enumerate}")
+"itm" '(tempel "\\begin{itemize}" n "  \\item " q n "\\end{itemize}")
+";sn" '(tempel "\\section{" q "}")
+";ssn" '(tempel "\\subsection{" q "}")
+"mcq" '(tempel "\\begin{question}" n p n "\\choice {" p "}" n "\\choice {" p "}" n "\\choice {" p "}" n "\\choice {" q "}" n "\\end{question}")
+"saq" '(tempel "\\begin{question}" n p n "\\examvspace*{0in}" n "\\begin{answer}" n p n "\\end{answer}" n "\\end{question}")
+"supp" nil))
+
+(use-package laas)
+
+
+
+
+
+
 (provide 'completion)
 
 

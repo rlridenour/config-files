@@ -7,6 +7,8 @@
 (global-unset-key (kbd "s-q"))
 (global-unset-key (kbd "s-w"))
 (global-unset-key (kbd "s-m"))
+(global-unset-key (kbd "s-n"))
+(global-unset-key (kbd "s-d"))
 (global-unset-key (kbd "s-h"))
 (global-unset-key (kbd "<S-return>"))
 
@@ -87,12 +89,14 @@
 (pretty-hydra-define hydra-locate
   (:color teal :quit-key "q" title: "Search")
   ("Buffer"
-   (("l" consult-goto-line "goto-line")
+   (("c" pulsar-highlight-dwim "find cursor")
+    ("l" consult-goto-line "goto-line")
     ("i" consult-imenu "imenu")
     ("m" consult-mark "mark")
     ("o" consult-outline "outline"))
    "Global"
    (("M" consult-global-mark "global-mark")
+    ("n" consult-notes "notes")
     ("r" consult-ripgrep "ripgrep"))
    ))
 
@@ -115,7 +119,19 @@
     ("D" delete-frame "delete this frame")
     ("i" make-frame-invisible "invisible frame")
     ("f" toggle-frame-fullscreen "fullscreen")
+    ("n" make-frame-command "new frame")
    )))
+
+(pretty-hydra-define hydra-new
+(:color teal :quit-key "q" title: "New")
+("Denote"
+(("b" hugo-draft-post "blog post")
+("c" org-capture "capture")
+("n" denote-create-note "note")
+("v" list-denotes "view notes")
+("j" my-denote-journal "journal"))
+))
+
 
 (pretty-hydra-define hydra-logic
   (:color pink :quit-key "0" :title "Logic")
@@ -134,7 +150,7 @@
    "Quit"
    (("0" quit-window "quit" :color blue))
    ))
-    
+
 (pretty-hydra-define hydra-math
   (:color pink :quit-key "?" :title "Math")
   ("Operators"
@@ -160,19 +176,93 @@
    "Quit"
    (("?" quit-window "quit" :color blue))
    ))
- 
+
+
+
+
+
+(pretty-hydra-define hydra-hugo
+  (:color teal :quit-key "q" :title "Hugo")
+  ("Blog"
+   (("n" hugo-draft-post "New draft")
+    ("p" hugo-publish-post "Publish")
+    ("t" hugo-timestamp "Update timestamp")
+    ("e" org-hugo-auto-export-mode "Auto export")
+    ("d" hugo-deploy "Deploy"))
+   ))
+
 
 (pretty-hydra-define hydra-hydras
   (:color teal :quit-key "q" :title "Hydras")
-  ("Unicode"
+  ("System"
+   (("t" hydra-toggle/body)
+    ("h" hydra-hugo/body))
+   "Unicode"
    (("l" hydra-logic/body "logic")
-    ("m" hydra-math/body))
+    ("m" hydra-math/body)
+    )
    )
   )
 
 ;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
 
+
 ;; Major-mode Hydras
+
+(major-mode-hydra-define dashboard-mode
+  (:quit-key "q")
+  ("Open"
+   (("m" consult-bookmark "bookmarks")
+    ("a" consult-org-agenda "consult-agenda")
+    ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
+    )))
+
+(major-mode-hydra-define eww-mode
+  (:quit-key "q")
+  ("A"
+(
+    ("G" eww "Eww Open Browser")
+    ("g" eww-reload "Eww Reload")
+    ("6" eww-open-in-new-buffer "Open in new buffer")
+    ("l" eww-back-url "Back Url")
+    ("r" eww-forward-url "Forward Url")
+    ("N" eww-next-url "Next Url")
+    ("P" eww-previous-url "Previous Url")
+    ("u" eww-up-url "Up Url")
+    ("&" eww-browse-with-external-browser "Open in External Browser")
+    ("d" eww-download "Download")
+    ("w" eww-copy-page-url "Copy Url Page")
+);end theme
+"B"
+(
+    ("T" endless/toggle-image-display "Toggle Image Display")
+    (">" shr-next-link "Shr Next Link")
+    ("<" shr-previous-link "Shr Previous Link")
+    ("n" scroll-down-command "Scroll Down")
+    ("C" url-cookie-list "Url Cookie List")
+    ("v" eww-view-source "View Source")
+    ("R" eww-readable "Make Readable")
+    ("H" eww-list-histories "List History")
+    ("E" eww-set-character-encoding "Character Encoding")
+    ("s" eww-switch-to-buffer "Switch to Buffer")
+    ("S" eww-list-buffers "List Buffers")
+);end highlighting
+
+"C"
+(
+
+    ("1" rrnet "randyridenour.net")
+    ("2" sep "SEP")
+    ("F" eww-toggle-fonts "Toggle Fonts")
+    ("D" eww-toggle-paragraph-direction "Toggle Paragraph Direction")
+    ("c" eww-toggle-colors "Toggle Colors")
+    ("b" eww-add-bookmark "Add Bookmark")
+    ("B" eww-list-bookmarks "List Bookmarks")
+    ("=" eww-next-bookmark "Next Bookmark")
+    ("-" eww-previous-bookmark "Previous Bookmark")
+    ("<SPC>" nil "Quit" :color pink)
+);end other
+))
 
 
 (major-mode-hydra-define markdown-mode
@@ -193,11 +283,56 @@
   ("Bibtex"
    (("r" citar-insert-citation "citation"))
    "LaTeXmk"
-   (("a" rlr/tex-mkt "arara")
+   (("m" rlr/tex-mkt "arara")
     ("w" rlr/tex-mktc "arara watch")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all")
     ("n" latex-word-count "word count"))))
+
+
+(major-mode-hydra-define org-mode
+  (:quit-key "q")
+  ("Export"
+   (
+    ("m" rlr/org-mkt "Make PDF with Arara")
+    ("el" org-latex-export-to-latex "Org to LaTeX")
+    ("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
+    ("eB" org-beamer-export-to-latex "Org to Beamer-LaTeX")
+    ("s" lecture-slides "Lecture slides")
+    ("n" lecture-notes "Lecture notes")
+    ("ep" present "Present slides")
+    ("eh" canvas-copy "Copy html for Canvas")
+    ("c" tex-clean "clean aux")
+    ("C" tex-clean-all "clean all")
+    )
+   "Edit"
+   (
+    ("dd" org-deadline "deadline")
+    ("ds" org-schedule "schedule")
+    ("r" org-refile "refile")
+    ("du" rlr/org-date "update date stamp")
+    ;; ("fn" org-footnote-new "insert footnote")
+    ("ff" org-footnote-action "edit footnote")
+    ("fc" citar-insert-citation "citation")
+    ("b" org-cycle-list-bullet "cycle bullets" :exit nil)
+    ("l" org-mac-link-safari-insert-frontmost-url "insert safari link")
+("y" yankpad-set-category "set yankpad")
+    )
+   "View"
+   (
+    ("vi" consult-org-heading "iMenu")
+    ("vu" org-toggle-pretty-entities "org-pretty")
+    ("vI" org-toggle-inline-images "Inline images")
+    )
+   "Blog"
+   (("hn" hugo-draft-post "New draft")
+    ("hp" hugo-publish-post "Publish")
+    ("ht" hugo-timestamp "Update timestamp")
+    ("hd" hugo-org-deploy "Deploy")
+    ("he" org-hugo-auto-export-mode "Auto export"))
+   "Notes"
+   (("1" denote-link "link to note"))
+   ))
 
 (major-mode-hydra-define org-mode
   (:quit-key "q")
@@ -227,16 +362,15 @@
    ))
 
 
-
-
-
-
 (major-mode-hydra-define dired-mode
   (:quit-key "q")
   ("Tools"
    (("d" crux-open-with "Open in default program")
+    ("h" dired-omit-mode "Show hidden files")
     ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
     ("n" dired-toggle-read-only "edit Filenames"))))
+
+
 
 (defhydra hydra-org (:color teal)
   ("a" org-agenda "agenda")
@@ -300,7 +434,7 @@
  "s-l" 'hydra-locate/body
  "s-f" 'consult-line
  "<f5>" #'deadgrep
- 
+
  ;; "C-s" 'consult-isearch
  ;; "C-r" 'consult-isearch-reverse
 
@@ -318,6 +452,7 @@
 
   ;; Hydras
  "s-h" 'hydra-hydras/body
+ "s-n" #'hydra-new/body
  "s-t" 'hydra-toggle/body
  "s-w" 'hydra-window/body
  "s-b" 'hydra-buffer/body
@@ -366,7 +501,7 @@
  "n g" 'org-roam-graph
  "n i" 'org-roam-node-insert
  "n j" 'org-roam-dailies-capture-today
- "n t" 'org-roam-buffer-toggle 
+ "n t" 'org-roam-buffer-toggle
  "o" 'consult-outline
  "r" 'crux-rename-file-and-buffer
  "s" 'goto-scratch

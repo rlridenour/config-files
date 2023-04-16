@@ -269,6 +269,16 @@
 (use-package denote-menu) 
 
 
+(use-package markdown-mode
+  :mode (("README\\.md\\'" . gfm-mode)
+         ("\\.md\\'" . markdown-mode)
+         ("\\.Rmd\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
+  :config
+  (setq markdown-indent-on-enter 'indent-and-new-item)
+  (setq markdown-asymmetric-header t))
+
+
 (provide 'org)
 
 

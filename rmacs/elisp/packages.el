@@ -141,6 +141,24 @@
 
 (use-package deadgrep)
 
+
+;; EWW
+
+(defun rrnet ()
+(interactive)
+(eww-browse-url "randyridenour.net")
+)
+
+(defun sep ()
+(interactive)
+(eww-browse-url "plato.stanford.edu")
+)
+
+
+;; Org-mac-link
+
+(use-package org-mac-link)
+
 (provide 'packages)
 
 

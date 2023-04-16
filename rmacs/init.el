@@ -65,6 +65,7 @@
 (require 'latex)
 (require 'packages)
 (require 'functions)
+(require 'hugo)
 (require 'keybindings)
 (require 'finish)
 
