@@ -334,33 +334,6 @@
    (("1" denote-link "link to note"))
    ))
 
-(major-mode-hydra-define org-mode
-  (:quit-key "q")
-  ("Export"
-   (("l" org-latex-export-to-latex "Org to LaTeX")
-    ("a" rlr/org-mkt "Make PDF with Arara")
-    ("w" rlr/org-mktc "Make PDF and Watch")
-    ("b" org-beamer-export-to-pdf "Org to Beamer-PDF")
-    ("B" org-beamer-export-to-latex "Org to Beamer-LaTeX")
-    ("s" lecture-slides "Lecture slides")
-    ("h" canvas-copy "Copy html for Canvas")
-    ("c" tex-clean "clean aux")
-    ("C" tex-clean-all "clean all")
-    )
-   "Edit"
-   (("d" rlr/org-date "update date stamp")
-    ("i" consult-org-heading "iMenu")
-    ("r" citar-insert-citation "citation")
-    ("u" org-toggle-pretty-entities "org-pretty"))
-   "Blog"
-   (("n" hugo-draft-post "New draft")
-    ("p" hugo-publish-post "Publish")
-    ("t" hugo-timestamp "Update timestamp")
-    ("e" org-hugo-auto-export-mode "Auto export"))
-"Other"
-(("I" org-toggle-inline-images "Inline images"))
-   ))
-
 
 (major-mode-hydra-define dired-mode
   (:quit-key "q")

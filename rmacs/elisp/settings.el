@@ -3,7 +3,7 @@
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
-(set-fringe-mode 4)
+;; (set-fringe-mode 4)
 (global-visual-line-mode 1)
 (global-auto-revert-mode 1)
 (if (window-system)
@@ -11,7 +11,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (delete-selection-mode 1)
 (column-number-mode)
-(set-frame-parameter (selected-frame) 'internal-border-width 20)
+;; (set-frame-parameter (selected-frame) 'internal-border-width 20)
 (dolist (mode '(c-mode-hook
                 emacs-lisp-mode-hook
                 sh-mode-hook

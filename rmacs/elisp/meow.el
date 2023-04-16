@@ -91,6 +91,7 @@
   (meow-setup)
   (add-to-list 'meow-mode-state-list '(text-mode . insert))
   (add-to-list 'meow-mode-state-list '(prog-mode . insert))
+  (add-to-list 'meow-mode-state-list '(term-mode . insert))
   (setq meow-use-clipboard t)
   (meow-global-mode 1))
 
