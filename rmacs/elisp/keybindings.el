@@ -364,14 +364,15 @@
 ;; Make things more Mac-like
 
 (general-define-key
- "<s-up>" 'beginning-of-buffer
- "<s-down>" 'end-of-buffer
- "<s-right>" 'end-of-visual-line
- "<s-left>" 'beginning-of-visual-line
- "s-w" 'delete-frame
- "<C-tab>" 'other-window
- "<M-down>" 'forward-paragraph
- "<M-up>" 'backward-paragraph)
+ "<s-up>" #'beginning-of-buffer
+ "<s-down>" #'end-of-buffer
+ "<s-right>" #'end-of-visual-line
+ "<s-left>" #'beginning-of-visual-line
+ "s-w" #'delete-frame
+ "<C-tab>" #'other-window
+ "<M-down>" #'forward-paragraph
+ "<M-up>" #'backward-paragraph
+ "C-`" #'iterm-goto-filedir-or-home)
 
 
 
@@ -379,110 +380,106 @@
 (general-define-key
 
  ;; Windows and frames
- "C-0" 'delete-window-balance
- "C-1" 'delete-other-windows
- "C-2" 'split-window-below-focus
- "C-3" 'split-window-right-focus
- "s-K" 'nuke-all-buffers
- "s-6" 'toggle-window-split
- "S-C-<left>" 'shrink-window-horizontally
- "S-C-<right>" 'enlarge-window-horizontally
- "S-C-<down>" 'shrink-window
- "S-C-<up>" 'enlarge-window
- "C-x w" 'delete-frame
- "M-o" 'crux-other-window-or-switch-buffer
+ "C-0" #'delete-window-balance
+ "C-1" #'delete-other-windows
+ "C-2" #'split-window-below-focus
+ "C-3" #'split-window-right-focus
+ "s-K" #'nuke-all-buffers
+ "s-6" #'toggle-window-split
+ "S-C-<left>" #'shrink-window-horizontally
+ "S-C-<right>" #'enlarge-window-horizontally
+ "S-C-<down>" #'shrink-window
+ "S-C-<up>" #'enlarge-window
+ "C-x w" #'delete-frame
+ "M-o" #'crux-other-window-or-switch-buffer
 
  ;; Files and buffers
- "C-x c" 'save-buffers-kill-emacs
- "C-x C-b" 'ibuffer
- "C-`" 'iterm-goto-filedir-or-home
- "s-o" 'find-file
- "s-k" 'kill-buffer-and-window
- "s-r" 'consult-buffer
- "M-s-r" 'consult-buffer-other-window
- "C-S-a" 'embark-act
+ "C-x c" #'save-buffers-kill-emacs
+ "C-x C-b" #'ibuffer
+ "C-`" #'iterm-goto-filedir-or-home
+ "s-o" #'find-file
+ "s-k" #'kill-this-buffer
+ "M-s-k" #'kill-buffer-and-window
+ "s-r" #'consult-buffer
+ "M-s-r" #'consult-buffer-other-window
+ "C-S-a" #'embark-act
+ "M-<RET>" #'crux-open-with
 
  ;; Search
 
- "s-l" 'hydra-locate/body
- "s-f" 'consult-line
+ "s-l" #'hydra-locate/body
+ "s-f" #'consult-line
  "<f5>" #'deadgrep
 
- ;; "C-s" 'consult-isearch
- ;; "C-r" 'consult-isearch-reverse
+ ;; "C-s" #'consult-isearch
+ ;; "C-r" #'consult-isearch-reverse
 
  ;; Editing
- "RET" 'newline-and-indent
- "M-/" 'hippie-expand
- "C-+" 'text-scale-increase
- "C--" 'text-scale-decrease
- "<s-backspace>" 'kill-whole-line
- "s-j" 'crux-top-join-line
- "<S-return>" 'crux-smart-open-line
- "<C-S-return>" 'crux-smart-open-line-above
- "M-y" 'consult-yank-pop
- "M-q" 'reformat-paragraph
+ "RET" #'newline-and-indent
+ "M-/" #'hippie-expand
+ "C-+" #'text-scale-increase
+ "C--" #'text-scale-decrease
+ "<s-backspace>" #'kill-whole-line
+ "s-j" #'crux-top-join-line
+ "<S-return>" #'crux-smart-open-line
+ "<C-S-return>" #'crux-smart-open-line-above
+ "M-y" #'consult-yank-pop
+ "M-q" #'reformat-paragraph
+ "M-;" #'evilnc-comment-or-uncomment-lines
+ "M-#" #'dictionary-lookup-definition
+ "M-=" #'shrink-whitespace
 
-  ;; Hydras
- "s-h" 'hydra-hydras/body
+ ;; Hydras
+ "s-h" #'hydra-hydras/body
  "s-n" #'hydra-new/body
- "s-t" 'hydra-toggle/body
- "s-w" 'hydra-window/body
- "s-b" 'hydra-buffer/body
- "C-x 9" 'hydra-logic/body
+ "s-t" #'hydra-toggle/body
+ "s-w" #'hydra-window/body
+ "s-b" #'hydra-buffer/body
+ "C-x 9" #'hydra-logic/body
 
- "s-/" 'avy-goto-char-timer
+ "s-/" #'avy-goto-char-timer
  "s-d" #'goto-dashboard
- "s-=" 'endless/ispell-word-then-abbrev
- "<help> a" 'consult-apropos
- "C-x 4 b" 'consult-buffer-other-window
- "C-x 5 b" 'consult-buffer-other-frame
- "C-x r x" 'consult-register
- "M-s m" 'consult-multi-occur
- "<f8>" 'insert-standard-date
- "M-u" 'upcase-dwim
- "M-l" 'downcase-dwim
- "M-c" 'capitalize-dwim
+ "s-=" #'endless/ispell-word-then-abbrev
+ "<help> a" #'consult-apropos
+ "C-x 4 b" #'consult-buffer-other-window
+ "C-x 5 b" #'consult-buffer-other-frame
+ "C-x r x" #'consult-register
+ "M-s m" #'consult-multi-occur
+ "<f8>" #'insert-standard-date
+ "M-u" #'upcase-dwim
+ "M-l" #'downcase-dwim
+ "M-c" #'capitalize-dwim
  )
 
-
-;; "C-c u" 'unfill-paragraph
-;; "C-c C-<return>" 'split-org-item)
-;; "C-c o" 'crux-open-with
-;; "C-c D" 'crux-delete-file-and-buffer
-;; "C-c C-k" 'compile
-
-
+;; "C-c u" #'unfill-paragraph
+;; "C-c C-<return>" #'split-org-item)
+;; "C-c o" #'crux-open-with
+;; "C-c D" #'crux-delete-file-and-buffer
+;; "C-c C-k" #'compile
 
 ;; * Prefix Keybindings
 ;; :prefix can be used to prevent redundant specification of prefix keys
 (general-define-key
  :prefix "C-c"
- ;; bind "C-c a" to 'org-agenda
- "a" 'org-agenda
- "2" 'rlr/find-file-below
- "3" 'rlr/find-file-right
- "b" 'consult-bookmark
- "c" 'org-capture
- "D" 'crux-delete-file-and-buffer
- ;; "h" 'consult-history
- "k" 'crux-kill-other-buffers
- "m" 'consult-mark
- "n b" 'hugo-draft-post
- "n c" 'org-roam-capture
- "n f" 'org-roam-node-find
- "n g" 'org-roam-graph
- "n i" 'org-roam-node-insert
- "n j" 'org-roam-dailies-capture-today
- "n t" 'org-roam-buffer-toggle
- "o" 'consult-outline
- "r" 'crux-rename-file-and-buffer
- "s" 'goto-scratch
- "S" 'crux-cleanup-buffer-or-region
- "t" 'crux-visit-term-buffer
- "u" 'unfill-paragraph
- "w" 'ace-window
- "z" 'reveal-in-osx-finder)
+ ;; bind "C-c a" to #'org-agenda
+ "a" #'org-agenda
+ "2" #'rlr/find-file-below
+ "3" #'rlr/find-file-right
+ "b" #'consult-bookmark
+ "c" #'org-capture
+ "D" #'crux-delete-file-and-buffer
+ ;; "h" #'consult-history
+ "k" #'crux-kill-other-buffers
+ "m" #'consult-mark
+ "n b" #'hugo-draft-post
+ "o" #'consult-outline
+ "r" #'crux-rename-file-and-buffer
+ "s" #'goto-scratch
+ "S" #'crux-cleanup-buffer-or-region
+ "t" #'crux-visit-term-buffer
+ "u" #'unfill-paragraph
+ "w" #'ace-window
+ "z" #'reveal-in-osx-finder)
 
 
 (provide 'keybindings)

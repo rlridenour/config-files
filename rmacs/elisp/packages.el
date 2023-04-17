@@ -45,6 +45,24 @@
 
 (use-package fish-mode)
 
+(use-package vundo)
+
+(use-package unfill)
+
+
+(use-package yankpad
+  :init
+  (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
+:config
+  (bind-key "<f6>" 'yankpad-insert))
+
+(use-package titlecase
+  :config
+(setq titlecase-style "chicago"))
+
+
+  
+
 ;; (use-package pdf-tools
 ;;    :pin manual
 ;;    :config

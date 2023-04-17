@@ -11,14 +11,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (delete-selection-mode 1)
 (column-number-mode)
-;; (set-frame-parameter (selected-frame) 'internal-border-width 20)
-(dolist (mode '(c-mode-hook
-                emacs-lisp-mode-hook
-                sh-mode-hook
-                shell-mode-hook
-                python-mode-hook
-                LaTeX-mode-hook))
-  (add-hook mode (lambda () (display-line-numbers-mode t))))
+(global-display-line-numbers-mode)
 (setq-default cursor-in-non-selected-windows nil
               frame-title-format '("%f [%m]"))
 (setq default-fill-column 100

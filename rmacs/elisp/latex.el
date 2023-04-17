@@ -93,36 +93,10 @@
     (string-match "\n$" word-count)
     (message (replace-match "" nil nil word-count))))
 
-
-
-;; (use-package math-delimiters
-;;   :straight (:type git :host github :repo "oantolin/math-delimiters" :branch "master")
-;;   :commands (math-delimiters-insert)
-;;   :init
-;;   (bind-key "$" #'math-delimiters-insert TeX-mode-map)
-;;   (bind-key "$" #'math-delimiters-insert tex-mode-map)
-;;   (bind-key "$" #'math-delimiters-insert org-mode-map))
-
-
-
-
-					;
-
-
-
-
-
-
-
-
 (use-package latex-change-env
   :after latex
   :bind 
   (:map LaTeX-mode-map ("C-c r" . latex-change-env))
-  ;; (:map LaTeX-mode-map ("s-<return>" . LaTeX-insert-item))
-  :config
-  (setq latex-change-env-display math-delimiters-display))
-
 
 (provide 'latex)
 ;;; latex.el ends here
