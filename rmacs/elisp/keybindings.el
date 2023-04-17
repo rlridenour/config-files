@@ -432,7 +432,7 @@
  "C-x 9" 'hydra-logic/body
 
  "s-/" 'avy-goto-char-timer
- "s-d" 'consult-dir
+ "s-d" #'goto-dashboard
  "s-=" 'endless/ispell-word-then-abbrev
  "<help> a" 'consult-apropos
  "C-x 4 b" 'consult-buffer-other-window

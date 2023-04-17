@@ -33,17 +33,7 @@
 (add-hook 'server-switch-hook 'raise-emacs-on-aqua)
 
 
-(use-package math-delimiters
-  :defer t
-  :straight (math-delimiters :type git :host github :repo "oantolin/math-delimiters")
-  :config
-  (with-eval-after-load 'org
-  (define-key org-mode-map "$" #'math-delimiters-insert))
-(with-eval-after-load 'tex              ; for AUCTeX
-  (define-key TeX-mode-map "$" #'math-delimiters-insert))
-(with-eval-after-load 'tex-mode         ; for the built-in TeX/LaTeX modes
-  (define-key tex-mode-map "$" #'math-delimiters-insert))
-)
+
 
 
 ;; Functions for Arara
@@ -102,6 +92,28 @@
               (call-process "texcount" nil t nil "-brief" this-file)))))
     (string-match "\n$" word-count)
     (message (replace-match "" nil nil word-count))))
+
+
+
+;; (use-package math-delimiters
+;;   :straight (:type git :host github :repo "oantolin/math-delimiters" :branch "master")
+;;   :commands (math-delimiters-insert)
+;;   :init
+;;   (bind-key "$" #'math-delimiters-insert TeX-mode-map)
+;;   (bind-key "$" #'math-delimiters-insert tex-mode-map)
+;;   (bind-key "$" #'math-delimiters-insert org-mode-map))
+
+
+
+
+					;
+
+
+
+
+
+
+
 
 (use-package latex-change-env
   :after latex
