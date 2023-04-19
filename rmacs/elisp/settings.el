@@ -12,6 +12,7 @@
 (delete-selection-mode 1)
 (column-number-mode)
 (global-display-line-numbers-mode)
+(save-place-mode 1)
 (setq-default cursor-in-non-selected-windows nil
 	      frame-title-format '("%f [%m]"))
 (setq default-fill-column 100

@@ -57,3 +57,4 @@ rmacs/*~
 rmacs/elpa/
 rmacs/url/
 rmacs/org-persist
+rmacs/places

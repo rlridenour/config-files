@@ -371,10 +371,27 @@
     (string-match "\n$" word-count)
     (message (replace-match "" nil nil word-count))))
 
-;; (use-package latex-change-env
-;;   :after latex
-;;   :bind 
-;;   (:map LaTeX-mode-map ("C-c r" . latex-change-env))
+(use-package latex-change-env
+  :after latex
+  :bind 
+  (:map LaTeX-mode-map ("C-c r" . latex-change-env)))
+
+(use-package math-delimiters
+  :commands (math-delimiters-no-dollars math-delimiters-mode)
+  :hook ((LaTeX-mode . math-delimiters-mode)
+           (org-mode . math-delimiters-mode))
+  :ensure nil
+  :config (progn
+            (setq math-delimiters-compressed-display-math nil)
+
+
+            (define-minor-mode math-delimiters-mode
+              "Math Delimeters"
+              :init-value nil
+              :lighter " MD"
+              :keymap (let ((map (make-sparse-keymap)))
+                        (define-key map (kbd "$")  #'math-delimiters-insert)
+                        map))))
 
 
 (provide 'org)

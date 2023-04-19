@@ -373,7 +373,8 @@
 "saq" '(tempel "\\begin{question}" n p n "\\examvspace*{0in}" n "\\begin{answer}" n p n "\\end{answer}" n "\\end{question}")
 "supp" nil))
 
-(use-package laas)
+(use-package laas
+  :hook (TeX-mode . laas-mode))
 
 
 
