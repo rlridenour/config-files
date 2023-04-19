@@ -56,3 +56,4 @@ rmacs/pomm
 rmacs/*~
 rmacs/elpa/
 rmacs/url/
+rmacs/org-persist
