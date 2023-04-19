@@ -13,7 +13,7 @@
 (column-number-mode)
 (global-display-line-numbers-mode)
 (setq-default cursor-in-non-selected-windows nil
-              frame-title-format '("%f [%m]"))
+	      frame-title-format '("%f [%m]"))
 (setq default-fill-column 100
       make-backup-files nil
       inhibit-startup-message t
@@ -34,14 +34,14 @@
 (defun unkillable-scratch-buffer ()
   (if (equal (buffer-name (current-buffer)) "*scratch*")
       (progn
-        (delete-region (point-min) (point-max))
-        nil)
+	(delete-region (point-min) (point-max))
+	nil)
     t))
 (add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
 
 ;; Create new scratch buffer after saving.
-                     
-(defun goto-scratch () 
+
+(defun goto-scratch ()
   "this sends you to the scratch buffer"
   (interactive)
   (let ((goto-scratch-buffer (get-buffer-create "*scratch*")))
@@ -62,10 +62,10 @@
 
 (setq insert-directory-program "gls"); use proper GNU ls
 
-                                        ;Auto refresh buffers including dired
+					;Auto refresh buffers including dired
 (setq global-auto-revert-non-file-buffers t)
 
-                                        ; Do not generate any messages (be quiet about refreshing Dired).
+					; Do not generate any messages (be quiet about refreshing Dired).
 (setq auto-revert-verbose nil)
 
 ;; Allow recursive minibuffers
@@ -73,11 +73,11 @@
 ;;show recursion depth in minibuffer
 (minibuffer-depth-indicate-mode t)
 
-                                        ;two identical buffers get uniquely numbered names
+					;two identical buffers get uniquely numbered names
 (require 'uniquify)
 
 
-; Map escape to cancel (like C-g)
+					; Map escape to cancel (like C-g)
 (define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
 (global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
 
@@ -85,13 +85,13 @@
 
 
 (setq
-   backup-by-copying t      ; don't clobber symlinks
-   backup-directory-alist
-    '(("." . "~/.saves/"))    ; don't litter my fs tree
-   delete-old-versions t
-   kept-new-versions 6
-   kept-old-versions 2
-   version-control t)
+ backup-by-copying t      ; don't clobber symlinks
+ backup-directory-alist
+ '(("." . "~/.saves/"))    ; don't litter my fs tree
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t)
 
 ;; Recent files
 (require 'recentf)
@@ -117,7 +117,7 @@
 ;; Don't display async shell command process buffers
 
 (add-to-list 'display-buffer-alist
-  (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
 ;; ibuffer
 
@@ -131,9 +131,9 @@
 
 
 (add-hook 'ibuffer-mode-hook
-          '(lambda ()
-             (ibuffer-auto-mode 1)
-             (ibuffer-switch-to-saved-filter-groups "home")))
+	  #'(lambda ()
+	      (ibuffer-auto-mode 1)
+	      (ibuffer-switch-to-saved-filter-groups "home")))
 
 
 ;;; Abbreviations and Bookmarks
@@ -149,6 +149,19 @@
 (bookmark-bmenu-list)
 
 
+
+;; Dired
+
+(use-package dired-x
+  :straight (:type built-in)
+  :config
+  (progn
+    (setq dired-omit-verbose nil)
+    ;; toggle `dired-omit-mode' with C-x M-o
+    (add-hook 'dired-mode-hook #'dired-omit-mode)
+    (setq dired-omit-files
+	  (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$"))
+    (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "DS_Store" "xml" "bcf" "nav" "snm" "toc"))))
 
 (provide 'settings)
 

@@ -62,7 +62,6 @@
 (require 'meow)
 (require 'completion)
 (require 'org)
-(require 'latex)
 (require 'packages)
 (require 'functions)
 (require 'hugo)
