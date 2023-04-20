@@ -164,6 +164,13 @@
 	  (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$"))
     (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "DS_Store" "xml" "bcf" "nav" "snm" "toc"))))
 
+
+;; Spelling
+
+(use-package jinx
+  :hook (emacs-startup . global-jinx-mode)
+  :bind ([remap ispell-word] . jinx-correct))
+
 (provide 'settings)
 
 

@@ -428,6 +428,7 @@
  "M-;" #'evilnc-comment-or-uncomment-lines
  "M-#" #'dictionary-lookup-definition
  "M-=" #'shrink-whitespace
+ "<f7>" #'jinx-correct
 
  ;; Hydras
  "s-h" #'hydra-hydras/body
