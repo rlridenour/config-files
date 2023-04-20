@@ -167,9 +167,16 @@
 
 ;; Spelling
 
+;; Use f7 to check word, shift-f7 to check entire buffer.
+
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode)
   :bind ([remap ispell-word] . jinx-correct))
+
+(global-set-key (kbd "S-<f7>") (lambda ()
+                                (interactive)
+                                (let ((current-prefix-arg '(4)))
+                                  (call-interactively #'jinx-correct))))
 
 (provide 'settings)
 
