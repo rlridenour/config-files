@@ -403,7 +403,7 @@
  "s-r" #'consult-buffer
  "M-s-r" #'consult-buffer-other-window
  "C-S-a" #'embark-act
- "M-<RET>" #'crux-open-with
+ ;; "M-<RET>" #'crux-open-with
 
  ;; Search
 
@@ -480,6 +480,12 @@
  "u" #'unfill-paragraph
  "w" #'ace-window
  "z" #'reveal-in-osx-finder)
+
+
+(general-define-key
+:keymaps 'dired-mode-map
+ "M-<RET>" #'crux-open-with
+)
 
 
 (provide 'keybindings)

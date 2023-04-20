@@ -355,13 +355,13 @@
 (aas-set-snippets 'latex-mode
 ;; set condition!
 :cond #'texmathp ; expand only while in math
-"." "\\land"
-">" "\\lif"
-"==" "\\liff"
-"v" "\\lor"
-"~" "\\lnot"
-"#" "\\exists"
-"@" "\\forall"
+"." "\\land "
+">" "\\lif "
+"==" "\\liff "
+"v" "\\lor "
+"~" "\\lnot "
+"#" "\\exists "
+"@" "\\forall "
 )
 ;; disable snippets by redefining them with a nil expansion
 (aas-set-snippets 'latex-mode
