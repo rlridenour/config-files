@@ -328,7 +328,7 @@
   ;; (global-tempel-abbrev-mode)
 
 :config
-(setq tempel-path "~/.config/doom/templates.el")
+(setq tempel-path "~/.config/rmacs/templates.el")
 )
 
 ;; Optional: Add tempel-collection.
