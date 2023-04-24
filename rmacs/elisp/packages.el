@@ -1,26 +1,32 @@
 ;;; packages.el -*- lexical-binding: t; -*-
 
 
-(use-package avy)
+(use-package avy
+  :defer t)
 
-(use-package ace-window)
+(use-package ace-window
+  :defer t)
 
-(use-package shrink-whitespace)
+(use-package shrink-whitespace
+  :defer t)
 
 (use-package hl-line+
   :config
-  (toggle-hl-line-when-idle))
+  (toggle-hl-line-when-idle 1))
 
-(use-package expand-region)
+(use-package expand-region
+  :defer t)
 
 (use-package magit
   :defer t
   :config
   (global-auto-revert-mode))
 
-(use-package reveal-in-osx-finder)
+(use-package reveal-in-osx-finder
+  :defer t)
 
 (use-package hungry-delete
+  :defer t
   :config
   (global-hungry-delete-mode))
 
@@ -34,29 +40,35 @@
 
 (use-package aggressive-indent)
 
-(use-package evil-nerd-commenter)
+(use-package evil-nerd-commenter
+  :defer t)
 
 
 (use-package which-key
   :config
   (which-key-mode))
 
-(use-package crux)
+(use-package crux
+  :defer t)
 
-(use-package fish-mode)
+(use-package fish-mode
+  :defer t)
 
 (use-package vundo)
 
-(use-package unfill)
+(use-package unfill
+  :defer t)
 
 
 (use-package yankpad
+  :defer t
   :init
   (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
 :config
   (bind-key "<f6>" 'yankpad-insert))
 
 (use-package titlecase
+  :defer t
   :config
 (setq titlecase-style "chicago"))
 
@@ -175,7 +187,8 @@
 
 ;; Org-mac-link
 
-(use-package org-mac-link)
+(use-package org-mac-link
+  :defer t)
 
 (provide 'packages)
 

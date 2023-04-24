@@ -12,7 +12,7 @@
   ;; (setq org-footnote-section nil)
   (setq org-html-validation-link nil)
   (setq org-todo-keyword-faces
-        '(("DONE" . "green4")))
+        '(("DONE" . "green4") ("TODO" . org-warning)))
   (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
 
 ;; Org-tempo is need for structure templates like "<s".
@@ -213,6 +213,7 @@
 ;; Bibtex
 
 (use-package citar
+  :defer t
   :bind (("C-c C-b" . citar-insert-citation)
          :map minibuffer-local-map
          ("M-b" . citar-insert-preset))
@@ -225,7 +226,7 @@
 
 
 (use-package ebib
-  :defer
+  :defer t
   :config
   (setq ebib-bibtex-dialect 'biblatex)
   ;;(evil-set-initial-state 'ebib-index-mode 'emacs)
@@ -237,6 +238,7 @@
 
 ;; Denote
 (use-package denote
+  :defer t
   :config
   (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes")
   (setq denote-infer-keywords t)
@@ -246,6 +248,7 @@
   )
 
 (use-package consult-notes
+  :defer t
   :config
   (setq consult-notes-sources
         `(("Notes"  ?n ,denote-directory)
@@ -266,10 +269,12 @@
   (citar-denote-mode)
   (setq citar-open-always-create-notes t))
 
-(use-package denote-menu) 
+(use-package denote-menu
+  :defer t) 
 
 
 (use-package markdown-mode
+  :defer t
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.Rmd\\'" . markdown-mode)
@@ -377,6 +382,7 @@
   (:map LaTeX-mode-map ("C-c r" . latex-change-env)))
 
 (use-package math-delimiters
+  :after (:any org latex)
   :commands (math-delimiters-no-dollars math-delimiters-mode)
   :hook ((LaTeX-mode . math-delimiters-mode)
            (org-mode . math-delimiters-mode))
