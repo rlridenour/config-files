@@ -139,12 +139,15 @@
    (("1" (my/insert-unicode "NOT SIGN") "¬")
     ("2" (my/insert-unicode "AMPERSAND") "&")
     ("3" (my/insert-unicode "LOGICAL OR") "v")
-    ("4" (my/insert-unicode "RIGHTWARDS ARROW") "→")
-    ("5" (my/insert-unicode "LEFT RIGHT ARROW") "↔")
+    ("4" (my/insert-unicode "SUPERSET OF") "⊃")
+    ;; ("4" (my/insert-unicode "RIGHTWARDS ARROW") "→")
+    ("5" (my/insert-unicode "IDENTICAL TO") "≡")
+    ;; ("5" (my/insert-unicode "LEFT RIGHT ARROW") "↔")
     ("6" (my/insert-unicode "THERE EXISTS") "∃")
     ("7" (my/insert-unicode "FOR ALL") "∀")
     ("8" (my/insert-unicode "WHITE MEDIUM SQUARE") "□")
-    ("9" (my/insert-unicode "LOZENGE") "◊"))
+    ("9" (my/insert-unicode "LOZENGE") "◊")
+    ("`" (my/insert-unicode "NOT EQUAL TO") "≠"))
    "Space"
    (("?" (my/insert-unicode "MEDIUM MATHEMATICAL SPACE") "Narrow space"))
    "Quit"
