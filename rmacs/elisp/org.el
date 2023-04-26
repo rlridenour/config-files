@@ -295,7 +295,9 @@
   (setq markdown-indent-on-enter 'indent-and-new-item)
   (setq markdown-asymmetric-header t))
 
-
+;; Convert markdown files to org format.
+(fset 'convert-markdown-to-org
+      [?\M-< ?\M-% ?* return ?- return ?! ?\M-< ?\C-\M-% ?# ?* backspace backspace ?  ?# ?* ?$ return return ?! ?\M-< ?\M-% ?# return ?* return ?!])
 
 
 (use-package tex-site
