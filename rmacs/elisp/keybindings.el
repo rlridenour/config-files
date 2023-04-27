@@ -127,7 +127,7 @@
 ("Denote"
 (("b" hugo-draft-post "blog post")
 ("c" org-capture "capture")
-("n" denote-create-note "note")
+("n" denote "note")
 ("v" list-denotes "view notes")
 ("j" my-denote-journal "journal"))
 ))
