@@ -417,6 +417,11 @@
  ;; "C-s" #'consult-isearch
  ;; "C-r" #'consult-isearch-reverse
 
+ ;; Toggle ter
+ "<f2>" #'term-toggle-ansi
+ "<S-f2>" #'term-toggle-eshell
+ 
+ 
  ;; Editing
  "RET" #'newline-and-indent
  "M-/" #'hippie-expand

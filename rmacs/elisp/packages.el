@@ -190,6 +190,16 @@
 (use-package org-mac-link
   :defer t)
 
+
+;; Emacs-term-toggle
+;; https://github.com/amno1/emacs-term-toggle
+(use-package emacs-term-toggle
+  :defer t
+  :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
+  )
+
+
+
 (provide 'packages)
 
 
