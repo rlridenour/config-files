@@ -259,6 +259,20 @@
     ))
   )
 
+;; From Vernon Grant (https://gist.github.com/VernonGrant/1341a3bdcded3fc3a3741427f706ca85)
+;; Zap up to char quickly.
+(defun vg-quick-zap-up-to-char (p c)
+  "The same as zap up to char, but without the mini buffer prompt.
+P: The prefix argument or the count.
+C: The character to zap up to."
+  (interactive "P\nc")
+  (let ((cnt (cond ((null p) 1)
+                   ((symbolp p) -1)
+                   (t p))))
+    (zap-up-to-char cnt c)))
+(define-key global-map (kbd "C-z") 'vg-quick-zap-up-to-char)
+
+
 (provide 'functions)
 
 

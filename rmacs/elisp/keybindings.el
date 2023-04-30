@@ -474,6 +474,7 @@
  "D" #'crux-delete-file-and-buffer
  ;; "h" #'consult-history
  "k" #'crux-kill-other-buffers
+ "l" #'dictionary-search
  "m" #'consult-mark
  "n b" #'hugo-draft-post
  "o" #'consult-outline
