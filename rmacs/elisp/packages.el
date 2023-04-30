@@ -20,7 +20,15 @@
 (use-package magit
   :defer t
   :config
-  (global-auto-revert-mode))
+  (global-auto-revert-mode)
+  (setq magit-refresh-status-buffer nil
+	magit-diff-highlight-indentation nil
+	magit-diff-highlight-trailing nil
+	magit-diff-paint-whitespace nil
+	magit-diff-highlight-hunk-body nil
+	magit-diff-refine-hunk nil
+	magit-revision-insert-related-refs nil)
+  )
 
 (use-package reveal-in-osx-finder
   :defer t)
@@ -73,7 +81,7 @@
 (setq titlecase-style "chicago"))
 
 
-  
+
 
 ;; (use-package pdf-tools
 ;;    :pin manual
@@ -95,39 +103,39 @@
 (use-package pulsar
   :custom
   (setq pulsar-pulse-functions
-        '(isearch-repeat-forward
-          isearch-repeat-backward
-          recenter-top-bottom
-          move-to-window-line-top-bottom
-          reposition-window
-          bookmark-jump
-          other-window
-          delete-window
-          delete-other-windows
-          forward-page
-          backward-page
-          scroll-up-command
-          scroll-down-command
-          windmove-right
-          windmove-left
-          windmove-up
-          windmove-down
-          windmove-swap-states-right
-          windmove-swap-states-left
-          windmove-swap-states-up
-          windmove-swap-states-down
-          tab-new
-          tab-close
-          tab-next
-          org-next-visible-heading
-          org-previous-visible-heading
-          org-forward-heading-same-level
-          org-backward-heading-same-level
-          outline-backward-same-level
-          outline-forward-same-level
-          outline-next-visible-heading
-          outline-previous-visible-heading
-          outline-up-heading))
+	'(isearch-repeat-forward
+	  isearch-repeat-backward
+	  recenter-top-bottom
+	  move-to-window-line-top-bottom
+	  reposition-window
+	  bookmark-jump
+	  other-window
+	  delete-window
+	  delete-other-windows
+	  forward-page
+	  backward-page
+	  scroll-up-command
+	  scroll-down-command
+	  windmove-right
+	  windmove-left
+	  windmove-up
+	  windmove-down
+	  windmove-swap-states-right
+	  windmove-swap-states-left
+	  windmove-swap-states-up
+	  windmove-swap-states-down
+	  tab-new
+	  tab-close
+	  tab-next
+	  org-next-visible-heading
+	  org-previous-visible-heading
+	  org-forward-heading-same-level
+	  org-backward-heading-same-level
+	  outline-backward-same-level
+	  outline-forward-same-level
+	  outline-next-visible-heading
+	  outline-previous-visible-heading
+	  outline-up-heading))
   :hook
   (consult-after-jump . pulsar-recenter-top)
   (consult-after-jump . pulsar-reveal-entry)
@@ -136,10 +144,10 @@
   (imenu-after-jump . pulsar-reveal-entry)
   :config
   (setq pulsar-pulse t
-        pulsar-delay 0.2
-        pulsar-iterations 10
-        pulsar-face 'pulsar-blue
-        pulsar-highlight-face 'pulsar-blue))
+	pulsar-delay 0.2
+	pulsar-iterations 10
+	pulsar-face 'pulsar-blue
+	pulsar-highlight-face 'pulsar-blue))
 
 (pulsar-global-mode 1)
 
@@ -156,9 +164,9 @@
   (setq dashboard-set-file-icons nil)
   (setq dashboard-set-navigator nil)
   (setq dashboard-items '((agenda . 5)
-                          (recents  . 5)
-                          (bookmarks . 10)))
-                          
+			  (recents  . 5)
+			  (bookmarks . 10)))
+
   )
 
 
