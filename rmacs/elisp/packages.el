@@ -198,8 +198,6 @@
   :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
   )
 
-
-
 (provide 'packages)
 
 
