@@ -6,8 +6,7 @@
 ;; (set-fringe-mode 4)
 (global-visual-line-mode 1)
 (global-auto-revert-mode 1)
-(if (window-system)
-    (global-hl-line-mode 1))
+(global-hl-line-mode 1)
 (fset 'yes-or-no-p 'y-or-n-p)
 (delete-selection-mode 1)
 (column-number-mode)
@@ -27,6 +26,7 @@
       message-kill-buffer-on-exit t
       large-file-warning-threshold nil
       sentence-end-double-space nil
+      dictionary-server "dict.org"
       )
 
 ;; Kill contents of scratch buffer, not the buffer itself. From [[http://emacswiki.org/emacs/RecreateScratchBuffer][TN]].

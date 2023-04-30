@@ -286,8 +286,8 @@
   ("Bibtex"
    (("r" citar-insert-citation "citation"))
    "LaTeXmk"
-   (("m" rlr/tex-mkt "arara")
-    ("w" rlr/tex-mktc "arara watch")
+   (("m" rlr/tex-mkt "compile")
+    ("w" rlr/tex-mktc "watch")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all")
     ("n" latex-word-count "word count"))))
