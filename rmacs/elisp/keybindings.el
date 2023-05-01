@@ -417,7 +417,7 @@
  ;; "C-s" #'consult-isearch
  ;; "C-r" #'consult-isearch-reverse
 
- ;; Toggle ter
+ ;; Toggle term
  "<f2>" #'term-toggle-ansi
  "<S-f2>" #'term-toggle-eshell
  
@@ -427,6 +427,7 @@
  "M-/" #'hippie-expand
  "C-+" #'text-scale-increase
  "C--" #'text-scale-decrease
+ "C-z" #'vg-quick-zap-up-to-char
  "<s-backspace>" #'kill-whole-line
  "s-j" #'crux-top-join-line
  "<S-return>" #'crux-smart-open-line

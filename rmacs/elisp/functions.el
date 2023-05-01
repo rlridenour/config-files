@@ -270,7 +270,6 @@ C: The character to zap up to."
                    ((symbolp p) -1)
                    (t p))))
     (zap-up-to-char cnt c)))
-(define-key global-map (kbd "C-z") 'vg-quick-zap-up-to-char)
 
 
 (provide 'functions)
