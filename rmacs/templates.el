@@ -115,7 +115,7 @@ n "\\end{document}")
 (lcommands "\\renewcommand{\\land}{\\&}" n "\\newcommand{\\lif}{\\supset}" n "\\newcommand{\\liff}{\\equiv}" n "\\renewcommand{\\land}{\\mathbin{\\&}}" n "\\newcommand{\\lneg}{\\neg}" n "\\renewcommand\\familydefault\\sfdefault" n "\\usepackage[LGRgreek]{mathastext}" n "\\renewcommand\\familydefault\\rmdefault" n)
 (fpf "\\(" n "\\begin{nd}" n> "\\hypo {" p "} {" p "}" n> q n "\\end{nd}" n "\\)")
 (fpr "\\hypo {" p "} {" q "}")
-(fln "\have {" p "} {" p "} \\ " p "{" p "}")
+(fln "\\have {" p "} {" p "} \\ " p "{" p "}")
 
 ;; Exam snippets
 

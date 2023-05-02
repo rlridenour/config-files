@@ -420,8 +420,8 @@
  ;; Toggle term
  "<f2>" #'term-toggle-ansi
  "<S-f2>" #'term-toggle-eshell
- 
- 
+
+
  ;; Editing
  "RET" #'newline-and-indent
  "M-/" #'hippie-expand
@@ -455,6 +455,7 @@
  "C-x 5 b" #'consult-buffer-other-frame
  "C-x r x" #'consult-register
  "M-s m" #'consult-multi-occur
+ "<f6>" #'yankpad-insert
  "<f8>" #'insert-standard-date
  "M-u" #'upcase-dwim
  "M-l" #'downcase-dwim
