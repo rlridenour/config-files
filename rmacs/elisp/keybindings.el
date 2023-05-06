@@ -97,8 +97,10 @@
    "Global"
    (("M" consult-global-mark "global-mark")
     ("n" consult-notes "notes")
-    ("r" consult-ripgrep "ripgrep"))
-   ))
+    ("r" consult-ripgrep "ripgrep")
+    ("d" rlr/consult-rg "rg from dir")
+    ("f" rlr/consult-fd "find from dir")
+   )))
 
 (pretty-hydra-define hydra-window
   (:color teal :quit-key "q" title: "Windows")
@@ -199,7 +201,8 @@
   (:color teal :quit-key "q" :title "Hydras")
   ("System"
    (("t" hydra-toggle/body)
-    ("h" hydra-hugo/body))
+    ("h" hydra-hugo/body)
+    ("p" powerthesaurus-hydra/body))
    "Unicode"
    (("l" hydra-logic/body "logic")
     ("m" hydra-math/body)

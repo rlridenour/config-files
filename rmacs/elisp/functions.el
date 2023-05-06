@@ -272,6 +272,18 @@ C: The character to zap up to."
     (zap-up-to-char cnt c)))
 
 
+;; From https://macowners.club/posts/custom-functions-5-navigation/
+(defun rlr/consult-rg ()
+  "Function for `consult-ripgrep' with the `universal-argument'."
+  (interactive)
+  (consult-ripgrep (list 4)))
+
+(defun rlr/consult-fd ()
+  "Function for `consult-find' with the `universal-argument'."
+  (interactive)
+  (consult-find (list 4)))
+
+
 (provide 'functions)
 
 
