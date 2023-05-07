@@ -163,10 +163,11 @@
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons nil)
   (setq dashboard-set-navigator nil)
+  (setq dashboard-projects-backend 'project-el)
   (setq dashboard-items '((agenda . 5)
 			  (recents  . 5)
-			  (bookmarks . 10)))
-
+			  (bookmarks . 10)
+			  (projects . 5)))
   )
 
 
