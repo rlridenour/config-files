@@ -107,6 +107,38 @@ n q n
 "%\\printbibliography" n
 n "\\end{document}")
 
+(letter "\\documentclass[12pt]{obuletter} % For OBU letterhead" n
+"% \\documentclass[12pt]{myletter} % For personal letterhead"n
+n
+"% Customize variables --- for the entire list, see obuletter.cls and myletter.cls."n
+"\\newcommand{\\obuDept}{Department of Philosophy} % For personal letterhead, use name here."n
+"\\newcommand{\\Sender}{Randy Ridenour, Ph.D.}"n
+"\\newcommand{\\obuTitle}{Professor of Philosophy}"n
+"\\newcommand{\\obuCollege}{Hobbs School of Theology and Ministry} % For personal" "letterhead, use title here."n
+"\\newcommand{\\obuPhone}{405.585.4432}"n
+"\\newcommand{\\obuFax}{405.878.2401}"n
+"\\newcommand{\\obuBox}{61273}"n
+"\\newcommand{\\closing}{Sincerely,}"n
+"\\newcommand{\\toName}{${1:Recipient}}"n
+"\\newcommand{\\toAddress}{${2:Street Address}\\\\\\\\${3:City}, ${4:State} ${5:ZIP}}"n
+n
+"% \\date{} % Uncomment to add a particular date."n
+n
+"\\begin{document}"n
+n
+"\\heading"n
+n
+"Dear ,"n
+n
+"% Body of letter goes here."n
+n
+p n
+"\\signature"n
+n
+n
+"\\end{document}"n
+)
+
 ; Math and logic
 (begin "\\begin{" (s env) "}" n r> n "\\end{" (s env) "}")
 (frac "\\frac{" p "}{" q "}")
