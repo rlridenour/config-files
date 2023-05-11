@@ -351,6 +351,7 @@
 "srcel" '(tempel "#+begin_src emacs-lisp :tangle yes" n q n "#+end_src")
 "bnote" '(tempel "*** " n ":PROPERTIES:" n ":BEAMER_ENV: note" n ":END:" n n q n "** Notes :B_ignoreheading:" n ":PROPERTIES:" n ":BEAMER_env: ignoreheading" n ":END:" n n)
 "bp" "#+ATTR_BEAMER: :overlay +-"
+"harg" "#+ATTR_HTML: :class arg"
 )
 (aas-set-snippets 'latex-mode
 ;; set condition!
