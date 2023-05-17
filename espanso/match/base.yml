@@ -75,9 +75,14 @@ matches:
   - trigger: ":sp"
     replace: "Spelling"
 
-  # Grading
   - trigger: "appt"
     replace: "https://calendly.com/randy-ridenour/appointment"
+
+  - trigger: ":gj"
+    replace: "Great job!"
+
+  - trigger: ":ew"
+    replace: "Excellent work!"
     
     
 

@@ -226,6 +226,9 @@
 
 (use-package powerthesaurus)
 
+(use-package yaml-mode)
+
+
 (provide 'packages)
 
 
