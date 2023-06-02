@@ -65,6 +65,7 @@
 (require 'packages)
 (require 'functions)
 (require 'hugo)
+(require 'elfeed)
 (require 'keybindings)
 (require 'finish)
 
