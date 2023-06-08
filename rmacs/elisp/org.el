@@ -416,6 +416,13 @@
                         (define-key map (kbd "$")  #'math-delimiters-insert)
                         map))))
 
+(use-package org-bulletproof
+  :defer t
+  :straight (org-bulletproof type: git :host github :repo "pondersson/org-bulletproof")
+  :config
+  (setq org-bulletproof-default-ordered-bullet "1.")
+  (global-org-bulletproof-mode +1))
+
 
 (provide 'org)
 
