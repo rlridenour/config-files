@@ -72,13 +72,13 @@
   :defer t
   :init
   (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
-:config
+  :config
   (bind-key "<f6>" 'yankpad-insert))
 
 (use-package titlecase
   :defer t
   :config
-(setq titlecase-style "chicago"))
+  (setq titlecase-style "chicago"))
 
 
 
@@ -155,7 +155,7 @@
   :config
   (dashboard-setup-startup-hook)
   (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-;;  (setq doom-fallback-buffer-name "*dashboard*")
+  ;;  (setq doom-fallback-buffer-name "*dashboard*")
   (setq dashboard-week-agenda nil)
   (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
   (setq dashboard-set-footer nil)
@@ -184,14 +184,14 @@
 ;; EWW
 
 (defun rrnet ()
-(interactive)
-(eww-browse-url "randyridenour.net")
-)
+  (interactive)
+  (eww-browse-url "randyridenour.net")
+  )
 
 (defun sep ()
-(interactive)
-(eww-browse-url "plato.stanford.edu")
-)
+  (interactive)
+  (eww-browse-url "plato.stanford.edu")
+  )
 
 
 ;; Org-mac-link
@@ -210,15 +210,15 @@
 
 (use-package popper
   :bind (("C-`"   . popper-toggle-latest)
-         ("M-`"   . popper-cycle)
-         ("C-M-`" . popper-toggle-type))
+	 ("M-`"   . popper-cycle)
+	 ("C-M-`" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
-        '("\\*Messages\\*"
-          "Output\\*$"
-          "\\*Async Shell Command\\*"
-          help-mode
-          compilation-mode))
+	'("\\*Messages\\*"
+	  "Output\\*$"
+	  "\\*Async Shell Command\\*"
+	  help-mode
+	  compilation-mode))
   (popper-mode +1)
   (popper-echo-mode +1)) ; For echo area hints
 
@@ -227,6 +227,16 @@
 (use-package powerthesaurus)
 
 (use-package yaml-mode)
+
+(use-package eat
+  :defer t
+  :straight (eat :host codeberg
+		 :repo "akib/emacs-eat"
+		 :files ("*.el" ("term" "term/*.el") "*.texi"
+			 "*.ti" ("terminfo/e" "terminfo/e/*")
+			 ("terminfo/65" "terminfo/65/*")
+			 ("integration" "integration/*")
+			 (:exclude ".dir-locals.el" "*-tests.el"))))
 
 
 (provide 'packages)

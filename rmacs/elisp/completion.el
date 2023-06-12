@@ -316,7 +316,7 @@
 ";e-" "ē")
 (aas-set-snippets 'org-mode
 "bp" "#+ATTR_BEAMER: :overlay +-"
-"harg" "#+ATTR_HTML: :class arg"
+"haarg" "#+ATTR_HTML: :class arg"
 )
 (aas-set-snippets 'latex-mode
 ;; set condition!
