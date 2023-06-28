@@ -59,3 +59,4 @@ rmacs/url/
 rmacs/org-persist
 rmacs/places
 rmacs/projects
+rmacs/.persistent-scratch

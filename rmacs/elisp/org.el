@@ -418,11 +418,16 @@
 
 (use-package org-bulletproof
   :defer t
-  :straight (org-bulletproof type: git :host github :repo "pondersson/org-bulletproof")
+  :straight (org-bulletproof :type git :host github :repo "pondersson/org-bulletproof")
   :config
   (setq org-bulletproof-default-ordered-bullet "1.")
   (global-org-bulletproof-mode +1))
 
+
+(use-package eglot-ltex
+  :straight (eglot-ltex :type git :host github :repo "emacs-languagetool/eglot-ltex")
+  :init
+  (setq eglot-languagetool-server-path "/opt/homebrew/bin/ltex-ls"))
 
 (provide 'org)
 

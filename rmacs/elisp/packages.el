@@ -205,6 +205,8 @@
 (use-package emacs-term-toggle
   :defer t
   :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
+  :config
+  (setq term-toggle-no-confirm-exit t)
   )
 
 
@@ -238,6 +240,10 @@
 			 ("integration" "integration/*")
 			 (:exclude ".dir-locals.el" "*-tests.el"))))
 
+
+(use-package persistent-scratch
+  :config
+  (persistent-scratch-setup-default))
 
 (provide 'packages)
 

@@ -13,23 +13,26 @@
 
 (use-package all-the-icons)
 
-(use-package doom-themes
-  :config
-  ;; Global settings (defaults)
-  (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-        doom-themes-enable-italic t) ; if nil, italics is universally disabled
-  (load-theme 'doom-plain t)
 
-  ;; Enable flashing mode-line on errors
-  (doom-themes-visual-bell-config)
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-;;  (doom-themes-neotree-config)
-  ;; or for treemacs users
-;;  (setq doom-themes-treemacs-theme "doom-atom") ; use "doom-colors" for less minimal icon theme
-;;  (doom-themes-treemacs-config)
-  ;; Corrects (and improves) org-mode's native fontification.
- (doom-themes-org-config)
-)
+;; Modus Themes
+
+
+(use-package modus-themes
+  :ensure t
+  :straight (modus-themes :type git :flavor melpa :host sourcehut :repo "protesilaos/modus-themes")
+  :config
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-italic-constructs t
+        modus-themes-bold-constructs t)
+
+  ;; Maybe define some palette overrides, such as by using our presets
+  (setq modus-themes-common-palette-overrides
+        modus-themes-preset-overrides-faint)
+
+  ;; Load the theme of your choice.
+  (load-theme 'modus-operandi)
+
+  (define-key global-map (kbd "<f9>") #'modus-themes-toggle))
 
 
 
