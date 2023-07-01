@@ -7,7 +7,6 @@
 (global-visual-line-mode 1)
 (global-auto-revert-mode 1)
 (global-hl-line-mode 1)
-(fset 'yes-or-no-p 'y-or-n-p)
 (delete-selection-mode 1)
 (column-number-mode)
 (global-display-line-numbers-mode)
@@ -29,6 +28,8 @@
       dictionary-server "dict.org"
       )
 
+
+(setf use-short-answers t)
 ;; Kill contents of scratch buffer, not the buffer itself. From [[http://emacswiki.org/emacs/RecreateScratchBuffer][TN]].
 
 
