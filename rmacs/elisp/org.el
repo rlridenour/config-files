@@ -15,6 +15,12 @@
         '(("DONE" . "green4") ("TODO" . org-warning)))
   (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
 
+(use-package org-contrib)
+
+;; Don't export headlines with :ignore: tag, but do export content.
+(require 'ox-extra)
+(ox-extras-activate '(ignore-headlines))
+
 ;; Org-tempo is need for structure templates like "<s".
 
 (require 'org-tempo)
