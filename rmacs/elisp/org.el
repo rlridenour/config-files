@@ -163,7 +163,7 @@
                   (let ((beg (point)))
                     (end-of-line)
                     (delete-region beg (point)))
-                  (insert (concat " " (format-time-string "%B %e, %Y")))))
+                  (insert (concat " " (format-time-string "%B%e, %Y")))))
 
 ;; Org-capture
 (setq org-capture-templates
