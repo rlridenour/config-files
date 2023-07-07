@@ -9,6 +9,7 @@ function lecture
     touch {$argv}-notes.org
     cat /Users/rlridenour/Dropbox/emacs/beamer/lecture-notes.org >{$argv}-notes.org
     echo -e '#+include: "'{$argv}'-data.org" :minlevel 1' >>{$argv}-notes.org
+    cp /Users/rlridenour/Dropbox/emacs/beamer/canvas.org canvas.org
     dired
     open -a emacs
 end

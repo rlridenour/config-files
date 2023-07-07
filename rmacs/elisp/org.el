@@ -113,6 +113,16 @@
   (arara-notes)
   (find-file "*-data.org" t))
 
+(defun canvas-notes ()
+  "Copy HTML slide notes for Canvas"
+  (interactive)
+  (shell-command "canvas-notes")
+  (find-file "canvas.org")
+  (canvas-copy)
+  (kill-buffer)
+  (delete-file "canvas-data.org"))
+
+
 (defun present ()
   (interactive)
   (async-shell-command "present"))
