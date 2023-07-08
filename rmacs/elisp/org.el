@@ -445,6 +445,15 @@
   :init
   (setq eglot-languagetool-server-path "/opt/homebrew/bin/ltex-ls"))
 
+
+;; HTML
+
+(use-package web-mode
+  :init
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+
+
+
 (provide 'org)
 
 
