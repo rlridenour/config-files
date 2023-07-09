@@ -26,6 +26,7 @@
       large-file-warning-threshold nil
       sentence-end-double-space nil
       dictionary-server "dict.org"
+      case-replace nil
       )
 
 
