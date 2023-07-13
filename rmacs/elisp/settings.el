@@ -13,6 +13,7 @@
 (save-place-mode 1)
 (setq-default cursor-in-non-selected-windows nil
 	      frame-title-format '("%f [%m]"))
+
 (setq default-fill-column 100
       make-backup-files nil
       inhibit-startup-message t
@@ -27,6 +28,13 @@
       sentence-end-double-space nil
       dictionary-server "dict.org"
       case-replace nil
+      bookmark-save-flag 1
+      dired-auto-revert-buffer t
+      dired-dwim-target "dired-dwim-target-next"
+      eshell-scroll-to-bottom-on-input "this"
+      ediff-split-window-function "split-window-horizontally"
+      ediff-window-setup-function "ediff-setup-windows-plain"
+      man-notify-method "aggressive"
       )
 
 
