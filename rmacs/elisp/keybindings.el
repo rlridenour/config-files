@@ -494,7 +494,10 @@
  "t" #'crux-visit-term-buffer
  "u" #'unfill-paragraph
  "w" #'ace-window
- "z" #'reveal-in-osx-finder)
+ "z" #'reveal-in-osx-finder
+ "g l" #'avy-goto-line
+ "g w" #'avy-goto-word-1
+ )
 
 
 (general-define-key

@@ -35,7 +35,10 @@
       ediff-split-window-function "split-window-horizontally"
       ediff-window-setup-function "ediff-setup-windows-plain"
       man-notify-method "aggressive"
+      show-paren-delay 0
       )
+
+(show-paren-mode)
 
 
 (setf use-short-answers t)
@@ -92,13 +95,21 @@
 (define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
 (global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
 
+;;; Search
+
+;; Show number of matches at the end of search field.
+
+(setq isearch-lazy-count t)
+(setq lazy-count-prefix-format nil)
+(setq lazy-count-suffix-format "   (%s/%s)")
+
 ;; Save backups and auto-saves to a temp directory.
 
 
 (setq
- backup-by-copying t      ; don't clobber symlinks
+ backup-by-copying t			; don't clobber symlinks
  backup-directory-alist
- '(("." . "~/.saves/"))    ; don't litter my fs tree
+ '(("." . "~/.saves/"))			; don't litter my fs tree
  delete-old-versions t
  kept-new-versions 6
  kept-old-versions 2

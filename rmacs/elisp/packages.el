@@ -2,7 +2,10 @@
 
 
 (use-package avy
-  :defer t)
+  :defer t
+  :config
+  (avy-setup-default)
+(global-set-key (kbd "C-c C-j") 'avy-resume))
 
 (use-package ace-window
   :defer t)
@@ -244,6 +247,10 @@
 (use-package persistent-scratch
   :config
   (persistent-scratch-setup-default))
+
+(use-package visual-regexp
+  :config
+  )
 
 (provide 'packages)
 

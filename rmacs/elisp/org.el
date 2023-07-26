@@ -79,8 +79,18 @@
                  (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
                  (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
                  (apostrophe        :utf-8 "’" :html "&rsquo;")))
-
   )
+
+;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+
+(straight-use-package '(org-footnote-assistant :type git :host github :repo "lazzalazza/org-footnote-assistant"))
+
+(use-package org-footnote-assistant
+  :straight (org-footnote-assistant :type git :host github :repo "lazzalazza/org-footnote-assistant")
+  :commands (org-footnote-assistant)
+  :after (org)
+  :config
+  (org-footnote-assistant-mode 1))
 
 
 (defun  
@@ -233,12 +243,24 @@
 ;; Org-capture
 (setq org-capture-templates
       '(
-        ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
-         "** TODO %?\n  %i\n  %a")
-        ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
-         "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
-        )
+	("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
+	 "** TODO %?\n  %i\n  %a")
+	("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
+	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+	)
       )
+
+(with-eval-after-load 'org-capture
+  (add-to-list 'org-capture-templates
+               '("n" "New note (with Denote)" plain
+                 (file denote-last-path)
+                 #'denote-org-capture
+                 :no-save t
+                 :immediate-finish nil
+                 :kill-buffer t
+                 :jump-to-captured t)))
+
+
 (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
 
 (define-key global-map "\C-cc" 'org-capture)
@@ -349,6 +371,7 @@
 (use-package denote-menu
   :defer t) 
 
+;;; Markdown
 
 (use-package markdown-mode
   :defer t
@@ -367,6 +390,7 @@
 (fset 'copy-beamer-note
    (kmacro-lambda-form [?\C-r ?: ?E ?N ?D return down ?\C-  ?\C-s ?* ?* ?  ?N ?o ?t ?e ?s return up ?\M-w ?\C-s ?: ?E ?N ?D return down return ?\s-v return] 0 "%d"))
 
+;;; LaTeX
 
 (use-package tex-site
   :straight auctex
@@ -374,10 +398,10 @@
   :init
   (setq TeX-parse-self t
 	TeX-auto-save t
-  TeX-electric-math nil
-  LaTeX-electric-left-right-brace nil
+	TeX-electric-math nil
+	LaTeX-electric-left-right-brace nil
 	TeX-electric-sub-and-superscript nil
-  LaTeX-item-indent 0
+	LaTeX-item-indent 0
 	TeX-quote-after-quote nil
 	TeX-clean-confirm nil
 	TeX-source-correlate-mode t
@@ -494,7 +518,6 @@
   :init
   (setq eglot-languagetool-server-path "/opt/homebrew/bin/ltex-ls"))
 
-
 ;; HTML
 
 (use-package web-mode
@@ -502,6 +525,47 @@
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 
 
+;; Lisp
+
+(use-package slime
+  :init
+  (setq inferior-lisp-program (executable-find "sbcl")))
+
+(use-package paredit
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook 'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+  (add-hook 'slime-repl-mode-hook 'enable-paredit-mode))
+
+(defun override-slime-del-key ()
+  (define-key slime-repl-mode-map
+    (read-kbd-macro paredit-backward-delete-key) nil))
+(add-hook 'slime-repl-mode-hook 'override-slime-del-key)
+
+(use-package rainbow-delimiters
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'ielm-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'lisp-interaction-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'lisp-mode-hook 'rainbow-delimiters-mode)
+  (add-hook 'slime-repl-mode-hook 'rainbow-delimiters-mode))
+
+(set-face-foreground 'rainbow-delimiters-depth-1-face "#c66")  ; red
+(set-face-foreground 'rainbow-delimiters-depth-2-face "#6c6")  ; green
+(set-face-foreground 'rainbow-delimiters-depth-3-face "#69f")  ; blue
+(set-face-foreground 'rainbow-delimiters-depth-4-face "#cc6")  ; yellow
+(set-face-foreground 'rainbow-delimiters-depth-5-face "#6cc")  ; cyan
+(set-face-foreground 'rainbow-delimiters-depth-6-face "#c6c")  ; magenta
+(set-face-foreground 'rainbow-delimiters-depth-7-face "#ccc")  ; light gray
+(set-face-foreground 'rainbow-delimiters-depth-8-face "#999")  ; medium gray
+(set-face-foreground 'rainbow-delimiters-depth-9-face "#666")  ; dark gray
+
+
+(use-package typst-mode
+  :straight (:type git :host github :repo "Ziqi-Yang/typst-mode.el"))
 
 (provide 'org)
 
