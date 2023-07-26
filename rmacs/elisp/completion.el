@@ -328,16 +328,10 @@
 "~" "\\lnot "
 "#" "\\exists "
 "@" "\\forall "
-)
+))
+
 ;; disable snippets by redefining them with a nil expansion
-(aas-set-snippets 'latex-mode
-"enm" '(tempel "\\begin{enumerate}" n "  \\item " q n  "\\end{enumerate}")
-"itm" '(tempel "\\begin{itemize}" n "  \\item " q n "\\end{itemize}")
-";sn" '(tempel "\\section{" q "}")
-";ssn" '(tempel "\\subsection{" q "}")
-"mcq" '(tempel "\\begin{question}" n p n "\\choice {" p "}" n "\\choice {" p "}" n "\\choice {" p "}" n "\\choice {" q "}" n "\\end{question}")
-"saq" '(tempel "\\begin{question}" n p n "\\examvspace*{0in}" n "\\begin{answer}" n p n "\\end{answer}" n "\\end{question}")
-"supp" nil))
+
 
 (use-package laas
   :hook (TeX-mode . laas-mode))
