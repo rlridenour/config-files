@@ -1,146 +1,341 @@
-#+PROPERTY: header-args :results silent :tangle "~/.config/emacs/init.el"
+#+title: Emacs Configuration
+#+author: Randy Ridenour
+#+email: rlridenour@gmail.com
 #+auto_tangle: t
 
-Header for init.el
 
-#+begin_src emacs-lisp :tangle yes
-;;; init.el --- Personal Emacs configuration file -*- lexical-binding: t; no-byte-compile: t; -*-
-;; NOTE: init.el is generated from init.org.  Please edit that file instead
+
+* Early init file
+:PROPERTIES:
+:header-args: :tangle early-init.el
+:END:
+
+Straight requires preventing ~package.el~ from loading packages prior to loading the init file.
+
+#+begin_src emacs-lisp
+;;; early-init.el --- Early Init File -*- lexical-binding: t; no-byte-compile: t -*-
+;; NOTE: early-init.el is generated from README.org.  Please edit that file instead.
+
+(setq package-enable-at-startup nil)
+#+end_src
+
+Set garbage collection to a very high number. This will be reset at the end of ~init.el~.
+
+#+begin_src emacs-lisp
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 0.6)
+#+end_src
+
+Disable some GUI elements.
+
+#+begin_src emacs-lisp
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(tooltip-mode -1)
+(setq inhibit-splash-screen t)
+(setq use-dialog-box nil)
 #+end_src
 
 
-#+begin_src emacs-lisp :tangle yes
-(setq gc-cons-threshold (* 50 1000 1000))
+Set the frame title format.
 
-(setq user-full-name "Randy Ridenour"
-      user-mail-address "rlridenour@gmail.com")
-
-;; Silence the "Package cl is deprecated" warning.
-(setq byte-compile-warnings '(cl-functions))
+#+begin_src emacs-lisp
+(setq-default cursor-in-non-selected-windows nil
+	      frame-title-format '("%f [%m]"))
+#+end_src
 
 
-;; Silence native compilation warnings
-(setq native-comp-async-report-warnings-errors nil)
-(setq warning-minimum-level :error)
-;; Code
+Increase font size.
 
-;; compile elisp
-(when (fboundp 'native-compile-async)
-    (setq comp-deferred-compilation t
-          comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
+#+begin_src emacs-lisp
+(set-face-attribute 'default nil :height 160)
 
+;;; early-init.el ends here
 #+end_src
 
 
 * Package Management
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
 Use Straight for package management.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
+  ;;; init.el --- Personal Emacs configuration file -*- lexical-binding: t; no-byte-compile: t; -*-
+  ;; NOTE: init.el is generated from README.org.  Please edit that file instead
+
+
   (defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
+  (let ((bootstrap-file
+	 (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	(bootstrap-version 6))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+	  (url-retrieve-synchronously
+	   "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	   'silent 'inhibit-cookies)
+	(goto-char (point-max))
+	(eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
 
-;; Replace use-package with straight-use-package
-(straight-use-package 'use-package)
-(setq straight-use-package-by-default t)
+  ;; Replace use-package with straight-use-package
+  (straight-use-package 'use-package)
+  (setq straight-use-package-by-default t)
 
-;;  Ensure that system utilities required by various packages are installed.
-(use-package use-package-ensure-system-package)
+  ;;  Ensure that system utilities required by various packages are installed.
+  (use-package use-package-ensure-system-package)
 
-;; Allow key chords in use-package bindings.
+  ;; Allow key chords in use-package bindings.
   (use-package use-package-chords
-	:config (key-chord-mode 1))
-#+end_src
-
-* Initial Settings
-
-Set path from shell.
-
-#+begin_src emacs-lisp :tangle yes
-(use-package exec-path-from-shell
-	:config (exec-path-from-shell-initialize))
+    :config (key-chord-mode 1))
 #+end_src
 
 
-* Auto-tangle init.org
-
-This tangles the file whenever it is saved.
+Use ~org-auto-tangle~ to generate ~early-init.el~ and ~init.el~ whenever ~README.org~ is saved.
 
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package org-auto-tangle
 :defer t
 :hook (org-mode . org-auto-tangle-mode))
 #+end_src
 
 
-* Settings
+
+* Initial Settings
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
+
+** Miscellaneous Defaults
+
+Don't show the startup screen.
+
+#+begin_src emacs-lisp
+(setq inhibit-startup-message t)
+#+end_src
 
 
-#+begin_src emacs-lisp :tangle yes
+
+Set username and email.
+
+#+begin_src emacs-lisp
+(setq user-full-name "Randy Ridenour"
+      user-mail-address "rlridenour@gmail.com")
+#+end_src
+
+
+
+Set path from shell.
+
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+	:config (exec-path-from-shell-initialize))
+#+end_src
+
+Silence the "Package cl is deprecated" warning.
+
+#+begin_src emacs-lisp
+(setq byte-compile-warnings '(cl-functions))
+#+end_src
+
+Silence warnings when compiling elisp.
+
+#+begin_src emacs-lisp
+(setq native-comp-async-report-warnings-errors nil)
+(setq warning-minimum-level :error)
+
+(when (fboundp 'native-compile-async)
+    (setq comp-deferred-compilation t
+          comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
+#+end_src
+
+Turn on word-wrapping in all buffers.
+
+#+begin_src emacs-lisp
 (global-visual-line-mode 1)
-(global-auto-revert-mode 1)
+#+end_src
+
+Update buffers when files are changed outside Emacs, but don't generate any messages.
+
+#+begin_src emacs-lisp
+  (global-auto-revert-mode 1)
+
+  (setq global-auto-revert-non-file-buffers t
+        dired-auto-revert-buffer t
+        auto-revert-verbose nil)
+#+end_src
+
+Highlight the current line
+
+#+begin_src emacs-lisp
 (global-hl-line-mode 1)
-(delete-selection-mode 1)
+#+end_src
+
+Show the column number in modeline.
+
+#+begin_src emacs-lisp
 (column-number-mode)
-(global-display-line-numbers-mode)
+#+end_src
+
+Replace active region by typing.
+
+#+begin_src emacs-lisp
+(delete-selection-mode 1)
+#+end_src
+
+Save place in files between sessions.
+
+
+#+begin_src emacs-lisp
 (save-place-mode 1)
 #+end_src
 
+This displays line numbers in all buffers. I'm turning it off for now, since it's easier to use ~avy-goto-line~.
 
-#+begin_src emacs-lisp :tangle yes
-(setq default-fill-column 100
-      make-backup-files nil
-      inhibit-startup-message t
-      initial-scratch-message nil
-      initial-major-mode 'org-mode
-      use-dialog-box nil
-      vc-follow-symlinks t
-      tramp-default-method "ssh"
-      global-auto-revert-non-file-buffers t
-      message-kill-buffer-on-exit t
-      large-file-warning-threshold nil
-      sentence-end-double-space nil
-      dictionary-server "dict.org"
-      case-replace nil
-      bookmark-save-flag 1
-      dired-auto-revert-buffer t
-      dired-dwim-target "dired-dwim-target-next"
-      eshell-scroll-to-bottom-on-input "this"
-      ediff-split-window-function "split-window-horizontally"
-      ediff-window-setup-function "ediff-setup-windows-plain"
-      man-notify-method "aggressive"
-      show-paren-delay 0
-      )
+#+begin_src emacs-lisp
+;; (global-display-line-numbers-mode)
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+
+Increase the width of fill mode.
+
+#+begin_src emacs-lisp
+(setq default-fill-column 100)
+#+end_src
+
+Kill message buffer on exit.
+
+#+begin_src emacs-lisp
+(setq message-kill-buffer-on-exit t)
+#+end_src
+
+Don't need to confirm that I want to edit a large file.
+
+#+begin_src emacs-lisp
+(setq large-file-warning-threshold nil)
+#+end_src
+
+
+Use single space after sentences.
+
+#+begin_src emacs-lisp
+(setq sentence-end-double-space nil)
+#+end_src
+
+Use [[dict.org]] for dictionary searches.
+
+#+begin_src emacs-lisp
+(setq dictionary-server "dict.org")
+#+end_src
+
+Make output scroll to bottom in Eshell.
+
+#+begin_src emacs-lisp
+(setq eshell-scroll-to-bottom-on-input "this")
+#+end_src
+
+
+
+Force ediff to show diffs in the same frame side-by-side.
+
+#+begin_src emacs-lisp
+(setq ediff-split-window-function "split-window-horizontally"
+      ediff-window-setup-function "ediff-setup-windows-plain")
+#+end_src
+
+Immediately highlight matching pairs of parentheses and quotes.
+
+#+begin_src emacs-lisp
 (show-paren-mode)
+(setq show-paren-delay 0)
 #+end_src
 
 
-Use y and n instead of yes or no.
+Use "y" and "n" in confirmation dialogs.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setf use-short-answers t)
 #+end_src
+
+Mark date and time that files were saved.
+
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook 'time-stamp)
+#+end_src
+
+Allow entering a command when the minibuffer is active.
+
+#+begin_src emacs-lisp
+    (setq enable-recursive-minibuffers t)
+    (minibuffer-depth-indicate-mode 1)
+#+end_src
+
+
+Send deleted files to an Emacs folder in system trash.
+
+#+begin_src emacs-lisp
+  (setq delete-by-moving-to-trash t
+	trash-directory "~/.Trash/emacs")
+#+end_src
+
+
+Give buffers uniquely numbered names.
+
+#+begin_src emacs-lisp
+  (require 'uniquify)
+#+end_src
+
+Open links in default Mac browser.
+
+#+begin_src emacs-lisp
+    (setq browse-url-browser-function 'browse-url-default-macosx-browser)
+#+end_src
+
+
+
+Don't ask for confirmation to kill processes when exiting Emacs. Credit to [[http://timothypratley.blogspot.com/2015/07/seven-specialty-emacs-settings-with-big.html][Timothy Pratley]].
+
+#+begin_src emacs-lisp
+    (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+      (cl-flet ((process-list ())) ad-do-it))
+#+end_src
+
+
+
+Don't display async shell command process buffers
+
+#+begin_src emacs-lisp
+    (add-to-list 'display-buffer-alist
+  	       (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+
+#+end_src
+
+Definitely need to see recent files.
+
+#+begin_src emacs-lisp
+    (require 'recentf)
+    (setq recentf-max-saved-items 200
+  	recentf-max-menu-items 15)
+    (recentf-mode)
+#+end_src
+
+
 
 
 ** Scratch buffer
 
-Kill contents of scratch buffer, not the buffer itself. From [[http://emacswiki.org/emacs/RecreateScratchBuffer][TN]].
+Remove scratch buffer message and set the mode to org-mode.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
+(setq initial-scratch-message nil
+      initial-major-mode 'org-mode)
+#+end_src
+
+Kill the contents of scratch buffer, not the buffer itself. From [[http://emacswiki.org/emacs/RecreateScratchBuffer][TN]].
+
+#+begin_src emacs-lisp
 (defun unkillable-scratch-buffer ()
   (if (equal (buffer-name (current-buffer)) "*scratch*")
       (progn
@@ -151,9 +346,9 @@ Kill contents of scratch buffer, not the buffer itself. From [[http://emacswiki.
 #+end_src
 
 
-Create new scratch buffer after saving.
+Create a new scratch buffer after saving.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (defun goto-scratch ()
   "this sends you to the scratch buffer"
   (interactive)
@@ -162,156 +357,165 @@ Create new scratch buffer after saving.
     (org-mode)))
 #+end_src
 
-Mark date and time that files were saved.
+Use ~persistent-scratch~ to save scratch file between sessions.
 
-#+begin_src emacs-lisp :tangle yes
-(add-hook 'before-save-hook 'time-stamp)
+#+begin_src emacs-lisp
+  (use-package persistent-scratch
+    :config
+    (persistent-scratch-setup-default))
 #+end_src
 
 
-** Trash
 
-#+begin_src emacs-lisp :tangle yes
-  (setq delete-by-moving-to-trash t
-	trash-directory "~/.Trash/emacs")
+
+** Search
+
+Don't preserve case in replacements.
+
+#+begin_src emacs-lisp
+(setq case-replace nil)
 #+end_src
+
+
+
+Show number of matches at the end of search field.
+
+#+begin_src emacs-lisp
+    (setq isearch-lazy-count t)
+    (setq lazy-count-prefix-format nil)
+    (setq lazy-count-suffix-format "   (%s/%s)")
+#+end_src
+
+Use Spotlight for locate.
+
+#+begin_src emacs-lisp
+(setq locate-command "mdfind")
+#+end_src
+
+
+
+
+
+
+
+** Backups
+
+
+Save backups and auto-saves to a temp directory.
+
+#+begin_src emacs-lisp
+  (setq backup-by-copying t                    ; don't clobber symlinks
+        backup-directory-alist
+        '(("." . "~/.saves/"))                 ; don't litter my fs tree
+        delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t)
+#+end_src
+
+
+
+
+
+
+
+
+
+  
+ ** Ibuffer
+
+Don't ask for unnecessary confirmations.
+
+#+begin_src emacs-lisp
+    (setq ibuffer-expert t)
+#+end_src
+
+Auto-update buffer list
+
+#+begin_src emacs-lisp
+    (add-hook 'ibuffer-mode-hook
+  	    #'(lambda ()
+  		(ibuffer-auto-mode 1)
+  		(ibuffer-switch-to-saved-filter-groups "home")))
+#+end_src
+
+
+
+
+** Abbreviations and Bookmarks
+
+Load Abbreviations
+
+#+begin_src emacs-lisp
+    (load "~/Dropbox/emacs/my-emacs-abbrev")
+#+end_src
+
+Save bookmarks as soon as they are made.
+
+#+begin_src emacs-lisp
+  (require 'bookmark)
+  (bookmark-bmenu-list)
+  (setq bookmark-save-flag 1)
+#+end_src
+  
+** Dired
 
 Use GNU ls to avoid "Listing directory failed but 'access-file' worked" error.
 
-#+begin_src emacs-lisp :tangle yes
 
-  (setq insert-directory-program "gls"); use proper GNU ls
-
-					  ;Auto refresh buffers including dired
-  (setq global-auto-revert-non-file-buffers t)
-
-					  ; Do not generate any messages (be quiet about refreshing Dired).
-  (setq auto-revert-verbose nil)
-
-  ;; Allow recursive minibuffers
-  (setq enable-recursive-minibuffers t)
-  ;;show recursion depth in minibuffer
-  (minibuffer-depth-indicate-mode t)
-
-					  ;two identical buffers get uniquely numbered names
-  (require 'uniquify)
-
-
-					  ; Map escape to cancel (like C-g)
-  (define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
-  (global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
-
-  ;;; Search
-
-  ;; Show number of matches at the end of search field.
-
-  (setq isearch-lazy-count t)
-  (setq lazy-count-prefix-format nil)
-  (setq lazy-count-suffix-format "   (%s/%s)")
-
-  ;; Save backups and auto-saves to a temp directory.
-
-
-  (setq
-   backup-by-copying t			; don't clobber symlinks
-   backup-directory-alist
-   '(("." . "~/.saves/"))			; don't litter my fs tree
-   delete-old-versions t
-   kept-new-versions 6
-   kept-old-versions 2
-   version-control t)
-
-  ;; Recent files
-  (require 'recentf)
-  (setq recentf-max-saved-items 200
-	recentf-max-menu-items 15)
-  (recentf-mode)
-
-  ;; Use spotlight for locate.
-
-  (setq locate-command "mdfind")
-
-
-  ;; Open links in default Mac browser.
-
-  (setq browse-url-browser-function 'browse-url-default-macosx-browser)
-
-  ;; Don't ask for confirmation to kill processes when exiting Emacs. Credit to [[http://timothypratley.blogspot.com/2015/07/seven-specialty-emacs-settings-with-big.html][Timothy Pratley]].
-
-
-  (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-    (cl-flet ((process-list ())) ad-do-it))
-
-  ;; Don't display async shell command process buffers
-
-  (add-to-list 'display-buffer-alist
-	       (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
-
-  ;; ibuffer
-
-  ;; Don't ask for unnecessary confirmations
-
-
-  (setq ibuffer-expert t)
-
-
-  ;; Auto-update buffer list
-
-
-  (add-hook 'ibuffer-mode-hook
-	    #'(lambda ()
-		(ibuffer-auto-mode 1)
-		(ibuffer-switch-to-saved-filter-groups "home")))
-
-
-  ;;; Abbreviations and Bookmarks
-
-  ;; Load Abbreviations
-
-  (load "~/Dropbox/emacs/my-emacs-abbrev")
-
-
-  ;; Bookmarks
-
-  (require 'bookmark)
-  (bookmark-bmenu-list)
-
-
-
-  ;; Dired
-
-  (use-package dired-x
-    :straight (:type built-in)
-    :config
-    (progn
-      (setq dired-omit-verbose nil)
-      ;; toggle `dired-omit-mode' with C-x M-o
-      (add-hook 'dired-mode-hook #'dired-omit-mode)
-      (setq dired-omit-files
-	    (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^\\..+$"))
-      (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "DS_Store" "xml" "bcf" "nav" "snm" "toc"))))
-
-
-  ;; Spelling
-
-  ;; Use f7 to check word, shift-f7 to check entire buffer.
-
-  (use-package jinx
-    :hook (emacs-startup . global-jinx-mode)
-    :bind ([remap ispell-word] . jinx-correct))
-
-  (global-set-key (kbd "S-<f7>") (lambda ()
-				  (interactive)
-				  (let ((current-prefix-arg '(4)))
-				    (call-interactively #'jinx-correct))))
-
+#+begin_src emacs-lisp
+    (setq insert-directory-program "gls"); use proper GNU ls
 #+end_src
+
+
+Make copying and moving files easier.
+
+#+begin_src emacs-lisp
+  (setq dired-dwim-target "dired-dwim-target-next")
+#+end_src
+
+I don't need to see all of those LaTeX auxiliary files in dired.
+
+#+begin_src emacs-lisp
+    (use-package dired-x
+      :straight (:type built-in)
+      :config
+      (progn
+        (setq dired-omit-verbose nil)
+        ;; toggle `dired-omit-mode' with C-x M-o
+        (add-hook 'dired-mode-hook #'dired-omit-mode)
+        (setq dired-omit-files
+  	    (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^\\..+$"))
+        (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "DS_Store" "xml" "bcf" "nav" "snm" "toc"))))
+#+end_src
+
+
+** Spelling
+
+[[Jinx]] by Minad is a very fast spell checker. Use F7 to check word, shift-F7 to check entire buffer.
+
+#+begin_src emacs-lisp
+    (use-package jinx
+      :hook (emacs-startup . global-jinx-mode)
+      :bind ([remap ispell-word] . jinx-correct))
+
+    (global-set-key (kbd "S-<f7>") (lambda ()
+  				  (interactive)
+  				  (let ((current-prefix-arg '(4)))
+  				    (call-interactively #'jinx-correct))))
+#+end_src
+
+
+
 
 
 
 * Appearance
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;;; Fonts 
 
 ;; Main typeface
@@ -365,8 +569,11 @@ Use GNU ls to avoid "Listing directory failed but 'access-file' worked" error.
 
 
 * Meow
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package meow
   :init
   (defun meow-setup ()
@@ -464,8 +671,11 @@ Use GNU ls to avoid "Listing directory failed but 'access-file' worked" error.
 #+end_src
 
 * Completion
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; Enable vertico
 (use-package vertico
   :init
@@ -806,8 +1016,11 @@ Use GNU ls to avoid "Listing directory failed but 'access-file' worked" error.
 
 
 * Org
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package org
   :init
   ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
@@ -1332,265 +1545,269 @@ Use GNU ls to avoid "Listing directory failed but 'access-file' worked" error.
 
 
 * Packages
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
-#+begin_src emacs-lisp :tangle yes
-(use-package avy
-  :defer t
-  :config
-  (avy-setup-default)
-(global-set-key (kbd "C-c C-j") 'avy-resume))
+#+begin_src emacs-lisp
+  (use-package avy
+    :defer t
+    :config
+    (avy-setup-default)
+    (global-set-key (kbd "C-c C-j") 'avy-resume))
 
-(use-package ace-window
-  :defer t)
+  (use-package ace-window
+    :defer t)
 
-(use-package shrink-whitespace
-  :defer t)
+  (use-package shrink-whitespace
+    :defer t)
 
-(use-package hl-line+
-  :config
-  (toggle-hl-line-when-idle 1))
+  (use-package hl-line+
+    :config
+    (toggle-hl-line-when-idle 1))
 
-(use-package expand-region
-  :defer t)
+  (use-package expand-region
+    :defer t)
 
-(use-package magit
-  :defer t
-  :config
-  (global-auto-revert-mode)
-  (setq magit-refresh-status-buffer nil
-	magit-diff-highlight-indentation nil
-	magit-diff-highlight-trailing nil
-	magit-diff-paint-whitespace nil
-	magit-diff-highlight-hunk-body nil
-	magit-diff-refine-hunk nil
-	magit-revision-insert-related-refs nil)
-  )
+  (use-package magit
+    :defer t
+    :config
+    (global-auto-revert-mode)
+    (setq magit-refresh-status-buffer nil
+  	magit-diff-highlight-indentation nil
+  	magit-diff-highlight-trailing nil
+  	magit-diff-paint-whitespace nil
+  	magit-diff-highlight-hunk-body nil
+  	magit-diff-refine-hunk nil
+  	magit-revision-insert-related-refs nil
+  	vc-follow-symlinks t)
+    )
 
-(use-package reveal-in-osx-finder
-  :defer t)
+  (use-package reveal-in-osx-finder
+    :defer t)
 
-(use-package hungry-delete
-  :defer t
-  :config
-  (global-hungry-delete-mode))
+  (use-package hungry-delete
+    :defer t
+    :config
+    (global-hungry-delete-mode))
 
-(use-package smartparens
-  :init
-  (require 'smartparens-config)
-  :config
-  (smartparens-global-mode t) ;; These options can be t or nil.
-  (show-smartparens-global-mode t)
-  (setq sp-show-pair-from-inside t))
+  (use-package smartparens
+    :init
+    (require 'smartparens-config)
+    :config
+    (smartparens-global-mode t) ;; These options can be t or nil.
+    (show-smartparens-global-mode t)
+    (setq sp-show-pair-from-inside t))
 
-(use-package aggressive-indent)
+  (use-package aggressive-indent)
 
-(use-package evil-nerd-commenter
-  :defer t)
-
-
-(use-package which-key
-  :config
-  (which-key-mode))
-
-(use-package crux
-  :defer t)
-
-(use-package fish-mode
-  :defer t)
-
-(use-package vundo)
-
-(use-package unfill
-  :defer t)
+  (use-package evil-nerd-commenter
+    :defer t)
 
 
-(use-package yankpad
-  :defer t
-  :init
-  (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
-  :config
-  (bind-key "<f6>" 'yankpad-insert))
+  (use-package which-key
+    :config
+    (which-key-mode))
 
-(use-package titlecase
-  :defer t
-  :config
-  (setq titlecase-style "chicago"))
+  (use-package crux
+    :defer t)
 
+  (use-package fish-mode
+    :defer t)
 
+  (use-package vundo)
 
-
-;; (use-package pdf-tools
-;;    :pin manual
-;;    :config
-;;    (pdf-tools-install)
-;;    (setq-default pdf-view-display-size 'fit-width)
-;;    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-;;    :custom
-;;    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
-
-;; (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1)))
-
-;; ;; (evil-set-initial-state 'pdf-view-mode 'emacs)
-;; (add-hook 'pdf-view-mode-hook
-;;   (lambda ()
-;;     (set (make-local-variable 'evil-emacs-state-cursor) (list nil))))
+  (use-package unfill
+    :defer t)
 
 
-(use-package pulsar
-  :custom
-  (setq pulsar-pulse-functions
-	'(isearch-repeat-forward
-	  isearch-repeat-backward
-	  recenter-top-bottom
-	  move-to-window-line-top-bottom
-	  reposition-window
-	  bookmark-jump
-	  other-window
-	  delete-window
-	  delete-other-windows
-	  forward-page
-	  backward-page
-	  scroll-up-command
-	  scroll-down-command
-	  windmove-right
-	  windmove-left
-	  windmove-up
-	  windmove-down
-	  windmove-swap-states-right
-	  windmove-swap-states-left
-	  windmove-swap-states-up
-	  windmove-swap-states-down
-	  tab-new
-	  tab-close
-	  tab-next
-	  org-next-visible-heading
-	  org-previous-visible-heading
-	  org-forward-heading-same-level
-	  org-backward-heading-same-level
-	  outline-backward-same-level
-	  outline-forward-same-level
-	  outline-next-visible-heading
-	  outline-previous-visible-heading
-	  outline-up-heading))
-  :hook
-  (consult-after-jump . pulsar-recenter-top)
-  (consult-after-jump . pulsar-reveal-entry)
-  ;; integration with the built-in `imenu':
-  (imenu-after-jump . pulsar-recenter-top)
-  (imenu-after-jump . pulsar-reveal-entry)
-  :config
-  (setq pulsar-pulse t
-	pulsar-delay 0.2
-	pulsar-iterations 10
-	pulsar-face 'pulsar-blue
-	pulsar-highlight-face 'pulsar-blue))
+  (use-package yankpad
+    :defer t
+    :init
+    (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
+    :config
+    (bind-key "<f6>" 'yankpad-insert))
 
-(pulsar-global-mode 1)
-
-(use-package dashboard
-  :config
-  (dashboard-setup-startup-hook)
-  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  ;;  (setq doom-fallback-buffer-name "*dashboard*")
-  (setq dashboard-week-agenda nil)
-  (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
-  (setq dashboard-set-footer nil)
-  (setq dashboard-banner-logo-title nil)
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons nil)
-  (setq dashboard-set-navigator nil)
-  (setq dashboard-projects-backend 'project-el)
-  (setq dashboard-items '((agenda . 5)
-			  (recents  . 5)
-			  (bookmarks . 10)
-			  (projects . 5)))
-  )
+  (use-package titlecase
+    :defer t
+    :config
+    (setq titlecase-style "chicago"))
 
 
-(defun goto-dashboard ()
-  "this sends you to the dashboard buffer"
-  (interactive)
-  (let ((goto-dashboard-buffer (get-buffer "*dashboard*")))
-    (switch-to-buffer goto-dashboard-buffer))
-  (dashboard-refresh-buffer))
-
-(use-package deadgrep)
 
 
-;; EWW
+  ;; (use-package pdf-tools
+  ;;    :pin manual
+  ;;    :config
+  ;;    (pdf-tools-install)
+  ;;    (setq-default pdf-view-display-size 'fit-width)
+  ;;    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+  ;;    :custom
+  ;;    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
 
-(defun rrnet ()
-  (interactive)
-  (eww-browse-url "randyridenour.net")
-  )
+  ;; (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1)))
 
-(defun sep ()
-  (interactive)
-  (eww-browse-url "plato.stanford.edu")
-  )
-
-
-;; Org-mac-link
-
-(use-package org-mac-link
-  :defer t)
+  ;; ;; (evil-set-initial-state 'pdf-view-mode 'emacs)
+  ;; (add-hook 'pdf-view-mode-hook
+  ;;   (lambda ()
+  ;;     (set (make-local-variable 'evil-emacs-state-cursor) (list nil))))
 
 
-;; Emacs-term-toggle
-;; https://github.com/amno1/emacs-term-toggle
-(use-package emacs-term-toggle
-  :defer t
-  :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
-  :config
-  (setq term-toggle-no-confirm-exit t)
-  )
+  (use-package pulsar
+    :custom
+    (setq pulsar-pulse-functions
+  	'(isearch-repeat-forward
+  	  isearch-repeat-backward
+  	  recenter-top-bottom
+  	  move-to-window-line-top-bottom
+  	  reposition-window
+  	  bookmark-jump
+  	  other-window
+  	  delete-window
+  	  delete-other-windows
+  	  forward-page
+  	  backward-page
+  	  scroll-up-command
+  	  scroll-down-command
+  	  windmove-right
+  	  windmove-left
+  	  windmove-up
+  	  windmove-down
+  	  windmove-swap-states-right
+  	  windmove-swap-states-left
+  	  windmove-swap-states-up
+  	  windmove-swap-states-down
+  	  tab-new
+  	  tab-close
+  	  tab-next
+  	  org-next-visible-heading
+  	  org-previous-visible-heading
+  	  org-forward-heading-same-level
+  	  org-backward-heading-same-level
+  	  outline-backward-same-level
+  	  outline-forward-same-level
+  	  outline-next-visible-heading
+  	  outline-previous-visible-heading
+  	  outline-up-heading))
+    :hook
+    (consult-after-jump . pulsar-recenter-top)
+    (consult-after-jump . pulsar-reveal-entry)
+    ;; integration with the built-in `imenu':
+    (imenu-after-jump . pulsar-recenter-top)
+    (imenu-after-jump . pulsar-reveal-entry)
+    :config
+    (setq pulsar-pulse t
+  	pulsar-delay 0.2
+  	pulsar-iterations 10
+  	pulsar-face 'pulsar-blue
+  	pulsar-highlight-face 'pulsar-blue))
+
+  (pulsar-global-mode 1)
+
+  (use-package dashboard
+    :config
+    (dashboard-setup-startup-hook)
+    (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+    ;;  (setq doom-fallback-buffer-name "*dashboard*")
+    (setq dashboard-week-agenda nil)
+    (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
+    (setq dashboard-set-footer nil)
+    (setq dashboard-banner-logo-title nil)
+    (setq dashboard-set-heading-icons t)
+    (setq dashboard-set-file-icons nil)
+    (setq dashboard-set-navigator nil)
+    (setq dashboard-projects-backend 'project-el)
+    (setq dashboard-items '((agenda . 5)
+  			  (recents  . 5)
+  			  (bookmarks . 10)
+  			  (projects . 5)))
+    )
 
 
-(use-package popper
-  :bind (("C-`"   . popper-toggle-latest)
-	 ("M-`"   . popper-cycle)
-	 ("C-M-`" . popper-toggle-type))
-  :init
-  (setq popper-reference-buffers
-	'("\\*Messages\\*"
-	  "Output\\*$"
-	  "\\*Async Shell Command\\*"
-	  help-mode
-	  compilation-mode))
-  (popper-mode +1)
-  (popper-echo-mode +1)) ; For echo area hints
+  (defun goto-dashboard ()
+    "this sends you to the dashboard buffer"
+    (interactive)
+    (let ((goto-dashboard-buffer (get-buffer "*dashboard*")))
+      (switch-to-buffer goto-dashboard-buffer))
+    (dashboard-refresh-buffer))
 
-(use-package emacs-everywhere)
-
-(use-package powerthesaurus)
-
-(use-package yaml-mode)
-
-(use-package eat
-  :defer t
-  :straight (eat :host codeberg
-		 :repo "akib/emacs-eat"
-		 :files ("*.el" ("term" "term/*.el") "*.texi"
-			 "*.ti" ("terminfo/e" "terminfo/e/*")
-			 ("terminfo/65" "terminfo/65/*")
-			 ("integration" "integration/*")
-			 (:exclude ".dir-locals.el" "*-tests.el"))))
+  (use-package deadgrep)
 
 
-(use-package persistent-scratch
-  :config
-  (persistent-scratch-setup-default))
+  ;; EWW
 
-(use-package visual-regexp
-  :config
-  )
+  (defun rrnet ()
+    (interactive)
+    (eww-browse-url "randyridenour.net")
+    )
+
+  (defun sep ()
+    (interactive)
+    (eww-browse-url "plato.stanford.edu")
+    )
+
+
+  ;; Org-mac-link
+
+  (use-package org-mac-link
+    :defer t)
+
+
+  ;; Emacs-term-toggle
+  ;; https://github.com/amno1/emacs-term-toggle
+  (use-package emacs-term-toggle
+    :defer t
+    :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
+    :config
+    (setq term-toggle-no-confirm-exit t)
+    )
+
+
+  (use-package popper
+    :bind (("C-`"   . popper-toggle-latest)
+  	 ("M-`"   . popper-cycle)
+  	 ("C-M-`" . popper-toggle-type))
+    :init
+    (setq popper-reference-buffers
+  	'("\\*Messages\\*"
+  	  "Output\\*$"
+  	  "\\*Async Shell Command\\*"
+  	  help-mode
+  	  compilation-mode))
+    (popper-mode +1)
+    (popper-echo-mode +1)) ; For echo area hints
+
+  (use-package emacs-everywhere)
+
+  (use-package powerthesaurus)
+
+  (use-package yaml-mode)
+
+  (use-package eat
+    :defer t
+    :straight (eat :host codeberg
+  		 :repo "akib/emacs-eat"
+  		 :files ("*.el" ("term" "term/*.el") "*.texi"
+  			 "*.ti" ("terminfo/e" "terminfo/e/*")
+  			 ("terminfo/65" "terminfo/65/*")
+  			 ("integration" "integration/*")
+  			 (:exclude ".dir-locals.el" "*-tests.el"))))
+
+
+
+  (use-package visual-regexp
+    :config
+    )
 
 #+end_src
 
 
 * Functions
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (defun async-shell-command-no-window
     (command)
   (interactive)
@@ -1878,8 +2095,11 @@ C: The character to zap up to."
 
 
 * Hugo
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; This updates the time stamp on a Hugo post.
 
 
@@ -2126,8 +2346,20 @@ Note that it only extracts tags from lines like the below:
 #+end_src
 
 * Keybindings
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
-#+begin_src emacs-lisp :tangle yes
+Map escape to cancel.
+
+#+begin_src emacs-lisp
+    (define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
+    (global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
+#+end_src
+
+
+
+#+begin_src emacs-lisp
 ;; Keybindings
 
 (global-unset-key (kbd "C-z"))
@@ -2638,8 +2870,11 @@ Note that it only extracts tags from lines like the below:
 
 
 * Finish
+:PROPERTIES:
+:header-args: :tangle init.el
+:END:
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq default-directory "~/")
 
 
@@ -2661,7 +2896,7 @@ Note that it only extracts tags from lines like the below:
 
 Footer for init.el
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; no-native-compile: t

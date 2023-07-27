@@ -2,6 +2,8 @@
 # name: srcel
 # key: srcel
 # --
-#+begin_src emacs-lisp :tangle yes
-$0
+#+begin_src emacs-lisp
+$1
 #+end_src
+
+$0

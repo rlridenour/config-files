@@ -1,24 +1,6 @@
 ;;; init.el --- Personal Emacs configuration file -*- lexical-binding: t; no-byte-compile: t; -*-
-;; NOTE: init.el is generated from init.org.  Please edit that file instead
+;; NOTE: init.el is generated from README.org.  Please edit that file instead
 
-(setq gc-cons-threshold (* 50 1000 1000))
-
-(setq user-full-name "Randy Ridenour"
-      user-mail-address "rlridenour@gmail.com")
-
-;; Silence the "Package cl is deprecated" warning.
-(setq byte-compile-warnings '(cl-functions))
-
-
-;; Silence native compilation warnings
-(setq native-comp-async-report-warnings-errors nil)
-(setq warning-minimum-level :error)
-;; Code
-
-;; compile elisp
-(when (fboundp 'native-compile-async)
-    (setq comp-deferred-compilation t
-          comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
 
 (defvar bootstrap-version)
 (let ((bootstrap-file
@@ -26,9 +8,9 @@
       (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -41,51 +23,93 @@
 (use-package use-package-ensure-system-package)
 
 ;; Allow key chords in use-package bindings.
-  (use-package use-package-chords
-	:config (key-chord-mode 1))
-
-(use-package exec-path-from-shell
-	:config (exec-path-from-shell-initialize))
+(use-package use-package-chords
+  :config (key-chord-mode 1))
 
 (use-package org-auto-tangle
 :defer t
 :hook (org-mode . org-auto-tangle-mode))
 
+(setq inhibit-startup-message t)
+
+(setq user-full-name "Randy Ridenour"
+      user-mail-address "rlridenour@gmail.com")
+
+(use-package exec-path-from-shell
+	:config (exec-path-from-shell-initialize))
+
+(setq byte-compile-warnings '(cl-functions))
+
+(setq native-comp-async-report-warnings-errors nil)
+(setq warning-minimum-level :error)
+
+(when (fboundp 'native-compile-async)
+    (setq comp-deferred-compilation t
+          comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
+
 (global-visual-line-mode 1)
+
 (global-auto-revert-mode 1)
+
+(setq global-auto-revert-non-file-buffers t
+      dired-auto-revert-buffer t
+      auto-revert-verbose nil)
+
 (global-hl-line-mode 1)
-(delete-selection-mode 1)
+
 (column-number-mode)
-(global-display-line-numbers-mode)
+
+(delete-selection-mode 1)
+
 (save-place-mode 1)
 
-(setq default-fill-column 100
-      make-backup-files nil
-      inhibit-startup-message t
-      initial-scratch-message nil
-      initial-major-mode 'org-mode
-      use-dialog-box nil
-      vc-follow-symlinks t
-      tramp-default-method "ssh"
-      global-auto-revert-non-file-buffers t
-      message-kill-buffer-on-exit t
-      large-file-warning-threshold nil
-      sentence-end-double-space nil
-      dictionary-server "dict.org"
-      case-replace nil
-      bookmark-save-flag 1
-      dired-auto-revert-buffer t
-      dired-dwim-target "dired-dwim-target-next"
-      eshell-scroll-to-bottom-on-input "this"
-      ediff-split-window-function "split-window-horizontally"
-      ediff-window-setup-function "ediff-setup-windows-plain"
-      man-notify-method "aggressive"
-      show-paren-delay 0
-      )
+;; (global-display-line-numbers-mode)
+
+(setq default-fill-column 100)
+
+(setq message-kill-buffer-on-exit t)
+
+(setq large-file-warning-threshold nil)
+
+(setq sentence-end-double-space nil)
+
+(setq dictionary-server "dict.org")
+
+(setq eshell-scroll-to-bottom-on-input "this")
+
+(setq ediff-split-window-function "split-window-horizontally"
+      ediff-window-setup-function "ediff-setup-windows-plain")
 
 (show-paren-mode)
+(setq show-paren-delay 0)
 
 (setf use-short-answers t)
+
+(add-hook 'before-save-hook 'time-stamp)
+
+(setq enable-recursive-minibuffers t)
+(minibuffer-depth-indicate-mode 1)
+
+(setq delete-by-moving-to-trash t
+      trash-directory "~/.Trash/emacs")
+
+(require 'uniquify)
+
+(setq browse-url-browser-function 'browse-url-default-macosx-browser)
+
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+  (cl-flet ((process-list ())) ad-do-it))
+
+(add-to-list 'display-buffer-alist
+  	   (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+
+(require 'recentf)
+(setq recentf-max-saved-items 200
+    recentf-max-menu-items 15)
+(recentf-mode)
+
+(setq initial-scratch-message nil
+      initial-major-mode 'org-mode)
 
 (defun unkillable-scratch-buffer ()
   (if (equal (buffer-name (current-buffer)) "*scratch*")
@@ -102,110 +126,42 @@
     (switch-to-buffer goto-scratch-buffer)
     (org-mode)))
 
-(add-hook 'before-save-hook 'time-stamp)
+(use-package persistent-scratch
+  :config
+  (persistent-scratch-setup-default))
 
-(setq delete-by-moving-to-trash t
-      trash-directory "~/.Trash/emacs")
-
-(setq insert-directory-program "gls"); use proper GNU ls
-
-					;Auto refresh buffers including dired
-(setq global-auto-revert-non-file-buffers t)
-
-					; Do not generate any messages (be quiet about refreshing Dired).
-(setq auto-revert-verbose nil)
-
-;; Allow recursive minibuffers
-(setq enable-recursive-minibuffers t)
-;;show recursion depth in minibuffer
-(minibuffer-depth-indicate-mode t)
-
-					;two identical buffers get uniquely numbered names
-(require 'uniquify)
-
-
-					; Map escape to cancel (like C-g)
-(define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
-(global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
-
-;;; Search
-
-;; Show number of matches at the end of search field.
+(setq case-replace nil)
 
 (setq isearch-lazy-count t)
 (setq lazy-count-prefix-format nil)
 (setq lazy-count-suffix-format "   (%s/%s)")
 
-;; Save backups and auto-saves to a temp directory.
-
-
-(setq
- backup-by-copying t			; don't clobber symlinks
- backup-directory-alist
- '(("." . "~/.saves/"))			; don't litter my fs tree
- delete-old-versions t
- kept-new-versions 6
- kept-old-versions 2
- version-control t)
-
-;; Recent files
-(require 'recentf)
-(setq recentf-max-saved-items 200
-      recentf-max-menu-items 15)
-(recentf-mode)
-
-;; Use spotlight for locate.
-
 (setq locate-command "mdfind")
 
-
-;; Open links in default Mac browser.
-
-(setq browse-url-browser-function 'browse-url-default-macosx-browser)
-
-;; Don't ask for confirmation to kill processes when exiting Emacs. Credit to [[http://timothypratley.blogspot.com/2015/07/seven-specialty-emacs-settings-with-big.html][Timothy Pratley]].
-
-
-(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-  (cl-flet ((process-list ())) ad-do-it))
-
-;; Don't display async shell command process buffers
-
-(add-to-list 'display-buffer-alist
-	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
-
-;; ibuffer
-
-;; Don't ask for unnecessary confirmations
-
+(setq backup-by-copying t                    ; don't clobber symlinks
+      backup-directory-alist
+      '(("." . "~/.saves/"))                 ; don't litter my fs tree
+      delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
 
 (setq ibuffer-expert t)
 
-
-;; Auto-update buffer list
-
-
 (add-hook 'ibuffer-mode-hook
-	  #'(lambda ()
-	      (ibuffer-auto-mode 1)
-	      (ibuffer-switch-to-saved-filter-groups "home")))
-
-
-;;; Abbreviations and Bookmarks
-
-;; Load Abbreviations
+  	#'(lambda ()
+  	    (ibuffer-auto-mode 1)
+  	    (ibuffer-switch-to-saved-filter-groups "home")))
 
 (load "~/Dropbox/emacs/my-emacs-abbrev")
 
-
-;; Bookmarks
-
 (require 'bookmark)
 (bookmark-bmenu-list)
+(setq bookmark-save-flag 1)
 
+(setq insert-directory-program "gls"); use proper GNU ls
 
-
-;; Dired
+(setq dired-dwim-target "dired-dwim-target-next")
 
 (use-package dired-x
   :straight (:type built-in)
@@ -215,22 +171,17 @@
     ;; toggle `dired-omit-mode' with C-x M-o
     (add-hook 'dired-mode-hook #'dired-omit-mode)
     (setq dired-omit-files
-	  (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^\\..+$"))
+  	(concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^\\..+$"))
     (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "DS_Store" "xml" "bcf" "nav" "snm" "toc"))))
-
-
-;; Spelling
-
-;; Use f7 to check word, shift-f7 to check entire buffer.
 
 (use-package jinx
   :hook (emacs-startup . global-jinx-mode)
   :bind ([remap ispell-word] . jinx-correct))
 
 (global-set-key (kbd "S-<f7>") (lambda ()
-				(interactive)
-				(let ((current-prefix-arg '(4)))
-				  (call-interactively #'jinx-correct))))
+  			      (interactive)
+  			      (let ((current-prefix-arg '(4)))
+  				(call-interactively #'jinx-correct))))
 
 ;;; Fonts 
 
@@ -1234,7 +1185,7 @@
   :defer t
   :config
   (avy-setup-default)
-(global-set-key (kbd "C-c C-j") 'avy-resume))
+  (global-set-key (kbd "C-c C-j") 'avy-resume))
 
 (use-package ace-window
   :defer t)
@@ -1254,12 +1205,13 @@
   :config
   (global-auto-revert-mode)
   (setq magit-refresh-status-buffer nil
-	magit-diff-highlight-indentation nil
-	magit-diff-highlight-trailing nil
-	magit-diff-paint-whitespace nil
-	magit-diff-highlight-hunk-body nil
-	magit-diff-refine-hunk nil
-	magit-revision-insert-related-refs nil)
+      magit-diff-highlight-indentation nil
+      magit-diff-highlight-trailing nil
+      magit-diff-paint-whitespace nil
+      magit-diff-highlight-hunk-body nil
+      magit-diff-refine-hunk nil
+      magit-revision-insert-related-refs nil
+      vc-follow-symlinks t)
   )
 
 (use-package reveal-in-osx-finder
@@ -1335,39 +1287,39 @@
 (use-package pulsar
   :custom
   (setq pulsar-pulse-functions
-	'(isearch-repeat-forward
-	  isearch-repeat-backward
-	  recenter-top-bottom
-	  move-to-window-line-top-bottom
-	  reposition-window
-	  bookmark-jump
-	  other-window
-	  delete-window
-	  delete-other-windows
-	  forward-page
-	  backward-page
-	  scroll-up-command
-	  scroll-down-command
-	  windmove-right
-	  windmove-left
-	  windmove-up
-	  windmove-down
-	  windmove-swap-states-right
-	  windmove-swap-states-left
-	  windmove-swap-states-up
-	  windmove-swap-states-down
-	  tab-new
-	  tab-close
-	  tab-next
-	  org-next-visible-heading
-	  org-previous-visible-heading
-	  org-forward-heading-same-level
-	  org-backward-heading-same-level
-	  outline-backward-same-level
-	  outline-forward-same-level
-	  outline-next-visible-heading
-	  outline-previous-visible-heading
-	  outline-up-heading))
+      '(isearch-repeat-forward
+  	isearch-repeat-backward
+  	recenter-top-bottom
+  	move-to-window-line-top-bottom
+  	reposition-window
+  	bookmark-jump
+  	other-window
+  	delete-window
+  	delete-other-windows
+  	forward-page
+  	backward-page
+  	scroll-up-command
+  	scroll-down-command
+  	windmove-right
+  	windmove-left
+  	windmove-up
+  	windmove-down
+  	windmove-swap-states-right
+  	windmove-swap-states-left
+  	windmove-swap-states-up
+  	windmove-swap-states-down
+  	tab-new
+  	tab-close
+  	tab-next
+  	org-next-visible-heading
+  	org-previous-visible-heading
+  	org-forward-heading-same-level
+  	org-backward-heading-same-level
+  	outline-backward-same-level
+  	outline-forward-same-level
+  	outline-next-visible-heading
+  	outline-previous-visible-heading
+  	outline-up-heading))
   :hook
   (consult-after-jump . pulsar-recenter-top)
   (consult-after-jump . pulsar-reveal-entry)
@@ -1376,10 +1328,10 @@
   (imenu-after-jump . pulsar-reveal-entry)
   :config
   (setq pulsar-pulse t
-	pulsar-delay 0.2
-	pulsar-iterations 10
-	pulsar-face 'pulsar-blue
-	pulsar-highlight-face 'pulsar-blue))
+      pulsar-delay 0.2
+      pulsar-iterations 10
+      pulsar-face 'pulsar-blue
+      pulsar-highlight-face 'pulsar-blue))
 
 (pulsar-global-mode 1)
 
@@ -1397,9 +1349,9 @@
   (setq dashboard-set-navigator nil)
   (setq dashboard-projects-backend 'project-el)
   (setq dashboard-items '((agenda . 5)
-			  (recents  . 5)
-			  (bookmarks . 10)
-			  (projects . 5)))
+  			(recents  . 5)
+  			(bookmarks . 10)
+  			(projects . 5)))
   )
 
 
@@ -1444,15 +1396,15 @@
 
 (use-package popper
   :bind (("C-`"   . popper-toggle-latest)
-	 ("M-`"   . popper-cycle)
-	 ("C-M-`" . popper-toggle-type))
+       ("M-`"   . popper-cycle)
+       ("C-M-`" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
-	'("\\*Messages\\*"
-	  "Output\\*$"
-	  "\\*Async Shell Command\\*"
-	  help-mode
-	  compilation-mode))
+      '("\\*Messages\\*"
+  	"Output\\*$"
+  	"\\*Async Shell Command\\*"
+  	help-mode
+  	compilation-mode))
   (popper-mode +1)
   (popper-echo-mode +1)) ; For echo area hints
 
@@ -1465,17 +1417,14 @@
 (use-package eat
   :defer t
   :straight (eat :host codeberg
-		 :repo "akib/emacs-eat"
-		 :files ("*.el" ("term" "term/*.el") "*.texi"
-			 "*.ti" ("terminfo/e" "terminfo/e/*")
-			 ("terminfo/65" "terminfo/65/*")
-			 ("integration" "integration/*")
-			 (:exclude ".dir-locals.el" "*-tests.el"))))
+  	       :repo "akib/emacs-eat"
+  	       :files ("*.el" ("term" "term/*.el") "*.texi"
+  		       "*.ti" ("terminfo/e" "terminfo/e/*")
+  		       ("terminfo/65" "terminfo/65/*")
+  		       ("integration" "integration/*")
+  		       (:exclude ".dir-locals.el" "*-tests.el"))))
 
 
-(use-package persistent-scratch
-  :config
-  (persistent-scratch-setup-default))
 
 (use-package visual-regexp
   :config
@@ -2004,6 +1953,9 @@ Note that it only extracts tags from lines like the below:
 ;; (global-set-key (kbd "C-c h d") 'hugo-deploy)
 ;; (global-set-key (kbd "C-c h g") 'hugo-select-tags)
 ;; (global-set-key (kbd "C-c h m") 'hugo-update-lastmod)
+
+(define-key isearch-mode-map [escape] 'isearch-abort)   ;; isearch
+(global-set-key [escape] 'keyboard-escape-quit)         ;; everywhere else
 
 ;; Keybindings
 
