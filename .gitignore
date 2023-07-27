@@ -70,4 +70,3 @@ emacs/bookmarks
 emacs/custom.el
 emacs/.persistent-scratch
 emacs/places
-emacs/init.el
