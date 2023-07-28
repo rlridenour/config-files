@@ -62,10 +62,7 @@ rmacs/projects
 rmacs/.persistent-scratch
 nano/
 emacs/*~
-emacs/straight/
-emacs/transient/
-emacs/recentf
-emacs/history
+emacs/elpaca/
 emacs/bookmarks
 emacs/custom.el
 emacs/.persistent-scratch
