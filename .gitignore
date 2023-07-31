@@ -63,6 +63,7 @@ rmacs/.persistent-scratch
 nano/
 emacs/*~
 emacs/elpaca/
+emacs/elpa/
 emacs/bookmarks
 emacs/custom.el
 emacs/.persistent-scratch
