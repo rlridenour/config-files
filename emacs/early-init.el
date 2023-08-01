@@ -38,6 +38,9 @@
 (setq-default initial-scratch-message nil)
 (setq use-dialog-box nil)
 
+(setq frame-resize-pixelwise t)
+(add-to-list 'default-frame-alist '(fullscreen . fullheight))
+
 (setq-default cursor-in-non-selected-windows nil
 	      frame-title-format '("%f [%m]"))
 
