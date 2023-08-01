@@ -1084,7 +1084,120 @@ Functions for handling windows.
 #+end_src
 
 
-* Meow
+* Editing
+
+** Settings and Functions
+
+Replace active region by typing.
+
+#+begin_src emacs-lisp
+  (delete-selection-mode 1)
+#+end_src
+
+Increase the width of fill mode.
+
+#+begin_src emacs-lisp
+  (setq default-fill-column 100)
+#+end_src
+
+Functions to fill sentences.
+
+#+begin_src emacs-lisp
+  (defun fill-sentences-in-paragraph ()
+    "Put a newline at the end of each sentence in the current paragraph."
+    (interactive)
+    (save-excursion
+      (mark-paragraph)
+      (call-interactively 'fill-sentences-in-region)))
+
+  (defun fill-sentences-in-region (start end)
+    "Put a newline at the end of each sentence in the region maked by (start end)."
+    (interactive "*r")
+    (call-interactively 'unfill-region)
+    (save-excursion
+      (goto-char start)
+      (while (< (point) end)
+	(forward-sentence)
+	(if (looking-at-p " ")
+
+	    (defvar repetition-counter 0
+	      "How often cycle-on-repetition was called in a row using the same command.")
+
+	  (defun cycle-on-repetition (list-of-expressions)
+	    "Return the first element from the list on the first call,
+     the second expression on the second consecutive call etc"
+	    (interactive)
+	    (if (equal this-command last-command)
+		(setq repetition-counter (+ repetition-counter 1)) ;; then
+	      (setq repetition-counter 0) ;; else
+	      )
+	    (nth
+	     (mod repetition-counter (length list-of-expressions))
+	     list-of-expressions) ;; implicit return of the last evaluated value
+	    )
+
+	  (defun reformat-paragraph ()
+	    "Cycles the paragraph between three states: filled/unfilled/fill-sentences."
+	    (interactive)
+	    (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
+	    )
+	  (newline-and-indent)))))
+#+end_src
+
+Use single space after sentences.
+
+#+begin_src emacs-lisp
+  (setq sentence-end-double-space nil)
+#+end_src
+
+Use ~F8~ to insert YYYYMMDD date string and ~C-c d~ to insert Month, Day Year.
+
+#+begin_src emacs-lisp
+  (defun insert-date-string ()
+    "Insert current date yyyymmdd."
+    (interactive)
+    (insert (format-time-string "%Y%m%d")))
+
+  (defun insert-standard-date ()
+    "Inserts standard date time string."
+    (interactive)
+    (insert (format-time-string "%B %e, %Y")))
+#+end_src
+
+
+Count words in region or buffer.
+
+#+begin_src emacs-lisp
+  (defun rlr-count-words (&optional begin end)
+    "count words between BEGIN and END (region); if no region defined, count words in buffer"
+    (interactive "r")
+    (let ((b (if mark-active begin (point-min)))
+	  (e (if mark-active end (point-max))))
+      (message "Word count: %s" (how-many "\\w+" b e))))
+#+end_src
+
+
+Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/][Bozhidar Batsov]]
+
+#+begin_src emacs-lisp
+  (defun move-line-up ()
+    "Move up the current line."
+    (interactive)
+    (transpose-lines 1)
+    (forward-line -2)
+    (indent-according-to-mode))
+
+  (defun move-line-down ()
+    "Move down the current line."
+    (interactive)
+    (forward-line 1)
+    (transpose-lines 1)
+    (forward-line -1)
+    (indent-according-to-mode))
+#+end_src
+
+
+** Meow
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
@@ -1184,6 +1297,126 @@ Functions for handling windows.
   (add-to-list 'meow-mode-state-list '(term-mode . insert))
   (setq meow-use-clipboard t)
   (meow-global-mode 1))
+#+end_src
+
+
+** Hungry Delete
+
+#+begin_src emacs-lisp
+  (use-package hungry-delete
+    :defer t
+    :config
+    (global-hungry-delete-mode))
+#+end_src
+
+
+** Evil Nerd Commenter
+
+#+begin_src emacs-lisp
+  (use-package evil-nerd-commenter
+    :general
+    ("M-;" #'evilnc-comment-or-uncomment-lines))
+#+end_src
+
+
+** Shrink Whitespace
+
+#+begin_src emacs-lisp
+  (use-package shrink-whitespace
+    :defer t)
+#+end_src
+
+
+** Unfill
+
+#+begin_src emacs-lisp
+  (use-package unfill
+    :defer t)
+#+end_src
+
+
+** Smartparens
+
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :init
+    (require 'smartparens-config)
+    :config
+    (smartparens-global-mode t) ;; These options can be t or nil.
+    (show-smartparens-global-mode t)
+    (setq sp-show-pair-from-inside t))
+#+end_src
+
+
+** Aggressive Indent
+
+#+begin_src emacs-lisp
+  (use-package aggressive-indent)
+#+end_src
+
+
+** Titlecase
+
+#+begin_src emacs-lisp
+  (use-package titlecase
+    :defer t
+    :config
+    (setq titlecase-style "chicago"))
+#+end_src
+
+
+
+
+
+** Spelling
+
+Use f7 to check word, shift-f7 to check entire buffer.
+
+#+begin_src emacs-lisp
+  (use-package jinx
+    :hook (emacs-startup . global-jinx-mode)
+    :bind ([remap ispell-word] . jinx-correct))
+
+  (defun jinx-correct-all ()
+    (interactive)
+    (let ((current-prefix-arg '(4)))
+      (call-interactively #'jinx-correct)))
+
+  (general-define-key
+   "<f7>" #'jinx-correct
+   "S-<f7>" #'jinx-correct-all)
+
+#+end_src
+
+
+
+
+
+** Editing Keybindings
+
+#+begin_src emacs-lisp
+  (general-define-key
+   "<s-up>" #'beginning-of-buffer
+   "<s-down>" #'end-of-buffer
+   "<s-right>" #'end-of-visual-line
+   "<s-left>" #'beginning-of-visual-line
+   "<M-down>" #'forward-paragraph
+   "<M-up>" #'backward-paragraph
+   "M-u" #'upcase-dwim
+   "M-l" #'downcase-dwim
+   "M-c" #'capitalize-dwim
+   "RET" #'newline-and-indent
+   "M-/" #'hippie-expand
+   "<s-backspace>" #'kill-whole-line
+   "s-j" #'crux-top-join-line
+   "<S-return>" #'crux-smart-open-line
+   "<C-S-return>" #'crux-smart-open-line-above
+   "<f8>" #'insert-standard-date
+
+   "M-y" #'consult-yank-pop
+   "M-q" #'reformat-paragraph
+   "M-#" #'dictionary-lookup-definition
+   "M-=" #'shrink-whitespace)
 #+end_src
 
 
