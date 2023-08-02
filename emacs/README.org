@@ -2040,9 +2040,13 @@ Set a few variables and some utility functions that are used later.
 (defun hugo-make-slug (s) "Turn a string into a slug."
        (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
 
-(defun hugo-yaml-escape (s) "Escape a string for YAML."
-       (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
+  (defun hugo-yaml-escape (s)
+    "Escape a string for YAML."
+    (if (or (string-match ":" s)
+	    (string-match "\"" s))
+	(concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
 #+end_src
+
 
 
 
@@ -2511,9 +2515,9 @@ Use [[dict.org]] for dictionary searches.
 
 Force ediff to show diffs in the same frame side-by-side.
 
-#+begin_src emacs-lisp
-  (setq ediff-split-window-function "split-window-horizontally"
-	ediff-window-setup-function "ediff-setup-windows-plain")
+#+begin_src emacs-lisp :tangle no
+  (setq ediff-split-window-function "split-window-horizontally")
+  ;; (setq ediff-window-setup-function "ediff-setup-windows-plain")
 #+end_src
 
 
@@ -3037,91 +3041,6 @@ Prefix Keybindings
    "g w" #'avy-goto-word-1)
 #+end_src
 
-
-
-** Dictionary
-
-Use [[dict.org]] for dictionary searches.
-
-#+begin_src emacs-lisp
-  (setq dictionary-server "dict.org")
-#+end_src
-
-
-** Ediff
-
-Force ediff to show diffs in the same frame side-by-side.
-
-#+begin_src emacs-lisp
-  (setq ediff-split-window-function "split-window-horizontally"
-	ediff-window-setup-function "ediff-setup-windows-plain")
-#+end_src
-
-
-** Shells
-
-Run async shell command without creating a window.
-
-#+begin_src emacs-lisp
-  (defun async-shell-command-no-window
-      (command)
-    (interactive)
-    (let
-	((display-buffer-alist
-	  (list
-	   (cons
-	    "\\*Async Shell Command\\*.*"
-	    (cons #'display-buffer-no-window nil)))))
-      (async-shell-command
-       command)))
-#+end_src
-
-#+begin_src emacs-lisp
-  (defun iterm-goto-filedir-or-home ()
-    "Go to present working dir and focus iterm"
-    (interactive)
-    (do-applescript
-     (concat
-      " tell application \"iTerm2\"\n"
-      "   tell the current session of current window\n"
-      (format "     write text \"cd %s\" \n"
-	      ;; string escaping madness for applescript
-	      (replace-regexp-in-string "\\\\" "\\\\\\\\"
-					(shell-quote-argument (or default-directory "~"))))
-      "   end tell\n"
-      " end tell\n"
-      " do shell script \"open -a iTerm\"\n"
-      ))
-    )
-
-
-#+end_src
-
-
-#+begin_src emacs-lisp
-  ;; Emacs-term-toggle
-  ;; https://github.com/amno1/emacs-term-toggle
-  (use-package emacs-term-toggle
-    :defer
-    :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
-    :config
-    (setq term-toggle-no-confirm-exit t)
-    )
-#+end_src
-
-Make output scroll to bottom in Eshell.
-
-#+begin_src emacs-lisp
-  (setq eshell-scroll-to-bottom-on-input "this")
-#+end_src
-
-
-#+begin_src emacs-lisp
-  (general-define-key
-   "<f2>" #'term-toggle-ansi
-   "<S-f2>" #'term-toggle-eshell
-  "C-`" #'iterm-goto-filedir-or-home)
-#+end_src
 
 
 

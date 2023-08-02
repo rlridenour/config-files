@@ -1431,8 +1431,11 @@
 (defun hugo-make-slug (s) "Turn a string into a slug."
        (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
 
-(defun hugo-yaml-escape (s) "Escape a string for YAML."
-       (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
+  (defun hugo-yaml-escape (s)
+    "Escape a string for YAML."
+    (if (or (string-match ":" s)
+	    (string-match "\"" s))
+	(concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
 
 ;; Create a new blog post.
 
@@ -1771,9 +1774,6 @@ Note that it only extracts tags from lines like the below:
   (yas-global-mode 1))
 
 (setq dictionary-server "dict.org")
-
-(setq ediff-split-window-function "split-window-horizontally"
-      ediff-window-setup-function "ediff-setup-windows-plain")
 
 (defun async-shell-command-no-window
     (command)
@@ -2186,56 +2186,6 @@ Note that it only extracts tags from lines like the below:
  "z" #'reveal-in-osx-finder
  "g l" #'avy-goto-line
  "g w" #'avy-goto-word-1)
-
-(setq dictionary-server "dict.org")
-
-(setq ediff-split-window-function "split-window-horizontally"
-      ediff-window-setup-function "ediff-setup-windows-plain")
-
-(defun async-shell-command-no-window
-    (command)
-  (interactive)
-  (let
-      ((display-buffer-alist
-	(list
-	 (cons
-	  "\\*Async Shell Command\\*.*"
-	  (cons #'display-buffer-no-window nil)))))
-    (async-shell-command
-     command)))
-
-(defun iterm-goto-filedir-or-home ()
-  "Go to present working dir and focus iterm"
-  (interactive)
-  (do-applescript
-   (concat
-    " tell application \"iTerm2\"\n"
-    "   tell the current session of current window\n"
-    (format "     write text \"cd %s\" \n"
-	    ;; string escaping madness for applescript
-	    (replace-regexp-in-string "\\\\" "\\\\\\\\"
-				      (shell-quote-argument (or default-directory "~"))))
-    "   end tell\n"
-    " end tell\n"
-    " do shell script \"open -a iTerm\"\n"
-    ))
-  )
-
-;; Emacs-term-toggle
-;; https://github.com/amno1/emacs-term-toggle
-(use-package emacs-term-toggle
-  :defer
-  :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
-  :config
-  (setq term-toggle-no-confirm-exit t)
-  )
-
-(setq eshell-scroll-to-bottom-on-input "this")
-
-(general-define-key
- "<f2>" #'term-toggle-ansi
- "<S-f2>" #'term-toggle-eshell
-"C-`" #'iterm-goto-filedir-or-home)
 
 (setq default-directory "~/")
 
