@@ -1,8 +1,8 @@
 # -*- mode: snippet -*-
 # name: srcel
 # key: srcel
-# expand-env: ((yas-indent-line 'auto) (yas-also-auto-indent-first-line t) (yas-wrap-around-region t))
 # --
 #+begin_src emacs-lisp
 $0
 #+end_src
+

@@ -659,6 +659,84 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 )
 
+(delete-selection-mode 1)
+
+(setq default-fill-column 100)
+
+(defun fill-sentences-in-paragraph ()
+  "Put a newline at the end of each sentence in the current paragraph."
+  (interactive)
+  (save-excursion
+    (mark-paragraph)
+    (call-interactively 'fill-sentences-in-region)))
+
+(defun fill-sentences-in-region (start end)
+  "Put a newline at the end of each sentence in the region maked by (start end)."
+  (interactive "*r")
+  (call-interactively 'unfill-region)
+  (save-excursion
+    (goto-char start)
+    (while (< (point) end)
+      (forward-sentence)
+      (if (looking-at-p " ")
+
+	  (defvar repetition-counter 0
+	    "How often cycle-on-repetition was called in a row using the same command.")
+
+	(defun cycle-on-repetition (list-of-expressions)
+	  "Return the first element from the list on the first call,
+   the second expression on the second consecutive call etc"
+	  (interactive)
+	  (if (equal this-command last-command)
+	      (setq repetition-counter (+ repetition-counter 1)) ;; then
+	    (setq repetition-counter 0) ;; else
+	    )
+	  (nth
+	   (mod repetition-counter (length list-of-expressions))
+	   list-of-expressions) ;; implicit return of the last evaluated value
+	  )
+
+	(defun reformat-paragraph ()
+	  "Cycles the paragraph between three states: filled/unfilled/fill-sentences."
+	  (interactive)
+	  (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
+	  )
+	(newline-and-indent)))))
+
+(setq sentence-end-double-space nil)
+
+(defun insert-date-string ()
+  "Insert current date yyyymmdd."
+  (interactive)
+  (insert (format-time-string "%Y%m%d")))
+
+(defun insert-standard-date ()
+  "Inserts standard date time string."
+  (interactive)
+  (insert (format-time-string "%B %e, %Y")))
+
+(defun rlr-count-words (&optional begin end)
+  "count words between BEGIN and END (region); if no region defined, count words in buffer"
+  (interactive "r")
+  (let ((b (if mark-active begin (point-min)))
+	(e (if mark-active end (point-max))))
+    (message "Word count: %s" (how-many "\\w+" b e))))
+
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
+
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
+
 (use-package meow
   :init
   (defun meow-setup ()
@@ -754,6 +832,884 @@
   (setq meow-use-clipboard t)
   (meow-global-mode 1))
 
+(use-package hungry-delete
+  :defer t
+  :config
+  (global-hungry-delete-mode))
+
+(use-package evil-nerd-commenter
+  :general
+  ("M-;" #'evilnc-comment-or-uncomment-lines))
+
+(use-package shrink-whitespace
+  :defer t)
+
+(use-package unfill
+  :defer t)
+
+(use-package smartparens
+  :init
+  (require 'smartparens-config)
+  :config
+  (smartparens-global-mode t) ;; These options can be t or nil.
+  (show-smartparens-global-mode t)
+  (setq sp-show-pair-from-inside t))
+
+(use-package aggressive-indent)
+
+(use-package titlecase
+  :defer t
+  :config
+  (setq titlecase-style "chicago"))
+
+(use-package jinx
+  :hook (emacs-startup . global-jinx-mode)
+  :bind ([remap ispell-word] . jinx-correct))
+
+(defun jinx-correct-all ()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (call-interactively #'jinx-correct)))
+
+(general-define-key
+ "<f7>" #'jinx-correct
+ "S-<f7>" #'jinx-correct-all)
+
+(setq case-replace nil)
+
+(setq isearch-lazy-count t)
+(setq lazy-count-prefix-format nil)
+(setq lazy-count-suffix-format "   (%s/%s)")
+
+(setq locate-command "mdfind")
+
+(use-package visual-regexp
+  :defer)
+
+(defun occur-non-ascii ()
+  "Find any non-ascii characters in the current buffer."
+  (interactive)
+  (occur "[^[:ascii:]]"))
+
+(defun rlr/consult-rg ()
+  "Function for `consult-ripgrep' with the `universal-argument'."
+  (interactive)
+  (consult-ripgrep (list 4)))
+
+(defun rlr/consult-fd ()
+  "Function for `consult-find' with the `universal-argument'."
+  (interactive)
+  (consult-find (list 4)))
+
+(use-package deadgrep)
+
+(general-define-key
+ "s-l" #'hydra-locate/body
+ "s-f" #'consult-line
+ "<f5>" #'deadgrep)
+;; "C-s" #'consult-isearch
+;; "C-r" #'consult-isearch-reverse
+
+(general-define-key
+ "<s-up>" #'beginning-of-buffer
+ "<s-down>" #'end-of-buffer
+ "<s-right>" #'end-of-visual-line
+ "<s-left>" #'beginning-of-visual-line
+ "<M-down>" #'forward-paragraph
+ "<M-up>" #'backward-paragraph
+ "M-u" #'upcase-dwim
+ "M-l" #'downcase-dwim
+ "M-c" #'capitalize-dwim
+ "RET" #'newline-and-indent
+ "M-/" #'hippie-expand
+ "<s-backspace>" #'kill-whole-line
+ "s-j" #'crux-top-join-line
+ "<S-return>" #'crux-smart-open-line
+ "<C-S-return>" #'crux-smart-open-line-above
+ "<f8>" #'insert-standard-date
+
+ "M-y" #'consult-yank-pop
+ "M-q" #'reformat-paragraph
+ "M-#" #'dictionary-lookup-definition
+ "M-=" #'shrink-whitespace
+ "s-l" #'hydra-locate/body
+ "s-f" #'consult-line
+ "<f5>" #'deadgrep)
+
+;;;; = org-mode - the one and only writing environment (and more)
+
+(use-package org
+:straight (:type built-in)
+  :init
+  ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
+  (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
+  :config
+  (setq org-highlight-latex-and-related '(latex script entities))
+  (setq org-startup-indented nil)
+  (setq org-adapt-indentation nil)
+  (setq org-hide-leading-stars nil)
+  ;; (setq org-footnote-section nil)
+  (setq org-html-validation-link nil)
+  (setq org-todo-keyword-faces
+	'(("DONE" . "green4") ("TODO" . org-warning)))
+  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
+
+(use-package org-contrib
+  :config
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines)))
+
+;; Don't export headlines with :ignore: tag, but do export content.
+;;(require 'ox-extra)
+;;(ox-extras-activate '(ignore-headlines))
+
+;; Org-tempo is need for structure templates like "<s".
+
+(require 'org-tempo)
+
+;; I need to keep whitespace at the end of lines for my Beamer slides.
+
+;; (add-hook 'text-mode-hook 'doom-disable-delete-trailing-whitespace-h)
+
+(use-package orgonomic
+  :defer t
+  :straight (orgonomic :host github :repo "aaronjensen/emacs-orgonomic")
+  :hook (org-mode . orgonomic-mode))
+
+;; Some export settings
+
+(with-eval-after-load 'ox-latex
+  (add-to-list 'org-latex-classes
+	       '("org-article"
+		 "\\documentclass{article}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+		 ("\\section{%s}" . "\\section*{%s}")
+		 ("\\subsection{%s}" . "\\subsection*{%s}")
+		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+	       '("org-handout"
+		 "\\documentclass{pdfhandout}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+		 ("\\section{%s}" . "\\section*{%s}")
+		 ("\\subsection{%s}" . "\\subsection*{%s}")
+		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+	       '("org-beamer"
+		 "\\documentclass{beamer}
+      [NO-DEFAULT-PACKAGES]
+      [NO-PACKAGES]"
+		 ("\\section{%s}" . "\\section*{%s}")
+		 ("\\subsection{%s}" . "\\subsection*{%s}")
+		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  )
+
+(setq org-export-with-smart-quotes t)
+
+(with-eval-after-load 'ox-latex
+  (add-to-list 'org-export-smart-quotes-alist
+	       '("en-us"
+		 (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
+		 (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+		 (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+		 (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+		 (apostrophe        :utf-8 "’" :html "&rsquo;")))
+  )
+
+;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+
+
+
+(use-package org-footnote-assistant
+  :straight (org-footnote-assistant :type git :host github :repo "lazzalazza/org-footnote-assistant")
+  :commands (org-footnote-assistant)
+  :after (org)
+  :config
+  (org-footnote-assistant-mode 1))
+
+
+(defun
+    arara-slides ()
+  ;; (interactive)
+  (async-shell-command-no-window "mkslides"))
+
+(defun
+    arara-notes ()
+  ;; (interactive)
+  (async-shell-command-no-window "mknotes"))
+
+
+(defun lecture-slides ()
+  "publish org data file as beamer slides"
+  (interactive)
+  (find-file "*-slides.org" t)
+  (org-beamer-export-to-latex)
+  (kill-buffer)
+  (arara-slides)
+  (find-file "*-data.org" t))
+
+
+(defun lecture-notes ()
+  "publish org data file as beamer notes"
+  (interactive)
+  (find-file "*-notes.org" t)
+  (org-beamer-export-to-latex)
+  (kill-buffer)
+  (arara-notes)
+  (find-file "*-data.org" t))
+
+(defun canvas-notes ()
+  "Copy HTML slide notes for Canvas"
+  (interactive)
+  (shell-command "canvas-notes")
+  (find-file "canvas.org")
+  (canvas-copy)
+  (kill-buffer)
+  (delete-file "canvas-data.org"))
+
+
+(defun present ()
+  (interactive)
+  (async-shell-command "present"))
+
+(defun canvas-copy ()
+  "Copy html for canvas pages"
+  (interactive)
+  (org-html-export-to-html)
+  (shell-command "canvas")
+  )
+
+(defun  create-args ()
+  (interactive)
+  (kill-ring-save (region-beginning) (region-end))
+  (exchange-point-and-mark)
+  (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
+  (previous-line)
+  ;; (previous-line)
+  (org-beginning-of-line)
+  (forward-word)
+  (forward-char)
+  (forward-char)
+  (insert "\\underline{")
+  (org-end-of-line)
+  (insert "}")
+  (next-line)
+  (org-beginning-of-line)
+  (forward-word)
+  (insert "[\\phantom{\\(\\therefore\\)}]")
+  (next-line)
+  (next-line)
+  (org-return)
+  (org-return)
+  (org-yank)
+  (exchange-point-and-mark)
+  (yas-expand-snippet (yas-lookup-snippet "arg-wrap-html"))
+  )
+
+
+(defun  create-tex-arg ()
+  (interactive)
+  (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
+  (previous-line)
+  (previous-line)
+  (forward-word)
+  (forward-char)
+  (forward-char)
+  (insert "\\underline{")
+  (org-end-of-line)
+  (insert "}")
+  (next-line)
+  (org-beginning-of-line)
+  (forward-word)
+  (insert "[\\phantom{\\(\\therefore\\)}]")
+  (next-line)
+  (next-line)
+  (org-return)
+  (org-return)
+  )
+
+(setq org-latex-pdf-process '("arara %f"))
+
+(defun rlr/dwim-mkt ()
+  "Run arara and open PDF."
+  (interactive)
+  (dwim-shell-command-on-marked-files
+   "Compile with arara"
+   "mkt <<f>>"
+   :silent-success t
+   )
+  )
+(defun rlr/org-mkt ()
+  "Make PDF with Arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (async-shell-command-no-window (concat "mkt " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+
+(defun rlr/dwim-org-mkt ()
+  "Make PDF with Arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (dwim-shell-command-on-marked-files
+   "Compile with arara"
+   "mkt <<fne>>.tex"
+   :silent-success t
+   )
+  )
+
+
+(defun rlr/org-mktc ()
+  "Compile continuously with arara."
+  (interactive)
+  (org-latex-export-to-latex)
+  (start-process-shell-command (concat "mktc-" (buffer-file-name)) (concat "mktc-" (buffer-file-name)) (concat "mktc " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+
+
+(defun rlr/org-date ()
+  "Update existing date: timestamp on a Hugo post."
+  (interactive)
+  (save-excursion (
+		   goto-char 1)
+		  (re-search-forward "^#\\+date:")
+		  (let ((beg (point)))
+		    (end-of-line)
+		    (delete-region beg (point)))
+		  (insert (concat " " (format-time-string "%B %e, %Y")))))
+
+;; Org-capture
+(setq org-capture-templates
+      '(
+	("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
+	 "** TODO %?\n  %i\n  %a")
+	("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
+	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+	)
+      )
+
+(with-eval-after-load 'org-capture
+  (add-to-list 'org-capture-templates
+	       '("n" "New note (with Denote)" plain
+		 (file denote-last-path)
+		 #'denote-org-capture
+		 :no-save t
+		 :immediate-finish nil
+		 :kill-buffer t
+		 :jump-to-captured t)))
+
+
+(setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
+
+(define-key global-map "\C-cc" 'org-capture)
+
+;; Org super agenda
+
+(use-package org-super-agenda
+  :after org-agenda
+  :init
+  (setq org-agenda-skip-scheduled-if-done t
+	org-agenda-skip-deadline-if-done t
+	org-agenda-include-deadlines t
+	org-agenda-block-separator nil
+	org-agenda-compact-blocks t
+	org-agenda-start-day nil ;; i.e. today
+	org-agenda-span 1
+	org-agenda-start-on-weekday nil)
+  (setq org-agenda-custom-commands
+	'(("c" "Super view"
+	   ((agenda "" ((org-agenda-overriding-header "")
+			(org-super-agenda-groups
+			 '((:name "Today"
+				  :time-grid t
+				  :date today
+				  :order 1)))))
+	    (alltodo "" ((org-agenda-overriding-header "")
+			 (org-super-agenda-groups
+			  '((:log t)
+			    (:name "Important"
+				   :priority "A"
+				   :order 4)
+			    (:name "Today's tasks"
+				   :file-path "journal/")
+			    (:name "Due Today"
+				   :deadline today
+				   :order 2)
+			    (:name "Overdue"
+				   :deadline past
+				   :order 3)
+			    (:discard (:not (:todo "TODO")))))))))))
+  :config
+  (org-super-agenda-mode))
+
+
+;; Display 7 full days in the agenda.
+(setq org-agenda-span 7)
+
+(use-package org-bulletproof
+  :defer t
+  :straight (org-bulletproof :type git :host github :repo "pondersson/org-bulletproof")
+  :config
+  (setq org-bulletproof-default-ordered-bullet "1.")
+  (global-org-bulletproof-mode +1))
+
+(use-package citar
+  :defer t
+  :bind (("C-c C-b" . citar-insert-citation)
+	 :map minibuffer-local-map
+	 ("M-b" . citar-insert-preset))
+  :custom
+  (org-cite-global-bibliography '("~/Dropbox/bibtex/rlr.bib"))
+  (citar-bibliography '("~/Dropbox/bibtex/rlr.bib"))
+  (org-cite-csl-styles-dir "/usr/local/texlive/2023/texmf-dist/tex/latex/citation-style-language/styles"))
+
+;; Use ebib for bibtex file management
+
+
+(use-package ebib
+  :defer t
+  :config
+  (setq ebib-bibtex-dialect 'biblatex)
+  ;;(evil-set-initial-state 'ebib-index-mode 'emacs)
+  ;;(evil-set-initial-state 'ebib-entry-mode 'emacs)
+  ;;(evil-set-initial-state 'ebib-log-mode 'emacs)
+  :custom
+  (ebib-preload-bib-files '("~/Dropbox/bibtex/rlr.bib")))
+
+(use-package markdown-mode
+  :defer t
+  :mode (("README\\.md\\'" . gfm-mode)
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.Rmd\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
+  :config
+  (setq markdown-indent-on-enter 'indent-and-new-item)
+  (setq markdown-asymmetric-header t))
+
+;; Convert markdown files to org format.
+(fset 'convert-markdown-to-org
+      [?\M-< ?\M-% ?* return ?- return ?! ?\M-< ?\C-\M-% ?# ?* backspace backspace ?  ?# ?* ?$ return return ?! ?\M-< ?\M-% ?# return ?* return ?!])
+
+(fset 'copy-beamer-note
+      (kmacro-lambda-form [?\C-r ?: ?E ?N ?D return down ?\C-  ?\C-s ?* ?* ?  ?N ?o ?t ?e ?s return up ?\M-w ?\C-s ?: ?E ?N ?D return down return ?\s-v return] 0 "%d"))
+
+(use-package tex-site
+  :straight auctex
+  :defer t
+  :init
+  (setq TeX-parse-self t
+	TeX-auto-save t
+	TeX-electric-math nil
+	LaTeX-electric-left-right-brace nil
+	TeX-electric-sub-and-superscript nil
+	LaTeX-item-indent 0
+	TeX-quote-after-quote nil
+	TeX-clean-confirm nil
+	TeX-source-correlate-mode t
+	TeX-source-correlate-method 'synctex))
+
+(setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
+
+(setq TeX-view-program-list
+      '(("PDF Viewer" "/Applications/Skim.app/Contents/SharedSupport/displayline -b -g %n %o %b")))
+
+;; Start Emacs server
+
+;; (server-start)
+
+;; Auto-raise Emacs on activation (from Skim, usually)
+
+(defun raise-emacs-on-aqua()
+  (shell-command "osascript -e 'tell application \"Emacs\" to activate' "))
+(add-hook 'server-switch-hook 'raise-emacs-on-aqua)
+
+
+
+
+
+;; Functions for Arara
+
+(defun tex-clean ()
+  (interactive)
+  (shell-command "latexmk -c"))
+
+
+(defun tex-clean-all ()
+  (interactive)
+  (shell-command "latexmk -C"))
+
+(eval-after-load "tex"
+  '(add-to-list 'TeX-command-list
+		'("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
+
+(defun arara-all ()
+  (interactive)
+  (async-shell-command "mkall"))
+
+;; Run once
+
+;; (defun rlr/tex-mkt ()
+;;   "Compile with arara."
+;;   (interactive)
+;;   (async-shell-command-no-window (concat "mkt " (shell-quote-argument(buffer-file-name)))))
+
+(defun rlr/tex-mkt ()
+  "Compile with arara."
+  (interactive)
+  (save-buffer)
+  (shell-command (concat "mkt " (shell-quote-argument(buffer-file-name))))
+  (TeX-view))
+
+
+
+;; Run continuously
+
+(defun rlr/tex-mktc ()
+  "Compile continuously with arara."
+  (interactive)
+  (async-shell-command-no-window (concat "mktc " (shell-quote-argument(buffer-file-name))))
+  )
+
+;;   (TeX-view))
+
+
+(defun latex-word-count ()
+  (interactive)
+  (let* ((this-file (buffer-file-name))
+	 (word-count
+	  (with-output-to-string
+	    (with-current-buffer standard-output
+	      (call-process "texcount" nil t nil "-brief" this-file)))))
+    (string-match "\n$" word-count)
+    (message (replace-match "" nil nil word-count))))
+
+(use-package latex-change-env
+  :after latex
+  :bind
+  (:map LaTeX-mode-map ("C-c r" . latex-change-env)))
+
+(use-package math-delimiters
+  :straight (math-delimiters :type git :host github :repo "oantolin/math-delimiters")
+  :after (:any org latex)
+  :commands (math-delimiters-no-dollars math-delimiters-mode)
+  :hook ((LaTeX-mode . math-delimiters-mode)
+	 (org-mode . math-delimiters-mode))
+  :ensure nil
+  :config (progn
+	    (setq math-delimiters-compressed-display-math nil)
+
+
+	    (define-minor-mode math-delimiters-mode
+	      "Math Delimeters"
+	      :init-value nil
+	      :lighter " MD"
+	      :keymap (let ((map (make-sparse-keymap)))
+			(define-key map (kbd "$")  #'math-delimiters-insert)
+			map))))
+
+(defun hugo-timestamp ()
+  "Update existing date: timestamp on a Hugo post."
+  (interactive)
+  (save-excursion (
+                   goto-char 1)
+                  (re-search-forward "^#\\+date:")
+                  (let ((beg (point)))
+                    (end-of-line)
+                    (delete-region beg (point)))
+                  (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
+
+(defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
+(defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
+(defvar hugo-post-ext ".org"  "File extension of Hugo posts.")
+(defvar hugo-post-template "#+TITLE: \%s\n#+draft: true\n#+tags[]: \n#+date: \n#+lastmod: \n#+mathjax: \n\n"
+  "Default template for Hugo posts. %s will be replace by the post title.")
+
+(defun hugo-make-slug (s) "Turn a string into a slug."
+       (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
+
+(defun hugo-yaml-escape (s) "Escape a string for YAML."
+       (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
+
+;; Create a new blog post.
+
+
+(defun hugo-draft-post (title) "Create a new Hugo blog post."
+       (interactive "sPost Title: ")
+       (let ((draft-file (concat hugo-directory hugo-posts-dir
+                                 (format-time-string "%Y-%m-%d-")
+                                 (hugo-make-slug title)
+                                 hugo-post-ext)))
+         (if (file-exists-p draft-file)
+             (find-file draft-file)
+           (find-file draft-file)
+           (insert (format hugo-post-template (hugo-yaml-escape title)))
+           (hugo-timestamp))))
+
+;; This sets the draft tag to false, updates the timestamp, and saves the buffer.
+
+
+(defun hugo-publish-post ()
+  "Set draft to false, update the timestamp, and save."
+  (interactive)
+  (save-excursion 
+                   (goto-char 1)
+                  (re-search-forward "^#\\+draft:")
+                  (let ((beg (point)))
+                    (end-of-line)
+                    (delete-region beg (point)))
+                  (insert " false")
+                  (hugo-timestamp))
+  (save-buffer))
+
+(defmacro with-dir (DIR &rest FORMS)
+  "Execute FORMS in DIR."
+  (let ((orig-dir (gensym)))
+    `(progn (setq ,orig-dir default-directory)
+            (cd ,DIR) ,@FORMS (cd ,orig-dir))))
+
+;; Update the last modified date.
+
+
+(defun hugo-update-lastmod ()
+  "Update the `lastmod' value for a hugo org-mode buffer."
+  (interactive)
+  (save-excursion
+    (goto-char 1)
+    (re-search-forward "^#\\+lastmod:")
+    (let ((beg (point)))
+      (end-of-line)
+      (delete-region beg (point)))
+    (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S"))))
+  (save-buffer))
+
+;; Deploy the blog.
+
+
+(defun hugo-deploy ()
+  "Push changes upstream."
+  (interactive)
+  (with-dir hugo-directory
+            (shell-command "git add .")
+            (--> (current-time-string)
+                 (concat "git commit -m \"" it "\"")
+                 (shell-command it))
+            (magit-push-current-to-upstream nil)))
+
+;; Update the last modified date of a post, save the buffer, and deploy.
+
+
+(defun hugo-org-deploy ()
+  "Push changes upstream."
+  (interactive)
+  (hugo-update-lastmod)
+  (save-buffer)
+  (with-dir hugo-directory
+            (shell-command "git add .")
+            (--> (current-time-string)
+                 (concat "git commit -m \"" it "\"")
+                 (shell-command it))
+            (magit-push-current-to-upstream nil)))
+
+;; Insert a tag into a Hugo post. From [[https://whatacold.io/blog/2022-10-10-emacs-hugo-blogging/][Hugo Blogging in Emacs - whatacold's space]] 
+
+
+(defun hugo-select-tags ()
+  "Select tags from the hugo org files in the current dir.
+
+Note that it only extracts tags from lines like the below:
+#+tags[]: Emacs Org-mode"
+  (interactive)
+  ;; Move to end of tag line.
+  (save-excursion
+    (goto-char 1)
+    (re-search-forward "^#\\+tags")
+    (end-of-line)
+
+    (let ((files (directory-files-recursively default-directory "\\.org$")))
+      (let ((source (with-temp-buffer
+                      (while files
+                        (when (file-exists-p (car files))
+                          (insert-file-contents (car files)))
+                        (pop files))
+                      (buffer-string))))
+        (save-match-data
+          (let ((pos 0)
+                matches)
+            (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
+              (push (match-string 1 source) matches)
+              (setq pos (match-end 0)))
+            (insert
+             (completing-read
+              "Insert a tag: "
+              (sort
+               (delete-dups
+                (delete "" (split-string
+                            (replace-regexp-in-string "[\"\']" " "
+                                                      (replace-regexp-in-string
+                                                       "[,()]" ""
+                                                       (format "%s" matches)))
+                            " ")))
+               (lambda (a b)
+                 (string< (downcase a) (downcase b))))))))))
+    (insert " ")
+    )
+  )
+
+;; Add multiple tags to a Hugo post. I need to try to make it work with consult--read.
+
+
+(defun w/hugo--collect-tags ()
+  "Collect hugo tags from the org files in the current dir.
+
+Note that it only extracts tags from lines like the below:
+#+tags[]: Emacs Org-mode"
+  (interactive)
+  (let ((files (directory-files-recursively default-directory "\\.org$")))
+    (let ((source (with-temp-buffer
+		    (while files
+                      (when (file-exists-p (car files))
+                        (insert-file-contents (car files)))
+		      (pop files))
+		    (buffer-string))))
+      (save-match-data
+	(let ((pos 0)
+	      matches)
+	  (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
+	    (push (match-string 1 source) matches)
+	    (setq pos (match-end 0)))
+          (sort
+	   (delete-dups
+	    (delete "" (split-string
+			(replace-regexp-in-string "[\"\']" " "
+						  (replace-regexp-in-string
+						   "[,()]" ""
+						   (format "%s" matches)))
+			" ")))
+           (lambda (a b)
+             (string< (downcase a) (downcase b)))))))))
+
+(defun w/hugo-select-tags ()
+  "Select tags for the current hugo post."
+  (interactive)
+  (ivy-read "Insert tags: "
+            (w/hugo--collect-tags)
+            :action
+            (lambda (tag)
+              (insert (if (char-equal (preceding-char) 32)
+                          ""
+                        " ")
+                      tag))))
+
+;; Insert internal links using C-c C-l. From [[https://lucidmanager.org/productivity/create-websites-with-org-mode-and-hugo/][Create Websites with Emacs: Blogging with Org mode and Hugo]]
+
+
+;; Follow Hugo links
+  (defun org-hugo-follow (link)
+    "Follow Hugo link shortcodes"
+    (org-link-open-as-file
+     (string-trim "{{< ref test.org >}}" "{{< ref " ">}}")))
+
+  ;; New link type for Org-Hugo internal links
+  (org-link-set-parameters
+   "hugo"
+   :complete (lambda ()
+               (concat "{{< ref "
+                       (file-name-nondirectory
+                        (read-file-name "File: "))
+                       " >}}"))
+   :follow #'org-hugo-follow)
+
+;; Denote
+(use-package denote
+  :config
+  (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes")
+  (setq denote-infer-keywords t)
+  (setq denote-sort-keywords t)
+  (setq denote-prompts '(title keywords))
+  (setq denote-date-format nil)
+  )
+
+(use-package consult-notes
+  :config
+  (setq consult-notes-sources
+	`(("Notes"  ?n ,denote-directory)
+	  ;; ("Books"  ?b "~/Documents/books")
+	  )))
+
+(defun my-denote-journal ()
+  "Create an entry tagged 'journal' with the date as its title."
+  (interactive)
+  (denote
+   (format-time-string "%A %B %d %Y") ; format like Tuesday June 14 2022
+   '("journal"))) ; multiple keywords are a list of strings: '("one" "two")
+
+
+(use-package citar-denote
+  :after citar denote
+  :config
+  (citar-denote-mode)
+  (setq citar-open-always-create-notes t))
+
+(use-package denote-menu)
+
+
+
+;;;; = xeft - search notes with the xapian syntax
+;; Search large volume of data (notes) with search engine syntax
+;; +word -word AND NOT etc
+;; <tab>   to preview
+;; <enter> to open the file in the same buffer
+					;(use-package (xeft :host github :repo "casouri/xeft")
+(use-package xeft
+  :commands (xeft)
+  :config
+  (custom-set-faces '(xeft-excerpt-title ((t (:weight bold)))))
+  (custom-set-faces '(xeft-excerpt-body ((t (:height 150)))))
+  :custom
+  ;; Default extension for files created with xeft
+  (xeft-default-extension "org")
+  ;; Where is my search source
+  (xeft-directory rr-notes-dir)
+  ;; Only parse the root directory
+  (xeft-recursive nil))
+
+(use-package avy
+  :defer t
+  :config
+  (avy-setup-default)
+:general
+("s-/" #'avy-goto-char-timer)
+("C-c C-j" #'avy-resume))
+
+  (use-package ace-window
+    :defer t)
+
+;; EWW
+
+(defun rrnet ()
+  (interactive)
+  (eww-browse-url "randyridenour.net")
+  )
+
+(defun sep ()
+  (interactive)
+  (eww-browse-url "plato.stanford.edu")
+  )
+
+
+;; Org-mac-link
+
+(use-package org-mac-link
+  :defer)
+
+(use-package web-mode
+  :init
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+
 (use-package magit
   :defer t
   :config
@@ -788,6 +1744,10 @@
 	  (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^\\..+$"))
     (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "DS_Store" "xml" "bcf" "nav" "snm" "toc"))))
 
+(general-define-key
+ :keymaps 'dired-mode-map
+ "M-<RET>" #'crux-open-with)
+
 (use-package crux)
 
 (use-package reveal-in-osx-finder)
@@ -809,6 +1769,477 @@
   (setq yas-snippet-dirs '("~/.config/snippets"))
   :config
   (yas-global-mode 1))
+
+(setq dictionary-server "dict.org")
+
+(setq ediff-split-window-function "split-window-horizontally"
+      ediff-window-setup-function "ediff-setup-windows-plain")
+
+(defun async-shell-command-no-window
+    (command)
+  (interactive)
+  (let
+      ((display-buffer-alist
+	(list
+	 (cons
+	  "\\*Async Shell Command\\*.*"
+	  (cons #'display-buffer-no-window nil)))))
+    (async-shell-command
+     command)))
+
+(defun iterm-goto-filedir-or-home ()
+  "Go to present working dir and focus iterm"
+  (interactive)
+  (do-applescript
+   (concat
+    " tell application \"iTerm2\"\n"
+    "   tell the current session of current window\n"
+    (format "     write text \"cd %s\" \n"
+	    ;; string escaping madness for applescript
+	    (replace-regexp-in-string "\\\\" "\\\\\\\\"
+				      (shell-quote-argument (or default-directory "~"))))
+    "   end tell\n"
+    " end tell\n"
+    " do shell script \"open -a iTerm\"\n"
+    ))
+  )
+
+;; Emacs-term-toggle
+;; https://github.com/amno1/emacs-term-toggle
+(use-package emacs-term-toggle
+  :defer
+  :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
+  :config
+  (setq term-toggle-no-confirm-exit t)
+  )
+
+(setq eshell-scroll-to-bottom-on-input "this")
+
+(general-define-key
+ "<f2>" #'term-toggle-ansi
+ "<S-f2>" #'term-toggle-eshell
+"C-`" #'iterm-goto-filedir-or-home)
+
+(general-unbind
+  "C-z"
+  "s-p"
+  "s-q"
+  "s-w"
+  "s-m"
+  "s-n"
+  "s-h")
+
+(defun my/insert-unicode (unicode-name)
+  "Same as C-x 8 enter UNICODE-NAME."
+  (insert-char (gethash unicode-name (ucs-names))))
+
+(use-package major-mode-hydra
+:general
+("s-m" #'major-mode-hydra))
+
+(pretty-hydra-define hydra-toggle
+  (:color teal :quit-key "q" :title "Toggle")
+  (" "
+   (("a" abbrev-mode "abbrev" :toggle t)
+    ("d" toggle-debug-on-error "debug" (default value 'debug-on-error))
+    ("e" meow-global-mode "meow" :toggle t)
+    ("i" aggressive-indent-mode "indent" :toggle t)
+    ("f" auto-fill-mode "fill" :toggle t)
+    ("l" display-line-numbers-mode "linum" :toggle t)
+    ("m" toggle-frame-maximized-undecorated "max" :toggle t)
+    ("p" smartparens-mode "smartparens" :toggle t)
+    ("t" toggle-truncate-lines "truncate" :toggle t)
+    ("s" whitespace-mode "whitespace" :toggle t))
+   " "
+   (("c" cdlatex-mode "cdlatex" :toggle t)
+    ("o" olivetti-mode "olivetti" :toggle t)
+    ("r" read-only-mode "read-only" :toggle t)
+    ("v" view-mode "view" :toggle t)
+    ("w" wc-mode "word-count" :toggle t)
+    ("S" auto-save-visited-mode "auto-save" :toggle t)
+    ("C" cua-selection-mode "rectangle" :toggle t))))
+
+(pretty-hydra-define hydra-buffer
+  (:color teal :quit-key "q" :title "Buffers and Files")
+  ("Open"
+   (("b" ibuffer "ibuffer")
+    ("m" consult-bookmark "bookmark")
+    ("w" consult-buffer-other-window "other window")
+    ("f" consult-buffer-other-frame "other frame")
+    ("d" crux-recentf-find-directory "recent directory")
+    ("a" crux-open-with "open in default app"))
+   "Actions"
+   (("D" crux-delete-file-and-buffer "delete file")
+    ("R" crux-rename-file-and-buffer "rename file")
+    ("K" crux-kill-other-buffers "kill other buffers")
+    ("N" nuke-all-buffers "Kill all buffers")
+    ("c" crux-cleanup-buffer-or-region "fix indentation"))
+   "Misc"
+   (("t" crux-visit-term-buffer "ansi-term")
+    ("T" iterm-goto-filedir-or-home "iTerm2")
+    ("i" crux-find-user-init-file "init.el")
+    ("s" crux-find-shell-init-file "fish config"))
+   ))
+
+(pretty-hydra-define hydra-locate
+  (:color teal :quit-key "q" title: "Search")
+  ("Buffer"
+   (("c" pulsar-highlight-dwim "find cursor")
+    ("l" consult-goto-line "goto-line")
+    ("i" consult-imenu "imenu")
+    ("m" consult-mark "mark")
+    ("o" consult-outline "outline"))
+   "Global"
+   (("M" consult-global-mark "global-mark")
+    ("n" consult-notes "notes")
+    ("r" consult-ripgrep "ripgrep")
+    ("d" rlr/consult-rg "rg from dir")
+    ("f" rlr/consult-fd "find from dir")
+    )))
+
+(pretty-hydra-define hydra-window
+  (:color teal :quit-key "q" title: "Windows")
+  ("Windows"
+   (("w" other-window "cycle windows" :exit nil)
+    ("a" ace-window "ace window")
+    ("m" minimize-window "minimize window")
+    ("s" transpose-windows "swap windows")
+    ("S" shrink-window-if-larger-than-buffer "shrink to fit")
+    ("b" balance-windows "balance windows")
+    ("t" toggle-window-split "toggle split")
+    ("T" enlarge-window" grow taller" :exit nil)
+    ("G" enlarge-window-horizontally "grow wider" :exit nil)
+    ("o" delete-other-windows "other windows"))
+   "Frames"
+   (("M" iconify-frame "minimize frame")
+    ("d" delete-other-frames "delete other frames")
+    ("D" delete-frame "delete this frame")
+    ("i" make-frame-invisible "invisible frame")
+    ("f" toggle-frame-fullscreen "fullscreen")
+    ("n" make-frame-command "new frame")
+    )))
+
+(pretty-hydra-define hydra-new
+  (:color teal :quit-key "q" title: "New")
+  ("Denote"
+   (("b" hugo-draft-post "blog post")
+    ("c" org-capture "capture")
+    ("n" denote "note")
+    ("v" denote-menu-list-notes "view notes")
+    ("j" my-denote-journal "journal"))
+   ))
+
+(pretty-hydra-define hydra-logic
+  (:color pink :quit-key "0" :title "Logic")
+  ("Operators"
+   (("1" (my/insert-unicode "NOT SIGN") "¬")
+    ("2" (my/insert-unicode "AMPERSAND") "&")
+    ("3" (my/insert-unicode "LOGICAL OR") "v")
+    ("4" (my/insert-unicode "SUPERSET OF") "⊃")
+    ;; ("4" (my/insert-unicode "RIGHTWARDS ARROW") "→")
+    ("5" (my/insert-unicode "IDENTICAL TO") "≡")
+    ;; ("5" (my/insert-unicode "LEFT RIGHT ARROW") "↔")
+    ("6" (my/insert-unicode "THERE EXISTS") "∃")
+    ("7" (my/insert-unicode "FOR ALL") "∀")
+    ("8" (my/insert-unicode "WHITE MEDIUM SQUARE") "□")
+    ("9" (my/insert-unicode "LOZENGE") "◊")
+    ("`" (my/insert-unicode "NOT EQUAL TO") "≠"))
+   "Space"
+   (("?" (my/insert-unicode "MEDIUM MATHEMATICAL SPACE") "Narrow space"))
+   "Quit"
+   (("0" quit-window "quit" :color blue))
+   ))
+
+(pretty-hydra-define hydra-math
+  (:color pink :quit-key "?" :title "Math")
+  ("Operators"
+   (("1" (my/insert-unicode "NOT SIGN") "¬")
+    ("2" (my/insert-unicode "AMPERSAND") "&")
+    ("3" (my/insert-unicode "LOGICAL OR") "v")
+    ("4" (my/insert-unicode "RIGHTWARDS ARROW") "→")
+    ("5" (my/insert-unicode "LEFT RIGHT ARROW") "↔")
+    ("6" (my/insert-unicode "THERE EXISTS") "∃")
+    ("7" (my/insert-unicode "FOR ALL") "∀")
+    ("8" (my/insert-unicode "WHITE MEDIUM SQUARE") "□")
+    ("9" (my/insert-unicode "LOZENGE") "◊"))
+   "Sets"
+   (("R" (my/insert-unicode "DOUBLE-STRUCK CAPITAL R") "ℝ real")
+    ("N" (my/insert-unicode "DOUBLE-STRUCK CAPITAL N") "ℕ natural")
+    ("Z" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Z") "ℤ integer")
+    ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
+    ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
+    ("Q" (my/insert-unicode "DOUBLE-STRUCK CAPITAL Q") "ℚ rational")
+    )
+   "Space"
+   (("?" (my/insert-unicode "MEDIUM MATHEMATICAL SPACE") "Narrow space"))
+   "Quit"
+   (("?" quit-window "quit" :color blue))
+   ))
+
+(pretty-hydra-define hydra-hugo
+  (:color teal :quit-key "q" :title "Hugo")
+  ("Blog"
+   (("n" hugo-draft-post "New draft")
+    ("p" hugo-publish-post "Publish")
+    ("t" hugo-timestamp "Update timestamp")
+    ("e" org-hugo-auto-export-mode "Auto export")
+    ("d" hugo-deploy "Deploy"))
+   ))
+
+(pretty-hydra-define hydra-hydras
+  (:color teal :quit-key "q" :title "Hydras")
+  ("System"
+   (("t" hydra-toggle/body)
+    ("h" hydra-hugo/body)
+    ("p" powerthesaurus-hydra/body))
+   "Unicode"
+   (("l" hydra-logic/body "logic")
+    ("m" hydra-math/body)
+    )
+   )
+  )
+;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
+
+(major-mode-hydra-define dashboard-mode
+  (:quit-key "q")
+  ("Open"
+   (("m" consult-bookmark "bookmarks")
+    ("a" consult-org-agenda "consult-agenda")
+    ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
+    )))
+
+(major-mode-hydra-define eww-mode
+  (:quit-key "q")
+  ("A"
+   (
+    ("G" eww "Eww Open Browser")
+    ("g" eww-reload "Eww Reload")
+    ("6" eww-open-in-new-buffer "Open in new buffer")
+    ("l" eww-back-url "Back Url")
+    ("r" eww-forward-url "Forward Url")
+    ("N" eww-next-url "Next Url")
+    ("P" eww-previous-url "Previous Url")
+    ("u" eww-up-url "Up Url")
+    ("&" eww-browse-with-external-browser "Open in External Browser")
+    ("d" eww-download "Download")
+    ("w" eww-copy-page-url "Copy Url Page")
+    );end theme
+   "B"
+   (
+    ("T" endless/toggle-image-display "Toggle Image Display")
+    (">" shr-next-link "Shr Next Link")
+    ("<" shr-previous-link "Shr Previous Link")
+    ("n" scroll-down-command "Scroll Down")
+    ("C" url-cookie-list "Url Cookie List")
+    ("v" eww-view-source "View Source")
+    ("R" eww-readable "Make Readable")
+    ("H" eww-list-histories "List History")
+    ("E" eww-set-character-encoding "Character Encoding")
+    ("s" eww-switch-to-buffer "Switch to Buffer")
+    ("S" eww-list-buffers "List Buffers")
+    );end highlighting
+
+   "C"
+   (
+
+    ("1" rrnet "randyridenour.net")
+    ("2" sep "SEP")
+    ("F" eww-toggle-fonts "Toggle Fonts")
+    ("D" eww-toggle-paragraph-direction "Toggle Paragraph Direction")
+    ("c" eww-toggle-colors "Toggle Colors")
+    ("b" eww-add-bookmark "Add Bookmark")
+    ("B" eww-list-bookmarks "List Bookmarks")
+    ("=" eww-next-bookmark "Next Bookmark")
+    ("-" eww-previous-bookmark "Previous Bookmark")
+    ("<SPC>" nil "Quit" :color pink)
+    );end other
+   ))
+
+(major-mode-hydra-define markdown-mode
+  (:quit-key "q")
+  ("Format"
+   (("h" markdown-insert-header-dwim "header")
+    ("l" markdown-insert-link "link")
+    ("u" markdown-insert-uri "url")
+    ("f" markdown-insert-footnote "footnote")
+    ("w" markdown-insert-wiki-link "wiki")
+    ("r" markdown-insert-reference-link-dwim "r-link")
+    ("n" markdown-cleanup-list-numbers "clean-lists")
+    ("c" markdown-complete-buffer "complete"))))
+
+(major-mode-hydra-define latex-mode
+  (:quit-key "q")
+  ("Bibtex"
+   (("r" citar-insert-citation "citation"))
+   "LaTeXmk"
+   (("m" rlr/tex-mkt "compile")
+    ("w" rlr/tex-mktc "watch")
+    ("c" tex-clean "clean aux")
+    ("C" tex-clean-all "clean all")
+    ("n" latex-word-count "word count"))))
+
+(major-mode-hydra-define org-mode
+  (:quit-key "q")
+  ("Export"
+   (
+    ("m" rlr/org-mkt "Make PDF with Arara")
+    ("el" org-latex-export-to-latex "Org to LaTeX")
+    ("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
+    ("eB" org-beamer-export-to-latex "Org to Beamer-LaTeX")
+    ("s" lecture-slides "Lecture slides")
+    ("n" lecture-notes "Lecture notes")
+    ("ep" present "Present slides")
+    ("eh" canvas-copy "Copy html for Canvas")
+    ("c" tex-clean "clean aux")
+    ("C" tex-clean-all "clean all")
+    )
+   "Edit"
+   (
+    ("dd" org-deadline "deadline")
+    ("ds" org-schedule "schedule")
+    ("r" org-refile "refile")
+    ("du" rlr/org-date "update date stamp")
+    ;; ("fn" org-footnote-new "insert footnote")
+    ("ff" org-footnote-action "edit footnote")
+    ("fc" citar-insert-citation "citation")
+    ("b" org-cycle-list-bullet "cycle bullets" :exit nil)
+    ("l" org-mac-link-safari-insert-frontmost-url "insert safari link")
+    ("y" yankpad-set-category "set yankpad")
+    )
+   "View"
+   (
+    ("vi" consult-org-heading "iMenu")
+    ("vu" org-toggle-pretty-entities "org-pretty")
+    ("vI" org-toggle-inline-images "Inline images")
+    )
+   "Blog"
+   (("hn" hugo-draft-post "New draft")
+    ("hp" hugo-publish-post "Publish")
+    ("ht" hugo-timestamp "Update timestamp")
+    ("hd" hugo-org-deploy "Deploy")
+    ("he" org-hugo-auto-export-mode "Auto export"))
+   "Notes"
+   (("1" denote-link "link to note"))
+   ))
+
+(major-mode-hydra-define dired-mode
+  (:quit-key "q")
+  ("Tools"
+   (("d" crux-open-with "Open in default program")
+    ("h" dired-omit-mode "Show hidden files")
+    ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
+    ("n" dired-toggle-read-only "edit Filenames"))))
+
+(defhydra hydra-org (:color teal)
+  ("a" org-agenda "agenda")
+  ("l" org-store-link "store-link")
+  ("q" nil))
+
+(general-define-key
+ "s-h" #'hydra-hydras/body
+ "s-n" #'hydra-new/body
+ "s-t" #'hydra-toggle/body
+ "s-w" #'hydra-window/body
+ "s-b" #'hydra-buffer/body
+ "C-x 9" #'hydra-logic/body)
+
+(general-define-key
+
+
+ ;; Toggle term
+
+
+ ;; Editing
+
+
+
+ ;; "s-/" #'avy-goto-char-timer
+ "<help> a" #'consult-apropos
+ "C-x 4 b" #'consult-buffer-other-window
+ "C-x 5 b" #'consult-buffer-other-frame
+ "C-x r x" #'consult-register
+ "M-s m" #'consult-multi-occur
+ "<f6>" #'yankpad-insert
+ )
+
+(general-define-key
+ :prefix "C-c"
+ ;; bind "C-c a" to #'org-agenda
+ "a" #'org-agenda
+ "2" #'rlr/find-file-below
+ "3" #'rlr/find-file-right
+ "b" #'consult-bookmark
+ "c" #'org-capture
+ "D" #'crux-delete-file-and-buffer
+ ;; "h" #'consult-history
+ "k" #'crux-kill-other-buffers
+ "l" #'dictionary-search
+ "m" #'consult-mark
+ "n b" #'hugo-draft-post
+ "o" #'consult-outline
+ "r" #'crux-rename-file-and-buffer
+ "s" #'goto-scratch
+ "S" #'crux-cleanup-buffer-or-region
+ "t" #'crux-visit-term-buffer
+ "u" #'unfill-paragraph
+ "w" #'ace-window
+ "z" #'reveal-in-osx-finder
+ "g l" #'avy-goto-line
+ "g w" #'avy-goto-word-1)
+
+(setq dictionary-server "dict.org")
+
+(setq ediff-split-window-function "split-window-horizontally"
+      ediff-window-setup-function "ediff-setup-windows-plain")
+
+(defun async-shell-command-no-window
+    (command)
+  (interactive)
+  (let
+      ((display-buffer-alist
+	(list
+	 (cons
+	  "\\*Async Shell Command\\*.*"
+	  (cons #'display-buffer-no-window nil)))))
+    (async-shell-command
+     command)))
+
+(defun iterm-goto-filedir-or-home ()
+  "Go to present working dir and focus iterm"
+  (interactive)
+  (do-applescript
+   (concat
+    " tell application \"iTerm2\"\n"
+    "   tell the current session of current window\n"
+    (format "     write text \"cd %s\" \n"
+	    ;; string escaping madness for applescript
+	    (replace-regexp-in-string "\\\\" "\\\\\\\\"
+				      (shell-quote-argument (or default-directory "~"))))
+    "   end tell\n"
+    " end tell\n"
+    " do shell script \"open -a iTerm\"\n"
+    ))
+  )
+
+;; Emacs-term-toggle
+;; https://github.com/amno1/emacs-term-toggle
+(use-package emacs-term-toggle
+  :defer
+  :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
+  :config
+  (setq term-toggle-no-confirm-exit t)
+  )
+
+(setq eshell-scroll-to-bottom-on-input "this")
+
+(general-define-key
+ "<f2>" #'term-toggle-ansi
+ "<S-f2>" #'term-toggle-eshell
+"C-`" #'iterm-goto-filedir-or-home)
+
+(setq default-directory "~/")
+
+(setq gc-cons-threshold (* 2 1000 1000))
 
 ;; Local Variables:
 ;; no-byte-compile: t
