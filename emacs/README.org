@@ -2037,21 +2037,21 @@ Use deadgrep to search with ripgrep.
 Set a few variables and some utility functions that are used later.
 
 #+begin_src emacs-lisp
-(defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
-(defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
-(defvar hugo-post-ext ".org"  "File extension of Hugo posts.")
-(defvar hugo-post-template "#+TITLE: \%s\n#+draft: true\n#+tags[]: \n#+date: \n#+lastmod: \n#+mathjax: \n\n"
-  "Default template for Hugo posts. %s will be replace by the post title.")
+  (defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
+  (defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
+  (defvar hugo-post-ext ".org"  "File extension of Hugo posts.")
+  (defvar hugo-post-template "#+TITLE: \%s\n#+draft: true\n#+tags[]: \n#+date: \n#+lastmod: \n#+mathjax: \n\n"
+    "Default template for Hugo posts. %s will be replace by the post title.")
 
-(defun hugo-make-slug (s) "Turn a string into a slug."
-       (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
-
-  (defun hugo-yaml-escape (s)
-    "Escape a string for YAML."
-    (if (or (string-match ":" s)
-	    (string-match "\"" s))
-	(concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
+  (defun hugo-make-slug (s) "Turn a string into a slug."
+	 (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
 #+end_src
+
+#+begin_src emacs-lisp
+  (defun hugo-yaml-escape (s) "Escape a string for YAML."
+	 (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
+#+end_src
+
 
 
 
@@ -2826,6 +2826,7 @@ Unset some keys.
      (("m" consult-bookmark "bookmarks")
       ("a" consult-org-agenda "consult-agenda")
       ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
+("b" (find-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org") "web bookmarks")
       )))
 #+end_src
 

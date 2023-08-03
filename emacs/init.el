@@ -1433,11 +1433,8 @@
 (defun hugo-make-slug (s) "Turn a string into a slug."
        (replace-regexp-in-string " " "-"  (downcase (replace-regexp-in-string "[^A-Za-z0-9 ]" "" s))))
 
-  (defun hugo-yaml-escape (s)
-    "Escape a string for YAML."
-    (if (or (string-match ":" s)
-	    (string-match "\"" s))
-	(concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
+(defun hugo-yaml-escape (s) "Escape a string for YAML."
+       (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
 
 ;; Create a new blog post.
 
@@ -2003,12 +2000,13 @@ Note that it only extracts tags from lines like the below:
 ;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
 
 (major-mode-hydra-define dashboard-mode
-  (:quit-key "q")
-  ("Open"
-   (("m" consult-bookmark "bookmarks")
-    ("a" consult-org-agenda "consult-agenda")
-    ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
-    )))
+    (:quit-key "q")
+    ("Open"
+     (("m" consult-bookmark "bookmarks")
+      ("a" consult-org-agenda "consult-agenda")
+      ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
+("b" (find-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org") "web bookmarks")
+      )))
 
 (major-mode-hydra-define eww-mode
   (:quit-key "q")
