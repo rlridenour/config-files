@@ -2049,12 +2049,10 @@ Set a few variables and some utility functions that are used later.
 
 #+begin_src emacs-lisp
   (defun hugo-yaml-escape (s) "Escape a string for YAML."
-	 (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s))
+	 (if (or (string-match ":" s) (string-match "\"" s)) (concat "\"" (replace-regexp-in-string "\"" "\\\\\"" s) "\"") s)) 
 #+end_src
 
-
-
-
+" (To avoid unmatched expression warning in Org created by the escaped quotes in hugo-yaml-escape.)
 
 #+begin_src emacs-lisp
 
@@ -2374,25 +2372,24 @@ Note that it only extracts tags from lines like the below:
 :header-args: :tangle init.el
 :END:
 
+
+** Tree-Sitter
+
+
 #+begin_src emacs-lisp
-  ;; EWW
-
-  (defun rrnet ()
-    (interactive)
-    (eww-browse-url "randyridenour.net")
-    )
-
-  (defun sep ()
-    (interactive)
-    (eww-browse-url "plato.stanford.edu")
-    )
-
-
-  ;; Org-mac-link
-
-  (use-package org-mac-link
-    :defer)
+  (setq treesit-language-source-alist
+	'((css "https://github.com/tree-sitter/tree-sitter-css")
+	  (commonlisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+	  (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+	  (fish "https://github.com/ram02z/tree-sitter-fish")
+	  (html "https://github.com/tree-sitter/tree-sitter-html")
+	  (latex "https://github.com/latex-lsp/tree-sitter-latex")
+	  (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+	  (toml "https://github.com/tree-sitter/tree-sitter-toml")
+	  (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 #+end_src
+
+
 
 
 
@@ -2508,6 +2505,19 @@ Note that it only extracts tags from lines like the below:
 #+end_src
 
 
+** Yankpad
+
+#+begin_src emacs-lisp
+(use-package yankpad
+  :defer t
+  :init
+  (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
+  :general
+  ( "<f6>" #'yankpad-insert))
+#+end_src
+
+
+
 ** Dictionary
 
 Use [[dict.org]] for dictionary searches.
@@ -2590,6 +2600,28 @@ Make output scroll to bottom in Eshell.
    "<f2>" #'term-toggle-ansi
    "<S-f2>" #'term-toggle-eshell
   "C-`" #'iterm-goto-filedir-or-home)
+#+end_src
+
+** EWW
+
+#+begin_src emacs-lisp
+  ;; EWW
+
+  (defun rrnet ()
+    (interactive)
+    (eww-browse-url "randyridenour.net")
+    )
+
+  (defun sep ()
+    (interactive)
+    (eww-browse-url "plato.stanford.edu")
+    )
+
+
+  ;; Org-mac-link
+
+  (use-package org-mac-link
+    :defer)
 #+end_src
 
 
@@ -3008,12 +3040,10 @@ Unset some keys.
 
 
    ;; "s-/" #'avy-goto-char-timer
-   "<help> a" #'consult-apropos
    "C-x 4 b" #'consult-buffer-other-window
    "C-x 5 b" #'consult-buffer-other-frame
    "C-x r x" #'consult-register
    "M-s m" #'consult-multi-occur
-   "<f6>" #'yankpad-insert
    )
 
 #+end_src

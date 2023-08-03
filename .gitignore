@@ -69,3 +69,4 @@ emacs/custom.el
 emacs/.persistent-scratch
 emacs/places
 elpaca/
+emacs/url/

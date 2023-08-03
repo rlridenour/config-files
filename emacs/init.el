@@ -1690,23 +1690,16 @@ Note that it only extracts tags from lines like the below:
   (use-package ace-window
     :defer t)
 
-;; EWW
-
-(defun rrnet ()
-  (interactive)
-  (eww-browse-url "randyridenour.net")
-  )
-
-(defun sep ()
-  (interactive)
-  (eww-browse-url "plato.stanford.edu")
-  )
-
-
-;; Org-mac-link
-
-(use-package org-mac-link
-  :defer)
+(setq treesit-language-source-alist
+      '((css "https://github.com/tree-sitter/tree-sitter-css")
+	(commonlisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+	(elisp "https://github.com/Wilfred/tree-sitter-elisp")
+	(fish "https://github.com/ram02z/tree-sitter-fish")
+	(html "https://github.com/tree-sitter/tree-sitter-html")
+	(latex "https://github.com/latex-lsp/tree-sitter-latex")
+	(markdown "https://github.com/ikatyang/tree-sitter-markdown")
+	(toml "https://github.com/tree-sitter/tree-sitter-toml")
+	(yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 (use-package web-mode
   :init
@@ -1772,6 +1765,13 @@ Note that it only extracts tags from lines like the below:
   :config
   (yas-global-mode 1))
 
+(use-package yankpad
+  :defer t
+  :init
+  (setq yankpad-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/yankpad.org")
+  :general
+  ( "<f6>" #'yankpad-insert))
+
 (setq dictionary-server "dict.org")
 
 (defun async-shell-command-no-window
@@ -1818,6 +1818,24 @@ Note that it only extracts tags from lines like the below:
  "<f2>" #'term-toggle-ansi
  "<S-f2>" #'term-toggle-eshell
 "C-`" #'iterm-goto-filedir-or-home)
+
+;; EWW
+
+(defun rrnet ()
+  (interactive)
+  (eww-browse-url "randyridenour.net")
+  )
+
+(defun sep ()
+  (interactive)
+  (eww-browse-url "plato.stanford.edu")
+  )
+
+
+;; Org-mac-link
+
+(use-package org-mac-link
+  :defer)
 
 (general-unbind
   "C-z"
@@ -2155,12 +2173,10 @@ Note that it only extracts tags from lines like the below:
 
 
  ;; "s-/" #'avy-goto-char-timer
- "<help> a" #'consult-apropos
  "C-x 4 b" #'consult-buffer-other-window
  "C-x 5 b" #'consult-buffer-other-frame
  "C-x r x" #'consult-register
  "M-s m" #'consult-multi-occur
- "<f6>" #'yankpad-insert
  )
 
 (general-define-key
