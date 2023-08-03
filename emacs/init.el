@@ -65,6 +65,8 @@
 
 (setq browse-url-browser-function 'browse-url-default-macosx-browser)
 
+(setq help-window-select t)
+
 (use-package which-key
   :config
   (which-key-mode))
@@ -160,7 +162,7 @@
 ;; Always backup by copying
 (setq backup-by-copying t)
 ;; Delete old backup files
-(setq delete-old-version t)
+(setq delete-old-versions t)
 ;; Keep 5 backup files
 (setq kept-new-versions 5)
 ;; Make numeric backup versions
@@ -2089,7 +2091,8 @@ Note that it only extracts tags from lines like the below:
     ("s" lecture-slides "Lecture slides")
     ("n" lecture-notes "Lecture notes")
     ("ep" present "Present slides")
-    ("eh" canvas-copy "Copy html for Canvas")
+    ("eh" canvas-copy "Copy HTML for Canvas")
+    ("es" canvas-notes "HTML Canvas notes")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all")
     )

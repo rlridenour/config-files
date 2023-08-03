@@ -282,6 +282,12 @@ Open links in default Mac browser.
 
 ** Help
 
+Make help buffers active when created, so pressing "q" will immediately close them.
+
+#+begin_src emacs-lisp
+(setq help-window-select t)
+#+end_src
+
 *** Which Key
 
 #+begin_src emacs-lisp
@@ -438,7 +444,7 @@ Backup files are in ~/Users/rlridenour/.cache/emacs/backup/~.
   ;; Always backup by copying
   (setq backup-by-copying t)
   ;; Delete old backup files
-  (setq delete-old-version t)
+  (setq delete-old-versions t)
   ;; Keep 5 backup files
   (setq kept-new-versions 5)
   ;; Make numeric backup versions
@@ -2907,49 +2913,50 @@ Unset some keys.
 #+begin_src emacs-lisp
 
 
-  (major-mode-hydra-define org-mode
-    (:quit-key "q")
-    ("Export"
-     (
-      ("m" rlr/org-mkt "Make PDF with Arara")
-      ("el" org-latex-export-to-latex "Org to LaTeX")
-      ("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
-      ("eB" org-beamer-export-to-latex "Org to Beamer-LaTeX")
-      ("s" lecture-slides "Lecture slides")
-      ("n" lecture-notes "Lecture notes")
-      ("ep" present "Present slides")
-      ("eh" canvas-copy "Copy html for Canvas")
-      ("c" tex-clean "clean aux")
-      ("C" tex-clean-all "clean all")
-      )
-     "Edit"
-     (
-      ("dd" org-deadline "deadline")
-      ("ds" org-schedule "schedule")
-      ("r" org-refile "refile")
-      ("du" rlr/org-date "update date stamp")
-      ;; ("fn" org-footnote-new "insert footnote")
-      ("ff" org-footnote-action "edit footnote")
-      ("fc" citar-insert-citation "citation")
-      ("b" org-cycle-list-bullet "cycle bullets" :exit nil)
-      ("l" org-mac-link-safari-insert-frontmost-url "insert safari link")
-      ("y" yankpad-set-category "set yankpad")
-      )
-     "View"
-     (
-      ("vi" consult-org-heading "iMenu")
-      ("vu" org-toggle-pretty-entities "org-pretty")
-      ("vI" org-toggle-inline-images "Inline images")
-      )
-     "Blog"
-     (("hn" hugo-draft-post "New draft")
-      ("hp" hugo-publish-post "Publish")
-      ("ht" hugo-timestamp "Update timestamp")
-      ("hd" hugo-org-deploy "Deploy")
-      ("he" org-hugo-auto-export-mode "Auto export"))
-     "Notes"
-     (("1" denote-link "link to note"))
-     ))
+    (major-mode-hydra-define org-mode
+      (:quit-key "q")
+      ("Export"
+       (
+	("m" rlr/org-mkt "Make PDF with Arara")
+	("el" org-latex-export-to-latex "Org to LaTeX")
+	("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
+	("eB" org-beamer-export-to-latex "Org to Beamer-LaTeX")
+	("s" lecture-slides "Lecture slides")
+	("n" lecture-notes "Lecture notes")
+	("ep" present "Present slides")
+	("eh" canvas-copy "Copy HTML for Canvas")
+	("es" canvas-notes "HTML Canvas notes")
+	("c" tex-clean "clean aux")
+	("C" tex-clean-all "clean all")
+	)
+       "Edit"
+       (
+	("dd" org-deadline "deadline")
+	("ds" org-schedule "schedule")
+	("r" org-refile "refile")
+	("du" rlr/org-date "update date stamp")
+	;; ("fn" org-footnote-new "insert footnote")
+	("ff" org-footnote-action "edit footnote")
+	("fc" citar-insert-citation "citation")
+	("b" org-cycle-list-bullet "cycle bullets" :exit nil)
+	("l" org-mac-link-safari-insert-frontmost-url "insert safari link")
+	("y" yankpad-set-category "set yankpad")
+	)
+       "View"
+       (
+	("vi" consult-org-heading "iMenu")
+	("vu" org-toggle-pretty-entities "org-pretty")
+	("vI" org-toggle-inline-images "Inline images")
+	)
+       "Blog"
+       (("hn" hugo-draft-post "New draft")
+	("hp" hugo-publish-post "Publish")
+	("ht" hugo-timestamp "Update timestamp")
+	("hd" hugo-org-deploy "Deploy")
+	("he" org-hugo-auto-export-mode "Auto export"))
+       "Notes"
+       (("1" denote-link "link to note"))
+       ))
 #+end_src
 
 #+begin_src emacs-lisp
