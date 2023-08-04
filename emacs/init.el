@@ -66,6 +66,7 @@
 (setq browse-url-browser-function 'browse-url-default-macosx-browser)
 
 (setq help-window-select t)
+(setq Man-notify-method 'aggressive)
 
 (use-package which-key
   :config

@@ -286,6 +286,7 @@ Make help buffers active when created, so pressing "q" will immediately close th
 
 #+begin_src emacs-lisp
 (setq help-window-select t)
+(setq Man-notify-method 'aggressive)
 #+end_src
 
 *** Which Key
