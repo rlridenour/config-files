@@ -1820,6 +1820,11 @@ Note that it only extracts tags from lines like the below:
  "<S-f2>" #'term-toggle-eshell
 "C-`" #'iterm-goto-filedir-or-home)
 
+(use-package ace-link
+:init 
+(ace-link-setup-default)
+)
+
 ;; EWW
 
 (defun rrnet ()

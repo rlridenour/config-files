@@ -591,7 +591,6 @@ Kills all open buffers except the current one. From https://github.com/ocodo/.em
     (delete-other-windows))
 #+end_src
 
-
 ** Scratch Buffer
 
 Remove scratch buffer message and set the mode to org-mode.
@@ -2604,6 +2603,16 @@ Make output scroll to bottom in Eshell.
 #+end_src
 
 ** EWW
+
+#+begin_src emacs-lisp
+(use-package ace-link
+:init 
+(ace-link-setup-default)
+)
+#+end_src
+
+
+
 
 #+begin_src emacs-lisp
   ;; EWW
