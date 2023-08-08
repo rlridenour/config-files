@@ -21,7 +21,7 @@
 
 ;;;; Create directories if non-existing
 (dolist (dir (list rr-cache-dir
-		   rr-backup-dir))
+                   rr-backup-dir))
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
@@ -31,9 +31,9 @@
       (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-	 'silent 'inhibit-cookies)
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -52,6 +52,9 @@
 (use-package general :demand t
   :config
   (general-auto-unbind-keys))
+
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
 
 (use-package exec-path-from-shell
   :config (exec-path-from-shell-initialize))
@@ -83,7 +86,8 @@
 (use-package all-the-icons)
 
 (use-package doom-modeline
-  :init (doom-modeline-mode 1))
+  :init (doom-modeline-mode 1)
+  (setq doom-modeline-enable-word-count t))
 
 ;; Main typeface
 (set-face-attribute 'default nil :family "SF Mono" :height 160)
@@ -94,23 +98,25 @@
 ;; Monospaced typeface
 (set-face-attribute 'fixed-pitch nil :family "SF Mono" :height 1.0)
 
+(setq-default line-spacing 0.25)
+
 (use-package modus-themes
-    :ensure t
-    :straight (modus-themes :type git :flavor melpa :host sourcehut :repo "protesilaos/modus-themes")
-    :config
-    ;; Add all your customizations prior to loading the themes
-    (setq modus-themes-italic-constructs t
-	  modus-themes-bold-constructs t)
+  :ensure t
+  :straight (modus-themes :type git :flavor melpa :host sourcehut :repo "protesilaos/modus-themes")
+  :config
+  ;; Add all your customizations prior to loading the themes
+  (setq modus-themes-italic-constructs t
+        modus-themes-bold-constructs t)
 
-    ;; Maybe define some palette overrides, such as by using our presets
-    (setq modus-themes-common-palette-overrides
-	  modus-themes-preset-overrides-faint)
+  ;; Maybe define some palette overrides, such as by using our presets
+  (setq modus-themes-common-palette-overrides
+        modus-themes-preset-overrides-faint)
 
-    ;; Load the theme of your choice.
-    (load-theme 'modus-operandi t))
+  ;; Load the theme of your choice.
+  (load-theme 'modus-operandi t))
 
 (general-define-key
-		"<f9>" #'modus-themes-toggle)
+ "<f9>" #'modus-themes-toggle)
 
 (use-package solaire-mode
   :config
@@ -139,9 +145,9 @@
   (setq dashboard-set-navigator nil)
   (setq dashboard-projects-backend 'project-el)
   (setq dashboard-items '((agenda . 5)
-			  (recents  . 5)
-			  (bookmarks . 10)
-			  (projects . 5))))
+                          (recents  . 5)
+                          (bookmarks . 10)
+                          (projects . 5))))
 
 
 (defun goto-dashboard ()
@@ -203,9 +209,9 @@
 (setq ibuffer-expert t)
 
 (add-hook 'ibuffer-mode-hook
-	  #'(lambda ()
-	      (ibuffer-auto-mode 1)
-	      (ibuffer-switch-to-saved-filter-groups "home")))
+          #'(lambda ()
+              (ibuffer-auto-mode 1)
+              (ibuffer-switch-to-saved-filter-groups "home")))
 
 ;;;;; = savehist - last commands used
 ;; Persist emacs minibuffer history
@@ -223,7 +229,7 @@
   (cl-flet ((process-list ())) ad-do-it))
 
 (add-to-list 'display-buffer-alist
-	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+             (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
 (defun make-parent-directory ()
   "Make sure the directory of `buffer-file-name' exists."
@@ -237,9 +243,9 @@
   (mapc
    (lambda (buffer)
      (unless (or
-	      (string= (buffer-name buffer) "*scratch*")
-	      (string= (buffer-name buffer) "*dashboard*")
-	      (string= (buffer-name buffer) "*Messages*"))
+              (string= (buffer-name buffer) "*scratch*")
+              (string= (buffer-name buffer) "*dashboard*")
+              (string= (buffer-name buffer) "*Messages*"))
        (kill-buffer buffer)))
    (buffer-list))
   (delete-other-windows))
@@ -250,8 +256,8 @@
 (defun unkillable-scratch-buffer ()
   (if (equal (buffer-name (current-buffer)) "*scratch*")
       (progn
-	(delete-region (point-min) (point-max))
-	nil)
+        (delete-region (point-min) (point-max))
+        nil)
     t))
 (add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
 
@@ -322,10 +328,10 @@
   (unless (= 2 (count-windows))
     (error "There are not 2 windows."))
   (let* ((windows (window-list))
-	 (w1 (car windows))
-	 (w2 (nth 1 windows))
-	 (w1b (window-buffer w1))
-	 (w2b (window-buffer w2)))
+         (w1 (car windows))
+         (w2 (nth 1 windows))
+         (w1b (window-buffer w1))
+         (w2b (window-buffer w2)))
     (set-window-buffer w1 w2b)
     (set-window-buffer w2 w1b)))
 
@@ -333,26 +339,26 @@
   (interactive)
   (if (= (count-windows) 2)
       (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
 
 (defun toggle-frame-maximized-undecorated () (interactive) (let* ((frame (selected-frame)) (on? (and (frame-parameter frame 'undecorated) (eq (frame-parameter frame 'fullscreen) 'maximized))) (geom (frame-monitor-attribute 'geometry)) (x (nth 0 geom)) (y (nth 1 geom)) (display-height (nth 3 geom)) (display-width (nth 2 geom)) (cut (if on? (if ns-auto-hide-menu-bar 26 50) (if ns-auto-hide-menu-bar 4 26)))) (set-frame-position frame x y) (set-frame-parameter frame 'fullscreen-restore 'maximized) (set-frame-parameter nil 'fullscreen 'maximized) (set-frame-parameter frame 'undecorated (not on?)) (set-frame-height frame (- display-height cut) nil t) (set-frame-width frame (- display-width 20) nil t) (set-frame-position frame x y)))
 
@@ -548,7 +554,7 @@
   ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
   ;;;; 5. No project support
   ;; (setq consult-project-function nil)
-)
+  )
 
 
 
@@ -660,7 +666,7 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-dict)
   ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
-)
+  )
 
 (delete-selection-mode 1)
 
@@ -683,28 +689,28 @@
       (forward-sentence)
       (if (looking-at-p " ")
 
-	  (defvar repetition-counter 0
-	    "How often cycle-on-repetition was called in a row using the same command.")
+          (defvar repetition-counter 0
+            "How often cycle-on-repetition was called in a row using the same command.")
 
-	(defun cycle-on-repetition (list-of-expressions)
-	  "Return the first element from the list on the first call,
+        (defun cycle-on-repetition (list-of-expressions)
+          "Return the first element from the list on the first call,
    the second expression on the second consecutive call etc"
-	  (interactive)
-	  (if (equal this-command last-command)
-	      (setq repetition-counter (+ repetition-counter 1)) ;; then
-	    (setq repetition-counter 0) ;; else
-	    )
-	  (nth
-	   (mod repetition-counter (length list-of-expressions))
-	   list-of-expressions) ;; implicit return of the last evaluated value
-	  )
+          (interactive)
+          (if (equal this-command last-command)
+              (setq repetition-counter (+ repetition-counter 1)) ;; then
+            (setq repetition-counter 0) ;; else
+            )
+          (nth
+           (mod repetition-counter (length list-of-expressions))
+           list-of-expressions) ;; implicit return of the last evaluated value
+          )
 
-	(defun reformat-paragraph ()
-	  "Cycles the paragraph between three states: filled/unfilled/fill-sentences."
-	  (interactive)
-	  (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
-	  )
-	(newline-and-indent)))))
+        (defun reformat-paragraph ()
+          "Cycles the paragraph between three states: filled/unfilled/fill-sentences."
+          (interactive)
+          (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
+          )
+        (newline-and-indent)))))
 
 (setq sentence-end-double-space nil)
 
@@ -722,7 +728,7 @@
   "count words between BEGIN and END (region); if no region defined, count words in buffer"
   (interactive "r")
   (let ((b (if mark-active begin (point-min)))
-	(e (if mark-active end (point-max))))
+        (e (if mark-active end (point-max))))
     (message "Word count: %s" (how-many "\\w+" b e))))
 
 (defun move-line-up ()
@@ -743,95 +749,96 @@
 (use-package meow
   :init
   (defun meow-setup ()
-  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-  (meow-motion-overwrite-define-key
-   '("j" . meow-next)
-   '("k" . meow-prev)
-   '("<escape>" . ignore))
-  (meow-leader-define-key
-   ;; SPC j/k will run the original command in MOTION state.
-   '("j" . "H-j")
-   '("k" . "H-k")
-   ;; Use SPC (0-9) for digit arguments.
-   '("1" . meow-digit-argument)
-   '("2" . meow-digit-argument)
-   '("3" . meow-digit-argument)
-   '("4" . meow-digit-argument)
-   '("5" . meow-digit-argument)
-   '("6" . meow-digit-argument)
-   '("7" . meow-digit-argument)
-   '("8" . meow-digit-argument)
-   '("9" . meow-digit-argument)
-   '("0" . meow-digit-argument)
-   '("/" . meow-keypad-describe-key)
-   '("?" . meow-cheatsheet))
-  (meow-normal-define-key
-   '("0" . meow-expand-0)
-   '("9" . meow-expand-9)
-   '("8" . meow-expand-8)
-   '("7" . meow-expand-7)
-   '("6" . meow-expand-6)
-   '("5" . meow-expand-5)
-   '("4" . meow-expand-4)
-   '("3" . meow-expand-3)
-   '("2" . meow-expand-2)
-   '("1" . meow-expand-1)
-   '("-" . negative-argument)
-   '(";" . meow-reverse)
-   '("," . meow-inner-of-thing)
-   '("." . meow-bounds-of-thing)
-   '("[" . meow-beginning-of-thing)
-   '("]" . meow-end-of-thing)
-   '("a" . meow-append)
-   '("A" . meow-open-below)
-   '("b" . meow-back-word)
-   '("B" . meow-back-symbol)
-   '("c" . meow-change)
-   '("d" . meow-delete)
-   '("D" . meow-backward-delete)
-   '("e" . meow-next-word)
-   '("E" . meow-next-symbol)
-   '("f" . meow-find)
-   '("g" . meow-cancel-selection)
-   '("G" . meow-grab)
-   '("h" . meow-left)
-   '("H" . meow-left-expand)
-   '("i" . meow-insert)
-   '("I" . meow-open-above)
-   '("j" . meow-next)
-   '("J" . meow-next-expand)
-   '("k" . meow-prev)
-   '("K" . meow-prev-expand)
-   '("l" . meow-right)
-   '("L" . meow-right-expand)
-   '("m" . meow-join)
-   '("n" . meow-search)
-   '("o" . meow-block)
-   '("O" . meow-to-block)
-   '("p" . meow-yank)
-   '("q" . meow-quit)
-   '("Q" . meow-goto-line)
-   '("r" . meow-replace)
-   '("R" . meow-swap-grab)
-   '("s" . meow-kill)
-   '("t" . meow-till)
-   '("u" . meow-undo)
-   '("U" . meow-undo-in-selection)
-   '("v" . meow-visit)
-   '("w" . meow-mark-word)
-   '("W" . meow-mark-symbol)
-   '("x" . meow-line)
-   '("X" . meow-goto-line)
-   '("y" . meow-save)
-   '("Y" . meow-sync-grab)
-   '("z" . meow-pop-selection)
-   '("'" . repeat)
-   '("<escape>" . ignore)))
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+    (meow-motion-overwrite-define-key
+     '("j" . meow-next)
+     '("k" . meow-prev)
+     '("<escape>" . ignore))
+    (meow-leader-define-key
+     ;; SPC j/k will run the original command in MOTION state.
+     '("j" . "H-j")
+     '("k" . "H-k")
+     ;; Use SPC (0-9) for digit arguments.
+     '("1" . meow-digit-argument)
+     '("2" . meow-digit-argument)
+     '("3" . meow-digit-argument)
+     '("4" . meow-digit-argument)
+     '("5" . meow-digit-argument)
+     '("6" . meow-digit-argument)
+     '("7" . meow-digit-argument)
+     '("8" . meow-digit-argument)
+     '("9" . meow-digit-argument)
+     '("0" . meow-digit-argument)
+     '("/" . meow-keypad-describe-key)
+     '("?" . meow-cheatsheet))
+    (meow-normal-define-key
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
+     '("-" . negative-argument)
+     '(";" . meow-reverse)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("a" . meow-append)
+     '("A" . meow-open-below)
+     '("b" . meow-back-word)
+     '("B" . meow-back-symbol)
+     '("c" . meow-change)
+     '("d" . meow-delete)
+     '("D" . meow-backward-delete)
+     '("e" . meow-next-word)
+     '("E" . meow-next-symbol)
+     '("f" . meow-find)
+     '("g" . meow-cancel-selection)
+     '("G" . meow-grab)
+     '("h" . meow-left)
+     '("H" . meow-left-expand)
+     '("i" . meow-insert)
+     '("I" . meow-open-above)
+     '("j" . meow-next)
+     '("J" . meow-next-expand)
+     '("k" . meow-prev)
+     '("K" . meow-prev-expand)
+     '("l" . meow-right)
+     '("L" . meow-right-expand)
+     '("m" . meow-join)
+     '("n" . meow-search)
+     '("o" . meow-block)
+     '("O" . meow-to-block)
+     '("p" . meow-yank)
+     '("q" . meow-quit)
+     '("Q" . meow-goto-line)
+     '("r" . meow-replace)
+     '("R" . meow-swap-grab)
+     '("s" . meow-kill)
+     '("t" . meow-till)
+     '("u" . meow-undo)
+     '("U" . meow-undo-in-selection)
+     '("v" . meow-visit)
+     '("w" . meow-mark-word)
+     '("W" . meow-mark-symbol)
+     '("x" . meow-line)
+     '("X" . meow-goto-line)
+     '("y" . meow-save)
+     '("Y" . meow-sync-grab)
+     '("z" . meow-pop-selection)
+     '("'" . repeat)
+     '("<escape>" . ignore)))
   :config
   (meow-setup)
   (add-to-list 'meow-mode-state-list '(text-mode . insert))
   (add-to-list 'meow-mode-state-list '(prog-mode . insert))
   (add-to-list 'meow-mode-state-list '(term-mode . insert))
+  (add-to-list 'meow-mode-state-list '(eat-mode . insert))
   (setq meow-use-clipboard t)
   (meow-global-mode 1))
 
@@ -932,6 +939,7 @@
  "<f8>" #'insert-standard-date
 
  "M-y" #'consult-yank-pop
+
  "M-q" #'reformat-paragraph
  "M-#" #'dictionary-lookup-definition
  "M-=" #'shrink-whitespace
@@ -942,19 +950,20 @@
 ;;;; = org-mode - the one and only writing environment (and more)
 
 (use-package org
-:straight (:type built-in)
+  :straight (:type built-in)
   :init
   ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
   (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
   :config
   (setq org-highlight-latex-and-related '(latex script entities))
-  (setq org-startup-indented nil)
+  ;; (setq org-startup-indented t)
   (setq org-adapt-indentation nil)
-  (setq org-hide-leading-stars nil)
+  ;; (setq org-hide-leading-stars nil)
+  (setq org-hide-emphasis-markers t)
   ;; (setq org-footnote-section nil)
   (setq org-html-validation-link nil)
   (setq org-todo-keyword-faces
-	'(("DONE" . "green4") ("TODO" . org-warning)))
+        '(("DONE" . "green4") ("TODO" . org-warning)))
   (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
 
 (use-package org-contrib
@@ -983,50 +992,50 @@
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
-	       '("org-article"
-		 "\\documentclass{article}
-      [NO-DEFAULT-PACKAGES]
-      [NO-PACKAGES]"
-		 ("\\section{%s}" . "\\section*{%s}")
-		 ("\\subsection{%s}" . "\\subsection*{%s}")
-		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+               '("org-article"
+                 "\\documentclass{article}
+        [NO-DEFAULT-PACKAGES]
+        [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
-	       '("org-handout"
-		 "\\documentclass{pdfhandout}
-      [NO-DEFAULT-PACKAGES]
-      [NO-PACKAGES]"
-		 ("\\section{%s}" . "\\section*{%s}")
-		 ("\\subsection{%s}" . "\\subsection*{%s}")
-		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+               '("org-handout"
+                 "\\documentclass{pdfhandout}
+        [NO-DEFAULT-PACKAGES]
+        [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
-	       '("org-beamer"
-		 "\\documentclass{beamer}
-      [NO-DEFAULT-PACKAGES]
-      [NO-PACKAGES]"
-		 ("\\section{%s}" . "\\section*{%s}")
-		 ("\\subsection{%s}" . "\\subsection*{%s}")
-		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+               '("org-beamer"
+                 "\\documentclass{beamer}
+        [NO-DEFAULT-PACKAGES]
+        [NO-PACKAGES]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   )
 
 (setq org-export-with-smart-quotes t)
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-export-smart-quotes-alist
-	       '("en-us"
-		 (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
-		 (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
-		 (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
-		 (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
-		 (apostrophe        :utf-8 "’" :html "&rsquo;")))
+               '("en-us"
+                 (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
+                 (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+                 (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+                 (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+                 (apostrophe        :utf-8 "’" :html "&rsquo;")))
   )
 
-;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+  ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
@@ -1178,32 +1187,32 @@
   "Update existing date: timestamp on a Hugo post."
   (interactive)
   (save-excursion (
-		   goto-char 1)
-		  (re-search-forward "^#\\+date:")
-		  (let ((beg (point)))
-		    (end-of-line)
-		    (delete-region beg (point)))
-		  (insert (concat " " (format-time-string "%B %e, %Y")))))
+                   goto-char 1)
+                  (re-search-forward "^#\\+date:")
+                  (let ((beg (point)))
+                    (end-of-line)
+                    (delete-region beg (point)))
+                  (insert (concat " " (format-time-string "%B %e, %Y")))))
 
 ;; Org-capture
 (setq org-capture-templates
       '(
-	("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
-	 "** TODO %?\n  %i\n  %a")
-	("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
-	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
-	)
+        ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
+         "** TODO %?\n  %i\n  %a")
+        ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
+         "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+        )
       )
 
 (with-eval-after-load 'org-capture
   (add-to-list 'org-capture-templates
-	       '("n" "New note (with Denote)" plain
-		 (file denote-last-path)
-		 #'denote-org-capture
-		 :no-save t
-		 :immediate-finish nil
-		 :kill-buffer t
-		 :jump-to-captured t)))
+               '("n" "New note (with Denote)" plain
+                 (file denote-last-path)
+                 #'denote-org-capture
+                 :no-save t
+                 :immediate-finish nil
+                 :kill-buffer t
+                 :jump-to-captured t)))
 
 
 (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
@@ -1216,42 +1225,45 @@
   :after org-agenda
   :init
   (setq org-agenda-skip-scheduled-if-done t
-	org-agenda-skip-deadline-if-done t
-	org-agenda-include-deadlines t
-	org-agenda-block-separator nil
-	org-agenda-compact-blocks t
-	org-agenda-start-day nil ;; i.e. today
-	org-agenda-span 1
-	org-agenda-start-on-weekday nil)
+        org-agenda-skip-deadline-if-done t
+        org-agenda-include-deadlines t
+        org-agenda-block-separator nil
+        org-agenda-compact-blocks t
+        org-agenda-start-day nil ;; i.e. today
+        org-agenda-span 1
+        org-agenda-start-on-weekday nil)
   (setq org-agenda-custom-commands
-	'(("c" "Super view"
-	   ((agenda "" ((org-agenda-overriding-header "")
-			(org-super-agenda-groups
-			 '((:name "Today"
-				  :time-grid t
-				  :date today
-				  :order 1)))))
-	    (alltodo "" ((org-agenda-overriding-header "")
-			 (org-super-agenda-groups
-			  '((:log t)
-			    (:name "Important"
-				   :priority "A"
-				   :order 4)
-			    (:name "Today's tasks"
-				   :file-path "journal/")
-			    (:name "Due Today"
-				   :deadline today
-				   :order 2)
-			    (:name "Overdue"
-				   :deadline past
-				   :order 3)
-			    (:discard (:not (:todo "TODO")))))))))))
+        '(("c" "Super view"
+           ((agenda "" ((org-agenda-overriding-header "")
+                        (org-super-agenda-groups
+                         '((:name "Today"
+                                  :time-grid t
+                                  :date today
+                                  :order 1)))))
+            (alltodo "" ((org-agenda-overriding-header "")
+                         (org-super-agenda-groups
+                          '((:log t)
+                            (:name "Important"
+                                   :priority "A"
+                                   :order 4)
+                            (:name "Today's tasks"
+                                   :file-path "journal/")
+                            (:name "Due Today"
+                                   :deadline today
+                                   :order 2)
+                            (:name "Overdue"
+                                   :deadline past
+                                   :order 3)
+                            (:discard (:not (:todo "TODO")))))))))))
   :config
   (org-super-agenda-mode))
 
 
 ;; Display 7 full days in the agenda.
 (setq org-agenda-span 7)
+
+(use-package org-appear
+  :hook (org-mode . org-appear-mode))
 
 (use-package org-bulletproof
   :defer t
@@ -1263,8 +1275,8 @@
 (use-package citar
   :defer t
   :bind (("C-c C-b" . citar-insert-citation)
-	 :map minibuffer-local-map
-	 ("M-b" . citar-insert-preset))
+         :map minibuffer-local-map
+         ("M-b" . citar-insert-preset))
   :custom
   (org-cite-global-bibliography '("~/Dropbox/bibtex/rlr.bib"))
   (citar-bibliography '("~/Dropbox/bibtex/rlr.bib"))
@@ -1286,9 +1298,9 @@
 (use-package markdown-mode
   :defer t
   :mode (("README\\.md\\'" . gfm-mode)
-	 ("\\.md\\'" . markdown-mode)
-	 ("\\.Rmd\\'" . markdown-mode)
-	 ("\\.markdown\\'" . markdown-mode))
+         ("\\.md\\'" . markdown-mode)
+         ("\\.Rmd\\'" . markdown-mode)
+         ("\\.markdown\\'" . markdown-mode))
   :config
   (setq markdown-indent-on-enter 'indent-and-new-item)
   (setq markdown-asymmetric-header t))
@@ -1305,15 +1317,15 @@
   :defer t
   :init
   (setq TeX-parse-self t
-	TeX-auto-save t
-	TeX-electric-math nil
-	LaTeX-electric-left-right-brace nil
-	TeX-electric-sub-and-superscript nil
-	LaTeX-item-indent 0
-	TeX-quote-after-quote nil
-	TeX-clean-confirm nil
-	TeX-source-correlate-mode t
-	TeX-source-correlate-method 'synctex))
+        TeX-auto-save t
+        TeX-electric-math nil
+        LaTeX-electric-left-right-brace nil
+        TeX-electric-sub-and-superscript nil
+        LaTeX-item-indent 0
+        TeX-quote-after-quote nil
+        TeX-clean-confirm nil
+        TeX-source-correlate-mode t
+        TeX-source-correlate-method 'synctex))
 
 (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
 
@@ -1347,7 +1359,7 @@
 
 (eval-after-load "tex"
   '(add-to-list 'TeX-command-list
-		'("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
+                '("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
 
 (defun arara-all ()
   (interactive)
@@ -1383,10 +1395,10 @@
 (defun latex-word-count ()
   (interactive)
   (let* ((this-file (buffer-file-name))
-	 (word-count
-	  (with-output-to-string
-	    (with-current-buffer standard-output
-	      (call-process "texcount" nil t nil "-brief" this-file)))))
+         (word-count
+          (with-output-to-string
+            (with-current-buffer standard-output
+              (call-process "texcount" nil t nil "-brief" this-file)))))
     (string-match "\n$" word-count)
     (message (replace-match "" nil nil word-count))))
 
@@ -1400,19 +1412,19 @@
   :after (:any org latex)
   :commands (math-delimiters-no-dollars math-delimiters-mode)
   :hook ((LaTeX-mode . math-delimiters-mode)
-	 (org-mode . math-delimiters-mode))
+         (org-mode . math-delimiters-mode))
   :ensure nil
   :config (progn
-	    (setq math-delimiters-compressed-display-math nil)
+            (setq math-delimiters-compressed-display-math nil)
 
 
-	    (define-minor-mode math-delimiters-mode
-	      "Math Delimeters"
-	      :init-value nil
-	      :lighter " MD"
-	      :keymap (let ((map (make-sparse-keymap)))
-			(define-key map (kbd "$")  #'math-delimiters-insert)
-			map))))
+            (define-minor-mode math-delimiters-mode
+              "Math Delimeters"
+              :init-value nil
+              :lighter " MD"
+              :keymap (let ((map (make-sparse-keymap)))
+                        (define-key map (kbd "$")  #'math-delimiters-insert)
+                        map))))
 
 (defun hugo-timestamp ()
   "Update existing date: timestamp on a Hugo post."
@@ -1458,14 +1470,14 @@
 (defun hugo-publish-post ()
   "Set draft to false, update the timestamp, and save."
   (interactive)
-  (save-excursion 
-                   (goto-char 1)
-                  (re-search-forward "^#\\+draft:")
-                  (let ((beg (point)))
-                    (end-of-line)
-                    (delete-region beg (point)))
-                  (insert " false")
-                  (hugo-timestamp))
+  (save-excursion
+    (goto-char 1)
+    (re-search-forward "^#\\+draft:")
+    (let ((beg (point)))
+      (end-of-line)
+      (delete-region beg (point)))
+    (insert " false")
+    (hugo-timestamp))
   (save-buffer))
 
 (defmacro with-dir (DIR &rest FORMS)
@@ -1517,7 +1529,7 @@
                  (shell-command it))
             (magit-push-current-to-upstream nil)))
 
-;; Insert a tag into a Hugo post. From [[https://whatacold.io/blog/2022-10-10-emacs-hugo-blogging/][Hugo Blogging in Emacs - whatacold's space]] 
+;; Insert a tag into a Hugo post. From [[https://whatacold.io/blog/2022-10-10-emacs-hugo-blogging/][Hugo Blogging in Emacs - whatacold's space]]
 
 
 (defun hugo-select-tags ()
@@ -1573,25 +1585,25 @@ Note that it only extracts tags from lines like the below:
   (interactive)
   (let ((files (directory-files-recursively default-directory "\\.org$")))
     (let ((source (with-temp-buffer
-		    (while files
+                    (while files
                       (when (file-exists-p (car files))
                         (insert-file-contents (car files)))
-		      (pop files))
-		    (buffer-string))))
+                      (pop files))
+                    (buffer-string))))
       (save-match-data
-	(let ((pos 0)
-	      matches)
-	  (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
-	    (push (match-string 1 source) matches)
-	    (setq pos (match-end 0)))
+        (let ((pos 0)
+              matches)
+          (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
+            (push (match-string 1 source) matches)
+            (setq pos (match-end 0)))
           (sort
-	   (delete-dups
-	    (delete "" (split-string
-			(replace-regexp-in-string "[\"\']" " "
-						  (replace-regexp-in-string
-						   "[,()]" ""
-						   (format "%s" matches)))
-			" ")))
+           (delete-dups
+            (delete "" (split-string
+                        (replace-regexp-in-string "[\"\']" " "
+                                                  (replace-regexp-in-string
+                                                   "[,()]" ""
+                                                   (format "%s" matches)))
+                        " ")))
            (lambda (a b)
              (string< (downcase a) (downcase b)))))))))
 
@@ -1611,20 +1623,20 @@ Note that it only extracts tags from lines like the below:
 
 
 ;; Follow Hugo links
-  (defun org-hugo-follow (link)
-    "Follow Hugo link shortcodes"
-    (org-link-open-as-file
-     (string-trim "{{< ref test.org >}}" "{{< ref " ">}}")))
+(defun org-hugo-follow (link)
+  "Follow Hugo link shortcodes"
+  (org-link-open-as-file
+   (string-trim "{{< ref test.org >}}" "{{< ref " ">}}")))
 
-  ;; New link type for Org-Hugo internal links
-  (org-link-set-parameters
-   "hugo"
-   :complete (lambda ()
-               (concat "{{< ref "
-                       (file-name-nondirectory
-                        (read-file-name "File: "))
-                       " >}}"))
-   :follow #'org-hugo-follow)
+;; New link type for Org-Hugo internal links
+(org-link-set-parameters
+ "hugo"
+ :complete (lambda ()
+             (concat "{{< ref "
+                     (file-name-nondirectory
+                      (read-file-name "File: "))
+                     " >}}"))
+ :follow #'org-hugo-follow)
 
 ;; Denote
 (use-package denote
@@ -1639,9 +1651,9 @@ Note that it only extracts tags from lines like the below:
 (use-package consult-notes
   :config
   (setq consult-notes-sources
-	`(("Notes"  ?n ,denote-directory)
-	  ;; ("Books"  ?b "~/Documents/books")
-	  )))
+        `(("Notes"  ?n ,denote-directory)
+          ;; ("Books"  ?b "~/Documents/books")
+          )))
 
 (defun my-denote-journal ()
   "Create an entry tagged 'journal' with the date as its title."
@@ -1666,7 +1678,7 @@ Note that it only extracts tags from lines like the below:
 ;; +word -word AND NOT etc
 ;; <tab>   to preview
 ;; <enter> to open the file in the same buffer
-					;(use-package (xeft :host github :repo "casouri/xeft")
+                                        ;(use-package (xeft :host github :repo "casouri/xeft")
 (use-package xeft
   :commands (xeft)
   :config
@@ -1684,23 +1696,23 @@ Note that it only extracts tags from lines like the below:
   :defer t
   :config
   (avy-setup-default)
-:general
-("s-/" #'avy-goto-char-timer)
-("C-c C-j" #'avy-resume))
+  :general
+  ("s-/" #'avy-goto-char-timer)
+  ("C-c C-j" #'avy-resume))
 
-  (use-package ace-window
-    :defer t)
+(use-package ace-window
+  :defer t)
 
 (setq treesit-language-source-alist
       '((css "https://github.com/tree-sitter/tree-sitter-css")
-	(commonlisp "https://github.com/theHamsta/tree-sitter-commonlisp")
-	(elisp "https://github.com/Wilfred/tree-sitter-elisp")
-	(fish "https://github.com/ram02z/tree-sitter-fish")
-	(html "https://github.com/tree-sitter/tree-sitter-html")
-	(latex "https://github.com/latex-lsp/tree-sitter-latex")
-	(markdown "https://github.com/ikatyang/tree-sitter-markdown")
-	(toml "https://github.com/tree-sitter/tree-sitter-toml")
-	(yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+        (commonlisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+        (fish "https://github.com/ram02z/tree-sitter-fish")
+        (html "https://github.com/tree-sitter/tree-sitter-html")
+        (latex "https://github.com/latex-lsp/tree-sitter-latex")
+        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+        (toml "https://github.com/tree-sitter/tree-sitter-toml")
+        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 (use-package web-mode
   :init
@@ -1711,23 +1723,23 @@ Note that it only extracts tags from lines like the below:
   :config
   (global-auto-revert-mode)
   (setq magit-refresh-status-buffer nil
-	magit-diff-highlight-indentation nil
-	magit-diff-highlight-trailing nil
-	magit-diff-paint-whitespace nil
-	magit-diff-highlight-hunk-body nil
-	magit-diff-refine-hunk nil
-	magit-revision-insert-related-refs nil)
-	    :commands
-    (magit-after-save-refresh-status)
-    :hook
-    (after-save . magit-after-save-refresh-status)
-    :custom
-    (transient-history-file
-     (expand-file-name "transient/history.el" rr-cache-dir))
-    (transient-levels-file
-     (expand-file-name "transient/levels.el" rr-cache-dir))
-    (transient-values-file
-     (expand-file-name "transient/values.el" rr-cache-dir)))
+        magit-diff-highlight-indentation nil
+        magit-diff-highlight-trailing nil
+        magit-diff-paint-whitespace nil
+        magit-diff-highlight-hunk-body nil
+        magit-diff-refine-hunk nil
+        magit-revision-insert-related-refs nil)
+  :commands
+  (magit-after-save-refresh-status)
+  :hook
+  (after-save . magit-after-save-refresh-status)
+  :custom
+  (transient-history-file
+   (expand-file-name "transient/history.el" rr-cache-dir))
+  (transient-levels-file
+   (expand-file-name "transient/levels.el" rr-cache-dir))
+  (transient-values-file
+   (expand-file-name "transient/values.el" rr-cache-dir)))
 
 (use-package dired-x
   :straight (:type built-in)
@@ -1737,12 +1749,17 @@ Note that it only extracts tags from lines like the below:
     ;; toggle `dired-omit-mode' with C-x M-o
     (add-hook 'dired-mode-hook #'dired-omit-mode)
     (setq dired-omit-files
-	  (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^\\..+$"))
+          (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^\\..+$"))
     (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "DS_Store" "xml" "bcf" "nav" "snm" "toc"))))
+
+(setq dired-dwim-target t)
 
 (general-define-key
  :keymaps 'dired-mode-map
  "M-<RET>" #'crux-open-with)
+
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
 
 (use-package crux)
 
@@ -1780,10 +1797,10 @@ Note that it only extracts tags from lines like the below:
   (interactive)
   (let
       ((display-buffer-alist
-	(list
-	 (cons
-	  "\\*Async Shell Command\\*.*"
-	  (cons #'display-buffer-no-window nil)))))
+        (list
+         (cons
+          "\\*Async Shell Command\\*.*"
+          (cons #'display-buffer-no-window nil)))))
     (async-shell-command
      command)))
 
@@ -1795,35 +1812,47 @@ Note that it only extracts tags from lines like the below:
     " tell application \"iTerm2\"\n"
     "   tell the current session of current window\n"
     (format "     write text \"cd %s\" \n"
-	    ;; string escaping madness for applescript
-	    (replace-regexp-in-string "\\\\" "\\\\\\\\"
-				      (shell-quote-argument (or default-directory "~"))))
+            ;; string escaping madness for applescript
+            (replace-regexp-in-string "\\\\" "\\\\\\\\"
+                                      (shell-quote-argument (or default-directory "~"))))
     "   end tell\n"
     " end tell\n"
     " do shell script \"open -a iTerm\"\n"
     ))
   )
 
-;; Emacs-term-toggle
-;; https://github.com/amno1/emacs-term-toggle
-(use-package emacs-term-toggle
-  :defer
-  :straight (emacs-term-toggle :host github :repo "amno1/emacs-term-toggle")
-  :config
-  (setq term-toggle-no-confirm-exit t)
-  )
-
 (setq eshell-scroll-to-bottom-on-input "this")
 
+(use-package eat
+ :straight (eat :type git
+       :host codeberg
+       :repo "akib/emacs-eat"
+       :files ("*.el" ("term" "term/*.el") "*.texi"
+               "*.ti" ("terminfo/e" "terminfo/e/*")
+               ("terminfo/65" "terminfo/65/*")
+               ("integration" "integration/*")
+               (:exclude ".dir-locals.el" "*-tests.el"))))
+
+(use-package term-toggle
+:ensure t
+    :straight (term-toggle :host github :repo "amno1/emacs-term-toggle")
+    :config
+    (setq term-toggle-no-confirm-exit t)
+    )
+
+(defun term-toggle-eat ()
+  "Toggle `term'."
+  (interactive) (term-toggle 'eat))
+
 (general-define-key
- "<f2>" #'term-toggle-ansi
+ "<f2>" #'term-toggle-eat
  "<S-f2>" #'term-toggle-eshell
-"C-`" #'iterm-goto-filedir-or-home)
+ "C-`" #'iterm-goto-filedir-or-home)
 
 (use-package ace-link
-:init 
-(ace-link-setup-default)
-)
+  :init
+  (ace-link-setup-default)
+  )
 
 ;; EWW
 
@@ -1857,8 +1886,8 @@ Note that it only extracts tags from lines like the below:
   (insert-char (gethash unicode-name (ucs-names))))
 
 (use-package major-mode-hydra
-:general
-("s-m" #'major-mode-hydra))
+  :general
+  ("s-m" #'major-mode-hydra))
 
 (pretty-hydra-define hydra-toggle
   (:color teal :quit-key "q" :title "Toggle")
@@ -2024,19 +2053,19 @@ Note that it only extracts tags from lines like the below:
 ;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
 
 (major-mode-hydra-define dashboard-mode
-    (:quit-key "q")
-    ("Open"
-     (("m" consult-bookmark "bookmarks")
-      ("a" consult-org-agenda "consult-agenda")
-      ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
-("b" (find-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org") "web bookmarks")
-      )))
+  (:quit-key "q")
+  ("Open"
+   (("m" consult-bookmark "bookmarks")
+    ("a" consult-org-agenda "consult-agenda")
+    ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
+    ("b" (find-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org") "web bookmarks")
+    )))
 
 (major-mode-hydra-define eww-mode
   (:quit-key "q")
   ("A"
    (
-    ("G" eww "Eww Open Browser")
+    ;; ("G" eww "Eww Open Browser")
     ("g" eww-reload "Eww Reload")
     ("6" eww-open-in-new-buffer "Open in new buffer")
     ("l" eww-back-url "Back Url")

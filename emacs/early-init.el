@@ -11,7 +11,6 @@
 (setq user-full-name "Randy Ridenour"
       user-mail-address "rlridenour@gmail.com")
 
-;; Silence the "Package cl is deprecated" warning.
 (setq byte-compile-warnings '(cl-functions))
 
 ;; Silence native compilation warnings
@@ -19,14 +18,9 @@
 (setq warning-minimum-level :error)
 ;; Code
 
-;; compile elisp
 (when (fboundp 'native-compile-async)
-    (setq comp-deferred-compilation t
-	  comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
-
-;; (push '(menu-bar-lines . 0) default-frame-alist)
-;; (push '(tool-bar-lines . 0) default-frame-alist)
-;; (push '(vertical-scroll-bars) default-frame-alist)
+  (setq comp-deferred-compilation t
+        comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -40,9 +34,10 @@
 
 (setq frame-resize-pixelwise t)
 (add-to-list 'default-frame-alist '(fullscreen . fullheight))
+(add-to-list 'default-frame-alist '(left . 0))
 
 (setq-default cursor-in-non-selected-windows nil
-	      frame-title-format '("%f [%m]"))
+              frame-title-format '("%f [%m]"))
 
 (setq initial-major-mode 'org-mode)
 
