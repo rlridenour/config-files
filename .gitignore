@@ -70,3 +70,6 @@ emacs/.persistent-scratch
 emacs/places
 elpaca/
 emacs/url/
+emacs/persist/
+emacs/mastodon*
+emacs/projects
