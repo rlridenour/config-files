@@ -264,6 +264,14 @@ Set path from shell.
     :config (exec-path-from-shell-initialize))
 #+end_src
 
+Use GNU ls to avoid "Listing directory failed but 'access-file' worked" error.
+
+
+#+begin_src emacs-lisp
+(setq insert-directory-program "gls")
+#+end_src
+
+
 
 
 
@@ -423,6 +431,17 @@ Immediately highlight matching pairs of parentheses and quotes.
   (show-paren-mode)
   (setq show-paren-delay 0)
 #+end_src
+
+Use rainbow delimiters.
+
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+:config
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+#+end_src
+
+
+
 
 #+begin_src emacs-lisp
   (use-package dashboard
@@ -2510,7 +2529,8 @@ Make copying and moving files easier.
 #+begin_src emacs-lisp
   (general-define-key
    :keymaps 'dired-mode-map
-   "M-<RET>" #'crux-open-with)
+   "M-<RET>" #'crux-open-with
+"s-j" #'dired-goto-file)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2736,6 +2756,21 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
   (use-package org-mac-link
     :defer)
 #+end_src
+
+** PDF-Tools
+
+#+begin_src emacs-lisp
+(use-package pdf-tools
+:config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-width)
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+    :custom
+    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+
+ (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
+#+end_src
+
 
 
 * Communication

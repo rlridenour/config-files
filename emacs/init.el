@@ -59,6 +59,8 @@
 (use-package exec-path-from-shell
   :config (exec-path-from-shell-initialize))
 
+(setq insert-directory-program "gls")
+
 (setq message-kill-buffer-on-exit t)
 
 (setf use-short-answers t)
@@ -130,6 +132,10 @@
 
 (show-paren-mode)
 (setq show-paren-delay 0)
+
+(use-package rainbow-delimiters
+:config
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package dashboard
   :config
@@ -1755,8 +1761,9 @@ Note that it only extracts tags from lines like the below:
 (setq dired-dwim-target t)
 
 (general-define-key
- :keymaps 'dired-mode-map
- "M-<RET>" #'crux-open-with)
+   :keymaps 'dired-mode-map
+   "M-<RET>" #'crux-open-with
+"s-j" #'dired-goto-file)
 
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
@@ -1871,6 +1878,16 @@ Note that it only extracts tags from lines like the below:
 
 (use-package org-mac-link
   :defer)
+
+(use-package pdf-tools
+:config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-width)
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+    :custom
+    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+
+ (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
 
 (general-unbind
   "C-z"
