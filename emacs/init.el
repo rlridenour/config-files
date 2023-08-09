@@ -92,13 +92,13 @@
   (setq doom-modeline-enable-word-count t))
 
 ;; Main typeface
-(set-face-attribute 'default nil :family "SF Mono" :height 160)
+(set-face-attribute 'default nil :family "SF Mono" :height 160 :weight 'medium)
 
 ;; Proportionately spaced typeface
-(set-face-attribute 'variable-pitch nil :family "SF Pro" :height 1.0)
+(set-face-attribute 'variable-pitch nil :family "SF Pro" :height 1.0 :weight 'medium)
 
 ;; Monospaced typeface
-(set-face-attribute 'fixed-pitch nil :family "SF Mono" :height 1.0)
+(set-face-attribute 'fixed-pitch nil :family "SF Mono" :height 1.0 :weight 'medium)
 
 (setq-default line-spacing 0.25)
 
@@ -134,8 +134,8 @@
 (setq show-paren-delay 0)
 
 (use-package rainbow-delimiters
-:config
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  :config
+  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 (use-package dashboard
   :config
@@ -244,7 +244,7 @@
 
 (defun nuke-all-buffers ()
   "Kill all the open buffers except the current one.
-  Leave *scratch*, *dashboard* and *Messages* alone too."
+    Leave *scratch*, *dashboard* and *Messages* alone too."
   (interactive)
   (mapc
    (lambda (buffer)
@@ -549,16 +549,16 @@
 
   ;; By default `consult-project-function' uses `project-root' from project.el.
   ;; Optionally configure a different project root function.
-  ;;;; 1. project.el (the default)
+    ;;;; 1. project.el (the default)
   ;; (setq consult-project-function #'consult--default-project--function)
-  ;;;; 2. vc.el (vc-root-dir)
+    ;;;; 2. vc.el (vc-root-dir)
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-  ;;;; 3. locate-dominating-file
+    ;;;; 3. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  ;;;; 4. projectile.el (projectile-project-root)
+    ;;;; 4. projectile.el (projectile-project-root)
   ;; (autoload 'projectile-project-root "projectile")
   ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-  ;;;; 5. No project support
+    ;;;; 5. No project support
   ;; (setq consult-project-function nil)
   )
 
@@ -700,7 +700,7 @@
 
         (defun cycle-on-repetition (list-of-expressions)
           "Return the first element from the list on the first call,
-   the second expression on the second consecutive call etc"
+     the second expression on the second consecutive call etc"
           (interactive)
           (if (equal this-command last-command)
               (setq repetition-counter (+ repetition-counter 1)) ;; then
@@ -1000,8 +1000,8 @@
   (add-to-list 'org-latex-classes
                '("org-article"
                  "\\documentclass{article}
-        [NO-DEFAULT-PACKAGES]
-        [NO-PACKAGES]"
+          [NO-DEFAULT-PACKAGES]
+          [NO-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1010,8 +1010,8 @@
   (add-to-list 'org-latex-classes
                '("org-handout"
                  "\\documentclass{pdfhandout}
-        [NO-DEFAULT-PACKAGES]
-        [NO-PACKAGES]"
+          [NO-DEFAULT-PACKAGES]
+          [NO-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1020,8 +1020,8 @@
   (add-to-list 'org-latex-classes
                '("org-beamer"
                  "\\documentclass{beamer}
-        [NO-DEFAULT-PACKAGES]
-        [NO-PACKAGES]"
+          [NO-DEFAULT-PACKAGES]
+          [NO-PACKAGES]"
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1041,7 +1041,7 @@
                  (apostrophe        :utf-8 "’" :html "&rsquo;")))
   )
 
-  ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+    ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
@@ -1243,23 +1243,23 @@
            ((agenda "" ((org-agenda-overriding-header "")
                         (org-super-agenda-groups
                          '((:name "Today"
-                                  :time-grid t
-                                  :date today
-                                  :order 1)))))
+                            :time-grid t
+                            :date today
+                            :order 1)))))
             (alltodo "" ((org-agenda-overriding-header "")
                          (org-super-agenda-groups
                           '((:log t)
                             (:name "Important"
-                                   :priority "A"
-                                   :order 4)
+                             :priority "A"
+                             :order 4)
                             (:name "Today's tasks"
-                                   :file-path "journal/")
+                             :file-path "journal/")
                             (:name "Due Today"
-                                   :deadline today
-                                   :order 2)
+                             :deadline today
+                             :order 2)
                             (:name "Overdue"
-                                   :deadline past
-                                   :order 3)
+                             :deadline past
+                             :order 3)
                             (:discard (:not (:todo "TODO")))))))))))
   :config
   (org-super-agenda-mode))
@@ -1365,7 +1365,7 @@
 
 (eval-after-load "tex"
   '(add-to-list 'TeX-command-list
-                '("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
+    '("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
 
 (defun arara-all ()
   (interactive)
@@ -1541,8 +1541,8 @@
 (defun hugo-select-tags ()
   "Select tags from the hugo org files in the current dir.
 
-Note that it only extracts tags from lines like the below:
-#+tags[]: Emacs Org-mode"
+  Note that it only extracts tags from lines like the below:
+  #+tags[]: Emacs Org-mode"
   (interactive)
   ;; Move to end of tag line.
   (save-excursion
@@ -1586,8 +1586,8 @@ Note that it only extracts tags from lines like the below:
 (defun w/hugo--collect-tags ()
   "Collect hugo tags from the org files in the current dir.
 
-Note that it only extracts tags from lines like the below:
-#+tags[]: Emacs Org-mode"
+  Note that it only extracts tags from lines like the below:
+  #+tags[]: Emacs Org-mode"
   (interactive)
   (let ((files (directory-files-recursively default-directory "\\.org$")))
     (let ((source (with-temp-buffer
@@ -1679,7 +1679,7 @@ Note that it only extracts tags from lines like the below:
 
 
 
-;;;; = xeft - search notes with the xapian syntax
+  ;;;; = xeft - search notes with the xapian syntax
 ;; Search large volume of data (notes) with search engine syntax
 ;; +word -word AND NOT etc
 ;; <tab>   to preview
@@ -1761,9 +1761,9 @@ Note that it only extracts tags from lines like the below:
 (setq dired-dwim-target t)
 
 (general-define-key
-   :keymaps 'dired-mode-map
-   "M-<RET>" #'crux-open-with
-"s-j" #'dired-goto-file)
+ :keymaps 'dired-mode-map
+ "M-<RET>" #'crux-open-with
+ "s-j" #'dired-goto-file)
 
 (use-package all-the-icons-dired
   :hook (dired-mode . all-the-icons-dired-mode))
@@ -1774,7 +1774,7 @@ Note that it only extracts tags from lines like the below:
 
 ;;;; = dired - file management
 
-;;;; = vundo - visual undo function
+  ;;;; = vundo - visual undo function
 ;; Call M-x vundo to visually undo
 (use-package vundo
   :defer
@@ -1831,21 +1831,21 @@ Note that it only extracts tags from lines like the below:
 (setq eshell-scroll-to-bottom-on-input "this")
 
 (use-package eat
- :straight (eat :type git
-       :host codeberg
-       :repo "akib/emacs-eat"
-       :files ("*.el" ("term" "term/*.el") "*.texi"
-               "*.ti" ("terminfo/e" "terminfo/e/*")
-               ("terminfo/65" "terminfo/65/*")
-               ("integration" "integration/*")
-               (:exclude ".dir-locals.el" "*-tests.el"))))
+  :straight (eat :type git
+                 :host codeberg
+                 :repo "akib/emacs-eat"
+                 :files ("*.el" ("term" "term/*.el") "*.texi"
+                         "*.ti" ("terminfo/e" "terminfo/e/*")
+                         ("terminfo/65" "terminfo/65/*")
+                         ("integration" "integration/*")
+                         (:exclude ".dir-locals.el" "*-tests.el"))))
 
 (use-package term-toggle
-:ensure t
-    :straight (term-toggle :host github :repo "amno1/emacs-term-toggle")
-    :config
-    (setq term-toggle-no-confirm-exit t)
-    )
+  :ensure t
+  :straight (term-toggle :host github :repo "amno1/emacs-term-toggle")
+  :config
+  (setq term-toggle-no-confirm-exit t)
+  )
 
 (defun term-toggle-eat ()
   "Toggle `term'."
@@ -1880,14 +1880,14 @@ Note that it only extracts tags from lines like the below:
   :defer)
 
 (use-package pdf-tools
-:config
-    (pdf-tools-install)
-    (setq-default pdf-view-display-size 'fit-width)
-    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-    :custom
-    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-width)
+  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+  :custom
+  (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
 
- (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
+(add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
 
 (general-unbind
   "C-z"

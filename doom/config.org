@@ -37,40 +37,29 @@ Put autosave files (ie #foo#) and backup files (ie foo~) in ~/.emacs.d/.
 ** Font
 
 #+begin_src emacs-lisp :tangle yes
-(setq doom-font (font-spec :family "Monaco" :size 15 :weight 'normal)
-      doom-big-font (font-spec :family "Monaco" :size 22 :weight 'normal)
-      doom-variable-pitch-font (font-spec :family "Monaco" :size 15 :weight 'normal))
-#+end_src
-
-#+begin_src emacs-lisp :tangle no
-(use-package! mixed-pitch
-  :hook
-  ;; If you want it in all text modes:
-  (text-mode . mixed-pitch-mode))
-#+end_src
-
-** Cursor
-
-#+begin_src emacs-lisp :tangle no
-(setq evil-normal-state-cursor '(box "red2")
-      evil-emacs-state-cursor '(box "blue4")
-      evil-visual-state-cursor '(hollow "red2"))
+(setq doom-font (font-spec :family "SF Mono" :size 16 :weight 'medium)
+      doom-big-font (font-spec :family "SF Mono" :size 22 :weight 'medium)
+      doom-variable-pitch-font (font-spec :family "SF Pro" :size 16 :weight 'medium))
 #+end_src
 
 
 ** Initial screen size
 
-I use  [[https://manytricks.com/moom/][Moom by Many Tricks]] to set window sizes on macOS. I always like them to be full-height, though.
+Set initial frame full-height at the left edge of the monitor.
 
 #+begin_src emacs-lisp :tangle yes
 (setq frame-resize-pixelwise t)
 (add-to-list 'default-frame-alist '(fullscreen . fullheight))
+(add-to-list 'default-frame-alist '(left . 0))
+(add-to-list 'default-frame-alist '(width . 100))
 #+end_src
 
 ** Theme
 
 #+begin_src emacs-lisp :tangle yes
 (setq doom-theme 'modus-operandi)
+
+(map! "<f9>" #'modus-themes-toggle)
 #+end_src
 
 
@@ -78,17 +67,22 @@ I use  [[https://manytricks.com/moom/][Moom by Many Tricks]] to set window sizes
 When editing two files that have the same name, it's annoying to make changes in one thinking that it was the other. This helps to distinguish them by putting their path in the buffer name. Although both items are displayed in the menu bar, it's nice to be able to see the time and battery level in the mode-line. Finally, I always want to see matching parentheses and the current line highlighted.
 
 #+begin_src emacs-lisp :tangle yes
-;; (setq-default
- ;; uniquify-buffer-name-style 'forward)
-;; (setq uniquify-buffer-name-style 'forward)
+(require 'uniquify)
 (display-time-mode 1)
 (display-battery-mode 1)
 (show-smartparens-global-mode t)
 (global-visual-line-mode t)
 #+end_src
 
-This turns off Doom's highlighting for non-standard indentation. I've re-enabled it to see what I didn't like about it.
+Flash modeline instead of warning bell.
 
+#+begin_src emacs-lisp :tangle yes
+(setq visible-bell nil
+      ring-bell-function 'flash-mode-line)
+(defun flash-mode-line ()
+  (invert-face 'mode-line)
+  (run-with-timer 0.1 nil #'invert-face 'mode-line))
+#+end_src
 
 Don't ask for confirmation about running processes when killing Emacs.
 
@@ -126,63 +120,6 @@ Show normal vim mode indicators in the modeline.
 #+begin_src emacs-lisp :tangle yes
 (setq doom-modeline-modal-icon nil)
 #+end_src
-
-Pulsar to find current line.
-
-#+begin_src emacs-lisp :tangle yes
-(use-package! pulsar
-  :custom
-  (setq pulsar-pulse-functions
-        '(isearch-repeat-forward
-          isearch-repeat-backward
-          recenter-top-bottom
-          move-to-window-line-top-bottom
-          reposition-window
-          bookmark-jump
-          other-window
-          delete-window
-          delete-other-windows
-          forward-page
-          backward-page
-          scroll-up-command
-          scroll-down-command
-          windmove-right
-          windmove-left
-          windmove-up
-          windmove-down
-          windmove-swap-states-right
-          windmove-swap-states-left
-          windmove-swap-states-up
-          windmove-swap-states-down
-          tab-new
-          tab-close
-          tab-next
-          org-next-visible-heading
-          org-previous-visible-heading
-          org-forward-heading-same-level
-          org-backward-heading-same-level
-          outline-backward-same-level
-          outline-forward-same-level
-          outline-next-visible-heading
-          outline-previous-visible-heading
-          outline-up-heading))
-  :hook
-  (consult-after-jump . pulsar-recenter-top)
-  (consult-after-jump . pulsar-reveal-entry)
-  ;; integration with the built-in `imenu':
-  (imenu-after-jump . pulsar-recenter-top)
-  (imenu-after-jump . pulsar-reveal-entry)
-  :config
-  (setq pulsar-pulse t
-        pulsar-delay 0.2
-        pulsar-iterations 10
-        pulsar-face 'pulsar-blue
-        pulsar-highlight-face 'pulsar-blue))
-
-(pulsar-global-mode 1)
-
-#+end_src
-
 
 ** Dashboard
 
@@ -317,13 +254,22 @@ Insert dates and times
 
 ** Spelling
 
-#+begin_src emacs-lisp :tangle yes
+Use f7 to check word, shift-f7 to check entire buffer.
 
-;; (setq ispell-program-name "/opt/homebrew/bin/aspell")
-;; (setq ispell-extra-args '("--sug-mode=ultra"))
-(setq ispell-personal-dictionary "/Users/rlridenour/Dropbox/emacs/spelling/.aspell.en.pws")
-(setq ispell-silently-savep t)
-(global-set-key (kbd "<f7>") 'flyspell-correct-wrapper)
+#+begin_src emacs-lisp :tangle yes
+(use-package jinx
+  :hook (emacs-startup . global-jinx-mode)
+  :bind ([remap ispell-word] . jinx-correct))
+
+(defun jinx-correct-all ()
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (call-interactively #'jinx-correct)))
+
+(map!
+ "<f7>" #'jinx-correct
+ "S-<f7>" #'jinx-correct-all)
+
 #+end_src
 
 
@@ -1430,6 +1376,15 @@ Some functions for automating lecture notes and slides.
   (arara-notes)
   (find-file "*-data.org" t))
 
+(defun canvas-notes ()
+  "Copy HTML slide notes for Canvas"
+  (interactive)
+  (shell-command "canvas-notes")
+  (find-file "canvas.org")
+  (canvas-copy)
+  (kill-buffer)
+  (delete-file "canvas-data.org"))
+
 (defun present ()
   (interactive)
   (async-shell-command "present"))
@@ -1440,6 +1395,56 @@ Some functions for automating lecture notes and slides.
   (org-html-export-to-html)
   (shell-command "canvas")
   )
+
+(defun  create-args ()
+  (interactive)
+  (kill-ring-save (region-beginning) (region-end))
+  (exchange-point-and-mark)
+  (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
+  (previous-line)
+  ;; (previous-line)
+  (org-beginning-of-line)
+  (forward-word)
+  (forward-char)
+  (forward-char)
+  (insert "\\underline{")
+  (org-end-of-line)
+  (insert "}")
+  (next-line)
+  (org-beginning-of-line)
+  (forward-word)
+  (insert "[\\phantom{\\(\\therefore\\)}]")
+  (next-line)
+  (next-line)
+  (org-return)
+  (org-return)
+  (org-yank)
+  (exchange-point-and-mark)
+  (yas-expand-snippet (yas-lookup-snippet "arg-wrap-html"))
+  )
+
+
+(defun  create-tex-arg ()
+  (interactive)
+  (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
+  (previous-line)
+  (previous-line)
+  (forward-word)
+  (forward-char)
+  (forward-char)
+  (insert "\\underline{")
+  (org-end-of-line)
+  (insert "}")
+  (next-line)
+  (org-beginning-of-line)
+  (forward-word)
+  (insert "[\\phantom{\\(\\therefore\\)}]")
+  (next-line)
+  (next-line)
+  (org-return)
+  (org-return)
+  )
+
 
 (setq org-latex-pdf-process '("arara %f"))
 
@@ -1488,6 +1493,19 @@ Some functions for automating lecture notes and slides.
          "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
         )
       )
+
+(with-eval-after-load 'org-capture
+  (add-to-list 'org-capture-templates
+               '("n" "New note (with Denote)" plain
+                 (file denote-last-path)
+                 #'denote-org-capture
+                 :no-save t
+                 :immediate-finish nil
+                 :kill-buffer t
+                 :jump-to-captured t)))
+
+
+
 (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
 
 (define-key global-map "\C-cc" 'org-capture)
@@ -1605,68 +1623,6 @@ Use Deft for quick notes.
 (use-package! denote-menu)
 #+end_src
 
-
-*** EKG
-
-#+begin_src emacs-lisp :tangle no
-(use-package! emacsql)
-#+end_src
-
-
-
-#+begin_src emacs-lisp :tangle no
-(use-package ekg
-  :bind (([f9] . ekg-capture))
-:init
-(setq ekg-db-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/.ekg/ekg.db"))
-#+end_src
-
-
-*** Org Roam
-
-
-#+begin_src emacs-lisp :tangle no
-(setq org-roam-dailies-directory "daily/")
-
-(setq org-roam-dailies-capture-templates
-      '(("d" "default" entry
-         "* %?"
-         :if-new (file+head "%<%Y-%m-%d>.org"
-                            "#+title: %<%Y-%m-%d>\n"))))
-#+end_src
-
-
-#+begin_src emacs-lisp :tangle yes
-(defun rlr/org-date ()
-  "Update existing date: timestamp on a Hugo post."
-  (interactive)
-  (save-excursion (
-                   goto-char 1)
-                  (re-search-forward "^#\\+date:")
-                  (let ((beg (point)))
-                    (end-of-line)
-                    (delete-region beg (point)))
-                  (insert (concat " " (format-time-string "%B %e, %Y")))))
-#+end_src
-
-*** Hyperbole
-
-#+begin_src emacs-lisp :tangle no
-(use-package! hyperbole
-  :bind
-  ("C-c C-/" . hui-search-web)  ;; bind before calling require
-  :custom-face
-  (hbut       ((t (:foreground "green yellow"))))
-  (hbut-flash ((t (:foreground "dark gray" :background "green yellow"))))
-:config
-  (setq hbmap:dir-user "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org")
-  (setq hbmap:filename "personal-buttons.hypb")
-  (setq hyrolo-file-list '("~/Library/Mobile Documents/com~apple~CloudDocs/org/notes.org"))
-  (setq hyrolo-date-format "%Y-%m-%d %H:%M:%S")
-)
-#+end_src
-
- 
 
 
 
@@ -2643,6 +2599,8 @@ Key-chords
 
 
 * Final Steps
+
+Set default directory.
 
 #+begin_src emacs-lisp :tangle yes
 (setq default-directory "~/")

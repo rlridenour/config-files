@@ -102,3 +102,4 @@
 (unpin! compat)
 (package! aas)
 (package! laas)
+(package! jinx)
