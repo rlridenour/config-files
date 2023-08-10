@@ -1644,6 +1644,8 @@
                      " >}}"))
  :follow #'org-hugo-follow)
 
+(use-package writeroom-mode)
+
 ;; Denote
 (use-package denote
   :config
@@ -1963,8 +1965,8 @@
     ("n" consult-notes "notes")
     ("r" consult-ripgrep "ripgrep")
     ("d" rlr/consult-rg "rg from dir")
-    ("f" rlr/consult-fd "find from dir")
-    )))
+    ("f" rlr/consult-fd "find from dir"))
+    ))
 
 (pretty-hydra-define hydra-window
   (:color teal :quit-key "q" title: "Windows")
@@ -1985,8 +1987,10 @@
     ("D" delete-frame "delete this frame")
     ("i" make-frame-invisible "invisible frame")
     ("f" toggle-frame-fullscreen "fullscreen")
-    ("n" make-frame-command "new frame")
-    )))
+    ("n" make-frame-command "new frame"))
+"Writeroom"
+(("W" writeroom-mode "toggle writeroom")
+("M" writeroom-toggle-mode-line "toggle modeline"))))
 
 (pretty-hydra-define hydra-new
   (:color teal :quit-key "q" title: "New")

@@ -2348,6 +2348,16 @@ Set a few variables and some utility functions that are used later.
  :follow #'org-hugo-follow)
 #+end_src
 
+** Writeroom
+
+Use Writeroom for distraction free editing.
+
+#+begin_src emacs-lisp
+(use-package writeroom-mode)
+#+end_src
+
+
+
 * Notes
 :PROPERTIES:
 :header-args: :tangle init.el
@@ -2889,8 +2899,8 @@ Unset some keys.
     ("n" consult-notes "notes")
     ("r" consult-ripgrep "ripgrep")
     ("d" rlr/consult-rg "rg from dir")
-    ("f" rlr/consult-fd "find from dir")
-    )))
+    ("f" rlr/consult-fd "find from dir"))
+    ))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2913,8 +2923,10 @@ Unset some keys.
     ("D" delete-frame "delete this frame")
     ("i" make-frame-invisible "invisible frame")
     ("f" toggle-frame-fullscreen "fullscreen")
-    ("n" make-frame-command "new frame")
-    )))
+    ("n" make-frame-command "new frame"))
+"Writeroom"
+(("W" writeroom-mode "toggle writeroom")
+("M" writeroom-toggle-mode-line "toggle modeline"))))
 #+end_src
 
 #+begin_src emacs-lisp
