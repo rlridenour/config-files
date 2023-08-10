@@ -271,10 +271,6 @@ Use GNU ls to avoid "Listing directory failed but 'access-file' worked" error.
 (setq insert-directory-program "gls")
 #+end_src
 
-
-
-
-
 Kill message buffer on exit.
 
 #+begin_src emacs-lisp
@@ -286,6 +282,13 @@ Use "y" and "n" in confirmation dialogs.
 #+begin_src emacs-lisp
 (setf use-short-answers t)
 #+end_src
+
+Set Mac fn key as Emacs hyper key. The fn key with A, D, F, H, E, C, N, M, and Q are used by the system. Maybe I can find a way to disable some of those keyboard shortcuts.
+
+#+begin_src emacs-lisp
+(setq ns-function-modifier 'hyper) 
+#+end_src
+
 
 Allow entering a command when the minibuffer is active.
 

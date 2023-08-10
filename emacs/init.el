@@ -65,6 +65,8 @@
 
 (setf use-short-answers t)
 
+(setq ns-function-modifier 'hyper)
+
 (setq enable-recursive-minibuffers t)
 (minibuffer-depth-indicate-mode 1)
 
