@@ -212,7 +212,7 @@ Add my custom snippets to Yasnippet
 #+begin_src emacs-lisp :tangle yes
 (after! yasnippet
   (setq yas-snippet-dirs (append yas-snippet-dirs
-                                 '("~/.config/doom/snippets"))))
+                                 '("~/.config/snippets"))))
 #+end_src
 
 Show number of isearch matches.
@@ -2218,6 +2218,7 @@ Unset some keys
     ("n" lecture-notes "Lecture notes")
     ("ep" present "Present slides")
     ("eh" canvas-copy "Copy html for Canvas")
+    ("es" canvas-notes "HTML Canvas notes")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all")
     )
