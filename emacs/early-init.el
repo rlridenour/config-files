@@ -20,7 +20,7 @@
 
 (when (fboundp 'native-compile-async)
   (setq comp-deferred-compilation t
-        comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
+	comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -38,7 +38,7 @@
 (add-to-list 'default-frame-alist '(width . 100))
 
 (setq-default cursor-in-non-selected-windows nil
-              frame-title-format '("%f [%m]"))
+	      frame-title-format '("%f [%m]"))
 
 (setq initial-major-mode 'org-mode)
 

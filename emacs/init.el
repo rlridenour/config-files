@@ -21,7 +21,7 @@
 
 ;;;; Create directories if non-existing
 (dolist (dir (list rr-cache-dir
-                   rr-backup-dir))
+		   rr-backup-dir))
   (unless (file-directory-p dir)
     (make-directory dir t)))
 
@@ -31,9 +31,9 @@
       (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
       (goto-char (point-max))
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
@@ -52,6 +52,8 @@
 (use-package general :demand t
   :config
   (general-auto-unbind-keys))
+
+(setq ns-right-option-modifier 'hyper)
 
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
@@ -110,11 +112,11 @@
   :config
   ;; Add all your customizations prior to loading the themes
   (setq modus-themes-italic-constructs t
-        modus-themes-bold-constructs t)
+	modus-themes-bold-constructs t)
 
   ;; Maybe define some palette overrides, such as by using our presets
   (setq modus-themes-common-palette-overrides
-        modus-themes-preset-overrides-faint)
+	modus-themes-preset-overrides-faint)
 
   ;; Load the theme of your choice.
   (load-theme 'modus-operandi t))
@@ -143,9 +145,9 @@
   :config
   (dashboard-setup-startup-hook)
   (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  ;;  (setq doom-fallback-buffer-name "*dashboard*")
-  (setq dashboard-week-agenda nil)
+  (setq dashboard-week-agenda t)
   (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
+  (setq dashboard-center-content t)
   (setq dashboard-set-footer nil)
   (setq dashboard-banner-logo-title nil)
   (setq dashboard-set-heading-icons t)
@@ -153,9 +155,9 @@
   (setq dashboard-set-navigator nil)
   (setq dashboard-projects-backend 'project-el)
   (setq dashboard-items '((agenda . 5)
-                          (recents  . 5)
-                          (bookmarks . 10)
-                          (projects . 5))))
+			  (recents  . 5)
+			  (bookmarks . 10)
+			  (projects . 5))))
 
 
 (defun goto-dashboard ()
@@ -167,6 +169,37 @@
 
 (general-define-key
  "s-d" #'goto-dashboard)
+
+(use-package centaur-tabs
+  :init
+  (setq centaur-tabs-set-icons nil)
+  (setq centaur-tabs-show-new-tab-button nil)
+  (setq centaur-tabs-set-close-button nil)
+  (setq centaur-tabs-enable-ido-completion nil)
+  (setq centaur-tabs-set-modified-marker t)
+  (setq centaur-tabs-cycle-scope 'tabs)
+  :config
+  (centaur-tabs-mode t)
+  :hook
+  (emacs-startup . centaur-tabs-mode)
+  (dashboard-mode . centaur-tabs-local-mode)
+  :general
+  ("s-[" #'centaur-tabs-backward
+   "s-]" #'centaur-tabs-forward
+   "s-{" #'centaur-tabs-backward-group
+   "s-}" #'centaur-tabs-forward-group
+   "C-<tab>" #'centaur-tabs-forward
+   "M-<tab>" #'centaur-tabs-forward-group
+   "C-1" #'centaur-tabs-select-visible-tab
+   "C-2" #'centaur-tabs-select-visible-tab
+   "C-3" #'centaur-tabs-select-visible-tab
+   "C-4" #'centaur-tabs-select-visible-tab
+   "C-5" #'centaur-tabs-select-visible-tab
+   "C-6" #'centaur-tabs-select-visible-tab
+   "C-7" #'centaur-tabs-select-visible-tab
+   "C-8" #'centaur-tabs-select-visible-tab
+   "C-9" #'centaur-tabs-select-visible-tab
+   ))
 
 (general-define-key
  "C-+" #'text-scale-increase
@@ -194,7 +227,8 @@
 ;; Max number of files saved
 (setq recentf-max-saved-items 200)
 ;; Max number of files served in files menu
-(setq recentf-max-menu-items 15)
+(setq recentf-max-menu-items 2048)
+(add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
 (recentf-mode)
 
 ;;;;; = saveplace - last position in file
@@ -217,9 +251,9 @@
 (setq ibuffer-expert t)
 
 (add-hook 'ibuffer-mode-hook
-          #'(lambda ()
-              (ibuffer-auto-mode 1)
-              (ibuffer-switch-to-saved-filter-groups "home")))
+	  #'(lambda ()
+	      (ibuffer-auto-mode 1)
+	      (ibuffer-switch-to-saved-filter-groups "home")))
 
 ;;;;; = savehist - last commands used
 ;; Persist emacs minibuffer history
@@ -237,7 +271,7 @@
   (cl-flet ((process-list ())) ad-do-it))
 
 (add-to-list 'display-buffer-alist
-             (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
+	     (cons "\\*Async Shell Command\\*.*" (cons #'display-buffer-no-window nil)))
 
 (defun make-parent-directory ()
   "Make sure the directory of `buffer-file-name' exists."
@@ -251,12 +285,19 @@
   (mapc
    (lambda (buffer)
      (unless (or
-              (string= (buffer-name buffer) "*scratch*")
-              (string= (buffer-name buffer) "*dashboard*")
-              (string= (buffer-name buffer) "*Messages*"))
+	      (string= (buffer-name buffer) "*scratch*")
+	      (string= (buffer-name buffer) "*dashboard*")
+	      (string= (buffer-name buffer) "*Messages*"))
        (kill-buffer buffer)))
    (buffer-list))
   (delete-other-windows))
+
+(general-define-key
+;; "s-]" #'xah-next-user-buffer
+;; "s-[" #'xah-previous-user-buffer
+;; "s-}" #'xah-next-emacs-buffer
+;; "s-{" #'xah-previous-emacs-buffer
+)
 
 (setq initial-scratch-message nil
       initial-major-mode 'org-mode)
@@ -264,8 +305,8 @@
 (defun unkillable-scratch-buffer ()
   (if (equal (buffer-name (current-buffer)) "*scratch*")
       (progn
-        (delete-region (point-min) (point-max))
-        nil)
+	(delete-region (point-min) (point-max))
+	nil)
     t))
 (add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
 
@@ -336,10 +377,10 @@
   (unless (= 2 (count-windows))
     (error "There are not 2 windows."))
   (let* ((windows (window-list))
-         (w1 (car windows))
-         (w2 (nth 1 windows))
-         (w1b (window-buffer w1))
-         (w2b (window-buffer w2)))
+	 (w1 (car windows))
+	 (w2 (nth 1 windows))
+	 (w1b (window-buffer w1))
+	 (w2b (window-buffer w2)))
     (set-window-buffer w1 w2b)
     (set-window-buffer w2 w1b)))
 
@@ -347,33 +388,33 @@
   (interactive)
   (if (= (count-windows) 2)
       (let* ((this-win-buffer (window-buffer))
-             (next-win-buffer (window-buffer (next-window)))
-             (this-win-edges (window-edges (selected-window)))
-             (next-win-edges (window-edges (next-window)))
-             (this-win-2nd (not (and (<= (car this-win-edges)
-                                         (car next-win-edges))
-                                     (<= (cadr this-win-edges)
-                                         (cadr next-win-edges)))))
-             (splitter
-              (if (= (car this-win-edges)
-                     (car (window-edges (next-window))))
-                  'split-window-horizontally
-                'split-window-vertically)))
-        (delete-other-windows)
-        (let ((first-win (selected-window)))
-          (funcall splitter)
-          (if this-win-2nd (other-window 1))
-          (set-window-buffer (selected-window) this-win-buffer)
-          (set-window-buffer (next-window) next-win-buffer)
-          (select-window first-win)
-          (if this-win-2nd (other-window 1))))))
+	     (next-win-buffer (window-buffer (next-window)))
+	     (this-win-edges (window-edges (selected-window)))
+	     (next-win-edges (window-edges (next-window)))
+	     (this-win-2nd (not (and (<= (car this-win-edges)
+					 (car next-win-edges))
+				     (<= (cadr this-win-edges)
+					 (cadr next-win-edges)))))
+	     (splitter
+	      (if (= (car this-win-edges)
+		     (car (window-edges (next-window))))
+		  'split-window-horizontally
+		'split-window-vertically)))
+	(delete-other-windows)
+	(let ((first-win (selected-window)))
+	  (funcall splitter)
+	  (if this-win-2nd (other-window 1))
+	  (set-window-buffer (selected-window) this-win-buffer)
+	  (set-window-buffer (next-window) next-win-buffer)
+	  (select-window first-win)
+	  (if this-win-2nd (other-window 1))))))
 
 (defun toggle-frame-maximized-undecorated () (interactive) (let* ((frame (selected-frame)) (on? (and (frame-parameter frame 'undecorated) (eq (frame-parameter frame 'fullscreen) 'maximized))) (geom (frame-monitor-attribute 'geometry)) (x (nth 0 geom)) (y (nth 1 geom)) (display-height (nth 3 geom)) (display-width (nth 2 geom)) (cut (if on? (if ns-auto-hide-menu-bar 26 50) (if ns-auto-hide-menu-bar 4 26)))) (set-frame-position frame x y) (set-frame-parameter frame 'fullscreen-restore 'maximized) (set-frame-parameter nil 'fullscreen 'maximized) (set-frame-parameter frame 'undecorated (not on?)) (set-frame-height frame (- display-height cut) nil t) (set-frame-width frame (- display-width 20) nil t) (set-frame-position frame x y)))
 
 (general-define-key
- "C-1" #'delete-other-windows
- "C-2" #'split-window-below-focus
- "C-3" #'split-window-right-focus
+ ;; "C-1" #'delete-other-windows
+ ;; "C-2" #'split-window-below-focus
+ ;; "C-3" #'split-window-right-focus
  "s-6" #'toggle-window-split
  "S-C-<left>" #'shrink-window-horizontally
  "S-C-<right>" #'enlarge-window-horizontally
@@ -412,16 +453,16 @@
   ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
   (defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
-                  (replace-regexp-in-string
-                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                   crm-separator)
-                  (car args))
-          (cdr args)))
+		  (replace-regexp-in-string
+		   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+		   crm-separator)
+		  (car args))
+	  (cdr args)))
   (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties
-        '(read-only t cursor-intangible t face minibuffer-prompt))
+	'(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
@@ -440,8 +481,8 @@
   ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
   (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+	completion-category-defaults nil
+	completion-category-overrides '((file (styles partial-completion)))))
 
 
 
@@ -449,56 +490,56 @@
 (use-package consult
   ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; C-c bindings (mode-specific-map)
-         ("C-c M-x" . consult-mode-command)
-         ("C-c h" . consult-history)
-         ("C-c k" . consult-kmacro)
-         ("C-c m" . consult-man)
-         ("C-c i" . consult-info)
-         ([remap Info-search] . consult-info)
-         ;; C-x bindings (ctl-x-map)
-         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
-         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
-         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
-         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
-         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
-         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
-         ;; Custom M-# bindings for fast register access
-         ("M-#" . consult-register-load)
-         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
-         ("C-M-#" . consult-register)
-         ;; Other custom bindings
-         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ;; M-g bindings (goto-map)
-         ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
-         ("M-g g" . consult-goto-line)             ;; orig. goto-line
-         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
-         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
-         ("M-g m" . consult-mark)
-         ("M-g k" . consult-global-mark)
-         ("M-g i" . consult-imenu)
-         ("M-g I" . consult-imenu-multi)
-         ;; M-s bindings (search-map)
-         ("M-s d" . consult-find)
-         ("M-s D" . consult-locate)
-         ("M-s g" . consult-grep)
-         ("M-s G" . consult-git-grep)
-         ("M-s r" . consult-ripgrep)
-         ("M-s l" . consult-line)
-         ("M-s L" . consult-line-multi)
-         ("M-s k" . consult-keep-lines)
-         ("M-s u" . consult-focus-lines)
-         ;; Isearch integration
-         ("M-s e" . consult-isearch-history)
-         :map isearch-mode-map
-         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
-         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
-         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
-         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
-         ;; Minibuffer history
-         :map minibuffer-local-map
-         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
-         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+	 ("C-c M-x" . consult-mode-command)
+	 ("C-c h" . consult-history)
+	 ("C-c k" . consult-kmacro)
+	 ("C-c m" . consult-man)
+	 ("C-c i" . consult-info)
+	 ([remap Info-search] . consult-info)
+	 ;; C-x bindings (ctl-x-map)
+	 ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+	 ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+	 ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+	 ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+	 ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+	 ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+	 ;; Custom M-# bindings for fast register access
+	 ("M-#" . consult-register-load)
+	 ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+	 ("C-M-#" . consult-register)
+	 ;; Other custom bindings
+	 ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+	 ;; M-g bindings (goto-map)
+	 ("M-g e" . consult-compile-error)
+	 ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+	 ("M-g g" . consult-goto-line)             ;; orig. goto-line
+	 ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+	 ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+	 ("M-g m" . consult-mark)
+	 ("M-g k" . consult-global-mark)
+	 ("M-g i" . consult-imenu)
+	 ("M-g I" . consult-imenu-multi)
+	 ;; M-s bindings (search-map)
+	 ("M-s d" . consult-find)
+	 ("M-s D" . consult-locate)
+	 ("M-s g" . consult-grep)
+	 ("M-s G" . consult-git-grep)
+	 ("M-s r" . consult-ripgrep)
+	 ("M-s l" . consult-line)
+	 ("M-s L" . consult-line-multi)
+	 ("M-s k" . consult-keep-lines)
+	 ("M-s u" . consult-focus-lines)
+	 ;; Isearch integration
+	 ("M-s e" . consult-isearch-history)
+	 :map isearch-mode-map
+	 ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+	 ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+	 ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+	 ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+	 ;; Minibuffer history
+	 :map minibuffer-local-map
+	 ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+	 ("M-r" . consult-history))                ;; orig. previous-matching-history-element
 
   ;; Enable automatic preview at point in the *Completions* buffer. This is
   ;; relevant when you use the default completion UI.
@@ -511,7 +552,7 @@
   ;; preview for `consult-register', `consult-register-load',
   ;; `consult-register-store' and the Emacs built-ins.
   (setq register-preview-delay 0.5
-        register-preview-function #'consult-register-format)
+	register-preview-function #'consult-register-format)
 
   ;; Optionally tweak the register preview window.
   ;; This adds thin lines, sorting and hides the mode line of the window.
@@ -519,7 +560,7 @@
 
   ;; Use Consult to select xref locations with preview
   (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+	xref-show-definitions-function #'consult-xref)
 
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
@@ -551,16 +592,16 @@
 
   ;; By default `consult-project-function' uses `project-root' from project.el.
   ;; Optionally configure a different project root function.
-    ;;;; 1. project.el (the default)
+      ;;;; 1. project.el (the default)
   ;; (setq consult-project-function #'consult--default-project--function)
-    ;;;; 2. vc.el (vc-root-dir)
+      ;;;; 2. vc.el (vc-root-dir)
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-    ;;;; 3. locate-dominating-file
+      ;;;; 3. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-    ;;;; 4. projectile.el (projectile-project-root)
+      ;;;; 4. projectile.el (projectile-project-root)
   ;; (autoload 'projectile-project-root "projectile")
   ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-    ;;;; 5. No project support
+      ;;;; 5. No project support
   ;; (setq consult-project-function nil)
   )
 
@@ -591,9 +632,9 @@
 
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
+	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+		 nil
+		 (window-parameters (mode-line-format . none)))))
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
@@ -634,7 +675,7 @@
   ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
   ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
   (setq read-extended-command-predicate
-        #'command-completion-default-include-p)
+	#'command-completion-default-include-p)
 
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
@@ -644,36 +685,23 @@
 (use-package cape
   ;; Bind dedicated completion commands
   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
-  :bind (("C-c p p" . completion-at-point) ;; capf
-         ("C-c p t" . complete-tag)        ;; etags
-         ("C-c p d" . cape-dabbrev)        ;; or dabbrev-completion
-         ("C-c p h" . cape-history)
-         ("C-c p f" . cape-file)
-         ("C-c p k" . cape-keyword)
-         ("C-c p s" . cape-symbol)
-         ("C-c p a" . cape-abbrev)
-         ("C-c p i" . cape-ispell)
-         ("C-c p l" . cape-line)
-         ("C-c p w" . cape-dict)
-         ("C-c p \\" . cape-tex)
-         ("C-c p _" . cape-tex)
-         ("C-c p ^" . cape-tex)
-         ("C-c p &" . cape-sgml)
-         ("C-c p r" . cape-rfc1345))
+  :general (:prefix "M-p"
+		    "p" 'completion-at-point ;; capf
+		    "d" 'cape-dabbrev        ;; or dabbrev-completion
+		    "a" 'cape-abbrev
+		    "i" 'cape-ispell
+		    "w" 'cape-dict
+		    "\\" 'cape-tex
+		    "_" 'cape-tex
+		    "^" 'cape-tex)
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
   (add-to-list 'completion-at-point-functions #'cape-file)
-  ;;(add-to-list 'completion-at-point-functions #'cape-history)
-  ;;(add-to-list 'completion-at-point-functions #'cape-keyword)
-  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
-  ;;(add-to-list 'completion-at-point-functions #'cape-sgml)
-  ;;(add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
-  ;;(add-to-list 'completion-at-point-functions #'cape-ispell)
-  ;;(add-to-list 'completion-at-point-functions #'cape-dict)
-  ;;(add-to-list 'completion-at-point-functions #'cape-symbol)
-  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+  (add-to-list 'completion-at-point-functions #'cape-tex)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-ispell)
+  (add-to-list 'completion-at-point-functions #'cape-dict)
   )
 
 (delete-selection-mode 1)
@@ -697,28 +725,28 @@
       (forward-sentence)
       (if (looking-at-p " ")
 
-          (defvar repetition-counter 0
-            "How often cycle-on-repetition was called in a row using the same command.")
+	  (defvar repetition-counter 0
+	    "How often cycle-on-repetition was called in a row using the same command.")
 
-        (defun cycle-on-repetition (list-of-expressions)
-          "Return the first element from the list on the first call,
+	(defun cycle-on-repetition (list-of-expressions)
+	  "Return the first element from the list on the first call,
      the second expression on the second consecutive call etc"
-          (interactive)
-          (if (equal this-command last-command)
-              (setq repetition-counter (+ repetition-counter 1)) ;; then
-            (setq repetition-counter 0) ;; else
-            )
-          (nth
-           (mod repetition-counter (length list-of-expressions))
-           list-of-expressions) ;; implicit return of the last evaluated value
-          )
+	  (interactive)
+	  (if (equal this-command last-command)
+	      (setq repetition-counter (+ repetition-counter 1)) ;; then
+	    (setq repetition-counter 0) ;; else
+	    )
+	  (nth
+	   (mod repetition-counter (length list-of-expressions))
+	   list-of-expressions) ;; implicit return of the last evaluated value
+	  )
 
-        (defun reformat-paragraph ()
-          "Cycles the paragraph between three states: filled/unfilled/fill-sentences."
-          (interactive)
-          (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
-          )
-        (newline-and-indent)))))
+	(defun reformat-paragraph ()
+	  "Cycles the paragraph between three states: filled/unfilled/fill-sentences."
+	  (interactive)
+	  (funcall (cycle-on-repetition '(fill-paragraph fill-sentences-in-paragraph unfill-paragraph)))
+	  )
+	(newline-and-indent)))))
 
 (setq sentence-end-double-space nil)
 
@@ -736,7 +764,7 @@
   "count words between BEGIN and END (region); if no region defined, count words in buffer"
   (interactive "r")
   (let ((b (if mark-active begin (point-min)))
-        (e (if mark-active end (point-max))))
+	(e (if mark-active end (point-max))))
     (message "Word count: %s" (how-many "\\w+" b e))))
 
 (defun move-line-up ()
@@ -757,7 +785,9 @@
 (use-package meow
   :init
   (defun meow-setup ()
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty
+	  meow-expand-exclude-mode-list nil
+	  meow-expand-hint-remove-delay 2)
     (meow-motion-overwrite-define-key
      '("j" . meow-next)
      '("k" . meow-prev)
@@ -971,7 +1001,7 @@
   ;; (setq org-footnote-section nil)
   (setq org-html-validation-link nil)
   (setq org-todo-keyword-faces
-        '(("DONE" . "green4") ("TODO" . org-warning)))
+	'(("DONE" . "green4") ("TODO" . org-warning)))
   (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
 
 (use-package org-contrib
@@ -1000,47 +1030,47 @@
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
-               '("org-article"
-                 "\\documentclass{article}
-          [NO-DEFAULT-PACKAGES]
-          [NO-PACKAGES]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+	       '("org-article"
+		 "\\documentclass{article}
+	  [NO-DEFAULT-PACKAGES]
+	  [NO-PACKAGES]"
+		 ("\\section{%s}" . "\\section*{%s}")
+		 ("\\subsection{%s}" . "\\subsection*{%s}")
+		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
-               '("org-handout"
-                 "\\documentclass{pdfhandout}
-          [NO-DEFAULT-PACKAGES]
-          [NO-PACKAGES]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+	       '("org-handout"
+		 "\\documentclass{pdfhandout}
+	  [NO-DEFAULT-PACKAGES]
+	  [NO-PACKAGES]"
+		 ("\\section{%s}" . "\\section*{%s}")
+		 ("\\subsection{%s}" . "\\subsection*{%s}")
+		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
-               '("org-beamer"
-                 "\\documentclass{beamer}
-          [NO-DEFAULT-PACKAGES]
-          [NO-PACKAGES]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+	       '("org-beamer"
+		 "\\documentclass{beamer}
+	  [NO-DEFAULT-PACKAGES]
+	  [NO-PACKAGES]"
+		 ("\\section{%s}" . "\\section*{%s}")
+		 ("\\subsection{%s}" . "\\subsection*{%s}")
+		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   )
 
 (setq org-export-with-smart-quotes t)
 
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-export-smart-quotes-alist
-               '("en-us"
-                 (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
-                 (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
-                 (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
-                 (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
-                 (apostrophe        :utf-8 "’" :html "&rsquo;")))
+	       '("en-us"
+		 (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
+		 (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+		 (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+		 (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+		 (apostrophe        :utf-8 "’" :html "&rsquo;")))
   )
 
     ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
@@ -1195,32 +1225,32 @@
   "Update existing date: timestamp on a Hugo post."
   (interactive)
   (save-excursion (
-                   goto-char 1)
-                  (re-search-forward "^#\\+date:")
-                  (let ((beg (point)))
-                    (end-of-line)
-                    (delete-region beg (point)))
-                  (insert (concat " " (format-time-string "%B %e, %Y")))))
+		   goto-char 1)
+		  (re-search-forward "^#\\+date:")
+		  (let ((beg (point)))
+		    (end-of-line)
+		    (delete-region beg (point)))
+		  (insert (concat " " (format-time-string "%B %e, %Y")))))
 
 ;; Org-capture
 (setq org-capture-templates
       '(
-        ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
-         "** TODO %?\n  %i\n  %a")
-        ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
-         "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
-        )
+	("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
+	 "** TODO %?\n  %i\n  %a")
+	("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
+	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+	)
       )
 
 (with-eval-after-load 'org-capture
   (add-to-list 'org-capture-templates
-               '("n" "New note (with Denote)" plain
-                 (file denote-last-path)
-                 #'denote-org-capture
-                 :no-save t
-                 :immediate-finish nil
-                 :kill-buffer t
-                 :jump-to-captured t)))
+	       '("n" "New note (with Denote)" plain
+		 (file denote-last-path)
+		 #'denote-org-capture
+		 :no-save t
+		 :immediate-finish nil
+		 :kill-buffer t
+		 :jump-to-captured t)))
 
 
 (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
@@ -1233,36 +1263,36 @@
   :after org-agenda
   :init
   (setq org-agenda-skip-scheduled-if-done t
-        org-agenda-skip-deadline-if-done t
-        org-agenda-include-deadlines t
-        org-agenda-block-separator nil
-        org-agenda-compact-blocks t
-        org-agenda-start-day nil ;; i.e. today
-        org-agenda-span 1
-        org-agenda-start-on-weekday nil)
+	org-agenda-skip-deadline-if-done t
+	org-agenda-include-deadlines t
+	org-agenda-block-separator nil
+	org-agenda-compact-blocks t
+	org-agenda-start-day nil ;; i.e. today
+	org-agenda-span 1
+	org-agenda-start-on-weekday nil)
   (setq org-agenda-custom-commands
-        '(("c" "Super view"
-           ((agenda "" ((org-agenda-overriding-header "")
-                        (org-super-agenda-groups
-                         '((:name "Today"
-                            :time-grid t
-                            :date today
-                            :order 1)))))
-            (alltodo "" ((org-agenda-overriding-header "")
-                         (org-super-agenda-groups
-                          '((:log t)
-                            (:name "Important"
-                             :priority "A"
-                             :order 4)
-                            (:name "Today's tasks"
-                             :file-path "journal/")
-                            (:name "Due Today"
-                             :deadline today
-                             :order 2)
-                            (:name "Overdue"
-                             :deadline past
-                             :order 3)
-                            (:discard (:not (:todo "TODO")))))))))))
+	'(("c" "Super view"
+	   ((agenda "" ((org-agenda-overriding-header "")
+			(org-super-agenda-groups
+			 '((:name "Today"
+				  :time-grid t
+				  :date today
+				  :order 1)))))
+	    (alltodo "" ((org-agenda-overriding-header "")
+			 (org-super-agenda-groups
+			  '((:log t)
+			    (:name "Important"
+				   :priority "A"
+				   :order 4)
+			    (:name "Today's tasks"
+				   :file-path "journal/")
+			    (:name "Due Today"
+				   :deadline today
+				   :order 2)
+			    (:name "Overdue"
+				   :deadline past
+				   :order 3)
+			    (:discard (:not (:todo "TODO")))))))))))
   :config
   (org-super-agenda-mode))
 
@@ -1283,8 +1313,8 @@
 (use-package citar
   :defer t
   :bind (("C-c C-b" . citar-insert-citation)
-         :map minibuffer-local-map
-         ("M-b" . citar-insert-preset))
+	 :map minibuffer-local-map
+	 ("M-b" . citar-insert-preset))
   :custom
   (org-cite-global-bibliography '("~/Dropbox/bibtex/rlr.bib"))
   (citar-bibliography '("~/Dropbox/bibtex/rlr.bib"))
@@ -1306,9 +1336,9 @@
 (use-package markdown-mode
   :defer t
   :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.Rmd\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.Rmd\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
   :config
   (setq markdown-indent-on-enter 'indent-and-new-item)
   (setq markdown-asymmetric-header t))
@@ -1325,15 +1355,15 @@
   :defer t
   :init
   (setq TeX-parse-self t
-        TeX-auto-save t
-        TeX-electric-math nil
-        LaTeX-electric-left-right-brace nil
-        TeX-electric-sub-and-superscript nil
-        LaTeX-item-indent 0
-        TeX-quote-after-quote nil
-        TeX-clean-confirm nil
-        TeX-source-correlate-mode t
-        TeX-source-correlate-method 'synctex))
+	TeX-auto-save t
+	TeX-electric-math nil
+	LaTeX-electric-left-right-brace nil
+	TeX-electric-sub-and-superscript nil
+	LaTeX-item-indent 0
+	TeX-quote-after-quote nil
+	TeX-clean-confirm nil
+	TeX-source-correlate-mode t
+	TeX-source-correlate-method 'synctex))
 
 (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
 
@@ -1367,7 +1397,7 @@
 
 (eval-after-load "tex"
   '(add-to-list 'TeX-command-list
-    '("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
+		'("Arara" "arara --verbose %s" TeX-run-TeX nil t :help "Run Arara.")))
 
 (defun arara-all ()
   (interactive)
@@ -1403,10 +1433,10 @@
 (defun latex-word-count ()
   (interactive)
   (let* ((this-file (buffer-file-name))
-         (word-count
-          (with-output-to-string
-            (with-current-buffer standard-output
-              (call-process "texcount" nil t nil "-brief" this-file)))))
+	 (word-count
+	  (with-output-to-string
+	    (with-current-buffer standard-output
+	      (call-process "texcount" nil t nil "-brief" this-file)))))
     (string-match "\n$" word-count)
     (message (replace-match "" nil nil word-count))))
 
@@ -1420,30 +1450,30 @@
   :after (:any org latex)
   :commands (math-delimiters-no-dollars math-delimiters-mode)
   :hook ((LaTeX-mode . math-delimiters-mode)
-         (org-mode . math-delimiters-mode))
+	 (org-mode . math-delimiters-mode))
   :ensure nil
   :config (progn
-            (setq math-delimiters-compressed-display-math nil)
+	    (setq math-delimiters-compressed-display-math nil)
 
 
-            (define-minor-mode math-delimiters-mode
-              "Math Delimeters"
-              :init-value nil
-              :lighter " MD"
-              :keymap (let ((map (make-sparse-keymap)))
-                        (define-key map (kbd "$")  #'math-delimiters-insert)
-                        map))))
+	    (define-minor-mode math-delimiters-mode
+	      "Math Delimeters"
+	      :init-value nil
+	      :lighter " MD"
+	      :keymap (let ((map (make-sparse-keymap)))
+			(define-key map (kbd "$")  #'math-delimiters-insert)
+			map))))
 
 (defun hugo-timestamp ()
   "Update existing date: timestamp on a Hugo post."
   (interactive)
   (save-excursion (
-                   goto-char 1)
-                  (re-search-forward "^#\\+date:")
-                  (let ((beg (point)))
-                    (end-of-line)
-                    (delete-region beg (point)))
-                  (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
+		   goto-char 1)
+		  (re-search-forward "^#\\+date:")
+		  (let ((beg (point)))
+		    (end-of-line)
+		    (delete-region beg (point)))
+		  (insert (concat " " (format-time-string "%Y-%m-%dT%H:%M:%S")))))
 
 (defvar hugo-directory "~/Sites/blog/" "Path to Hugo blog.")
 (defvar hugo-posts-dir "content/posts/" "Relative path to posts directory.")
@@ -1463,14 +1493,14 @@
 (defun hugo-draft-post (title) "Create a new Hugo blog post."
        (interactive "sPost Title: ")
        (let ((draft-file (concat hugo-directory hugo-posts-dir
-                                 (format-time-string "%Y-%m-%d-")
-                                 (hugo-make-slug title)
-                                 hugo-post-ext)))
-         (if (file-exists-p draft-file)
-             (find-file draft-file)
-           (find-file draft-file)
-           (insert (format hugo-post-template (hugo-yaml-escape title)))
-           (hugo-timestamp))))
+				 (format-time-string "%Y-%m-%d-")
+				 (hugo-make-slug title)
+				 hugo-post-ext)))
+	 (if (file-exists-p draft-file)
+	     (find-file draft-file)
+	   (find-file draft-file)
+	   (insert (format hugo-post-template (hugo-yaml-escape title)))
+	   (hugo-timestamp))))
 
 ;; This sets the draft tag to false, updates the timestamp, and saves the buffer.
 
@@ -1492,7 +1522,7 @@
   "Execute FORMS in DIR."
   (let ((orig-dir (gensym)))
     `(progn (setq ,orig-dir default-directory)
-            (cd ,DIR) ,@FORMS (cd ,orig-dir))))
+	    (cd ,DIR) ,@FORMS (cd ,orig-dir))))
 
 ;; Update the last modified date.
 
@@ -1516,11 +1546,11 @@
   "Push changes upstream."
   (interactive)
   (with-dir hugo-directory
-            (shell-command "git add .")
-            (--> (current-time-string)
-                 (concat "git commit -m \"" it "\"")
-                 (shell-command it))
-            (magit-push-current-to-upstream nil)))
+	    (shell-command "git add .")
+	    (--> (current-time-string)
+		 (concat "git commit -m \"" it "\"")
+		 (shell-command it))
+	    (magit-push-current-to-upstream nil)))
 
 ;; Update the last modified date of a post, save the buffer, and deploy.
 
@@ -1531,11 +1561,11 @@
   (hugo-update-lastmod)
   (save-buffer)
   (with-dir hugo-directory
-            (shell-command "git add .")
-            (--> (current-time-string)
-                 (concat "git commit -m \"" it "\"")
-                 (shell-command it))
-            (magit-push-current-to-upstream nil)))
+	    (shell-command "git add .")
+	    (--> (current-time-string)
+		 (concat "git commit -m \"" it "\"")
+		 (shell-command it))
+	    (magit-push-current-to-upstream nil)))
 
 ;; Insert a tag into a Hugo post. From [[https://whatacold.io/blog/2022-10-10-emacs-hugo-blogging/][Hugo Blogging in Emacs - whatacold's space]]
 
@@ -1554,30 +1584,30 @@
 
     (let ((files (directory-files-recursively default-directory "\\.org$")))
       (let ((source (with-temp-buffer
-                      (while files
-                        (when (file-exists-p (car files))
-                          (insert-file-contents (car files)))
-                        (pop files))
-                      (buffer-string))))
-        (save-match-data
-          (let ((pos 0)
-                matches)
-            (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
-              (push (match-string 1 source) matches)
-              (setq pos (match-end 0)))
-            (insert
-             (completing-read
-              "Insert a tag: "
-              (sort
-               (delete-dups
-                (delete "" (split-string
-                            (replace-regexp-in-string "[\"\']" " "
-                                                      (replace-regexp-in-string
-                                                       "[,()]" ""
-                                                       (format "%s" matches)))
-                            " ")))
-               (lambda (a b)
-                 (string< (downcase a) (downcase b))))))))))
+		      (while files
+			(when (file-exists-p (car files))
+			  (insert-file-contents (car files)))
+			(pop files))
+		      (buffer-string))))
+	(save-match-data
+	  (let ((pos 0)
+		matches)
+	    (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
+	      (push (match-string 1 source) matches)
+	      (setq pos (match-end 0)))
+	    (insert
+	     (completing-read
+	      "Insert a tag: "
+	      (sort
+	       (delete-dups
+		(delete "" (split-string
+			    (replace-regexp-in-string "[\"\']" " "
+						      (replace-regexp-in-string
+						       "[,()]" ""
+						       (format "%s" matches)))
+			    " ")))
+	       (lambda (a b)
+		 (string< (downcase a) (downcase b))))))))))
     (insert " ")
     )
   )
@@ -1593,39 +1623,39 @@
   (interactive)
   (let ((files (directory-files-recursively default-directory "\\.org$")))
     (let ((source (with-temp-buffer
-                    (while files
-                      (when (file-exists-p (car files))
-                        (insert-file-contents (car files)))
-                      (pop files))
-                    (buffer-string))))
+		    (while files
+		      (when (file-exists-p (car files))
+			(insert-file-contents (car files)))
+		      (pop files))
+		    (buffer-string))))
       (save-match-data
-        (let ((pos 0)
-              matches)
-          (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
-            (push (match-string 1 source) matches)
-            (setq pos (match-end 0)))
-          (sort
-           (delete-dups
-            (delete "" (split-string
-                        (replace-regexp-in-string "[\"\']" " "
-                                                  (replace-regexp-in-string
-                                                   "[,()]" ""
-                                                   (format "%s" matches)))
-                        " ")))
-           (lambda (a b)
-             (string< (downcase a) (downcase b)))))))))
+	(let ((pos 0)
+	      matches)
+	  (while (string-match "^#\\+[Tt]ags\\[\\]: \\(.+?\\)$" source pos)
+	    (push (match-string 1 source) matches)
+	    (setq pos (match-end 0)))
+	  (sort
+	   (delete-dups
+	    (delete "" (split-string
+			(replace-regexp-in-string "[\"\']" " "
+						  (replace-regexp-in-string
+						   "[,()]" ""
+						   (format "%s" matches)))
+			" ")))
+	   (lambda (a b)
+	     (string< (downcase a) (downcase b)))))))))
 
 (defun w/hugo-select-tags ()
   "Select tags for the current hugo post."
   (interactive)
   (ivy-read "Insert tags: "
-            (w/hugo--collect-tags)
-            :action
-            (lambda (tag)
-              (insert (if (char-equal (preceding-char) 32)
-                          ""
-                        " ")
-                      tag))))
+	    (w/hugo--collect-tags)
+	    :action
+	    (lambda (tag)
+	      (insert (if (char-equal (preceding-char) 32)
+			  ""
+			" ")
+		      tag))))
 
 ;; Insert internal links using C-c C-l. From [[https://lucidmanager.org/productivity/create-websites-with-org-mode-and-hugo/][Create Websites with Emacs: Blogging with Org mode and Hugo]]
 
@@ -1640,10 +1670,10 @@
 (org-link-set-parameters
  "hugo"
  :complete (lambda ()
-             (concat "{{< ref "
-                     (file-name-nondirectory
-                      (read-file-name "File: "))
-                     " >}}"))
+	     (concat "{{< ref "
+		     (file-name-nondirectory
+		      (read-file-name "File: "))
+		     " >}}"))
  :follow #'org-hugo-follow)
 
 (use-package writeroom-mode)
@@ -1661,9 +1691,9 @@
 (use-package consult-notes
   :config
   (setq consult-notes-sources
-        `(("Notes"  ?n ,denote-directory)
-          ;; ("Books"  ?b "~/Documents/books")
-          )))
+	`(("Notes"  ?n ,denote-directory)
+	  ;; ("Books"  ?b "~/Documents/books")
+	  )))
 
 (defun my-denote-journal ()
   "Create an entry tagged 'journal' with the date as its title."
@@ -1688,7 +1718,7 @@
 ;; +word -word AND NOT etc
 ;; <tab>   to preview
 ;; <enter> to open the file in the same buffer
-                                        ;(use-package (xeft :host github :repo "casouri/xeft")
+					;(use-package (xeft :host github :repo "casouri/xeft")
 (use-package xeft
   :commands (xeft)
   :config
@@ -1715,14 +1745,14 @@
 
 (setq treesit-language-source-alist
       '((css "https://github.com/tree-sitter/tree-sitter-css")
-        (commonlisp "https://github.com/theHamsta/tree-sitter-commonlisp")
-        (elisp "https://github.com/Wilfred/tree-sitter-elisp")
-        (fish "https://github.com/ram02z/tree-sitter-fish")
-        (html "https://github.com/tree-sitter/tree-sitter-html")
-        (latex "https://github.com/latex-lsp/tree-sitter-latex")
-        (markdown "https://github.com/ikatyang/tree-sitter-markdown")
-        (toml "https://github.com/tree-sitter/tree-sitter-toml")
-        (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+	(commonlisp "https://github.com/theHamsta/tree-sitter-commonlisp")
+	(elisp "https://github.com/Wilfred/tree-sitter-elisp")
+	(fish "https://github.com/ram02z/tree-sitter-fish")
+	(html "https://github.com/tree-sitter/tree-sitter-html")
+	(latex "https://github.com/latex-lsp/tree-sitter-latex")
+	(markdown "https://github.com/ikatyang/tree-sitter-markdown")
+	(toml "https://github.com/tree-sitter/tree-sitter-toml")
+	(yaml "https://github.com/ikatyang/tree-sitter-yaml")))
 
 (use-package web-mode
   :init
@@ -1733,12 +1763,12 @@
   :config
   (global-auto-revert-mode)
   (setq magit-refresh-status-buffer nil
-        magit-diff-highlight-indentation nil
-        magit-diff-highlight-trailing nil
-        magit-diff-paint-whitespace nil
-        magit-diff-highlight-hunk-body nil
-        magit-diff-refine-hunk nil
-        magit-revision-insert-related-refs nil)
+	magit-diff-highlight-indentation nil
+	magit-diff-highlight-trailing nil
+	magit-diff-paint-whitespace nil
+	magit-diff-highlight-hunk-body nil
+	magit-diff-refine-hunk nil
+	magit-revision-insert-related-refs nil)
   :commands
   (magit-after-save-refresh-status)
   :hook
@@ -1759,7 +1789,7 @@
     ;; toggle `dired-omit-mode' with C-x M-o
     (add-hook 'dired-mode-hook #'dired-omit-mode)
     (setq dired-omit-files
-          (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^\\..+$"))
+	  (concat dired-omit-files "\\|^.DS_STORE$\\|^.projectile$\\|^\\..+$"))
     (setq-default dired-omit-extensions '("fdb_latexmk" "aux" "bbl" "blg" "fls" "glo" "idx" "ilg" "ind" "ist" "log" "out" "gz" "DS_Store" "xml" "bcf" "nav" "snm" "toc"))))
 
 (setq dired-dwim-target t)
@@ -1808,10 +1838,10 @@
   (interactive)
   (let
       ((display-buffer-alist
-        (list
-         (cons
-          "\\*Async Shell Command\\*.*"
-          (cons #'display-buffer-no-window nil)))))
+	(list
+	 (cons
+	  "\\*Async Shell Command\\*.*"
+	  (cons #'display-buffer-no-window nil)))))
     (async-shell-command
      command)))
 
@@ -1823,9 +1853,9 @@
     " tell application \"iTerm2\"\n"
     "   tell the current session of current window\n"
     (format "     write text \"cd %s\" \n"
-            ;; string escaping madness for applescript
-            (replace-regexp-in-string "\\\\" "\\\\\\\\"
-                                      (shell-quote-argument (or default-directory "~"))))
+	    ;; string escaping madness for applescript
+	    (replace-regexp-in-string "\\\\" "\\\\\\\\"
+				      (shell-quote-argument (or default-directory "~"))))
     "   end tell\n"
     " end tell\n"
     " do shell script \"open -a iTerm\"\n"
@@ -1836,13 +1866,13 @@
 
 (use-package eat
   :straight (eat :type git
-                 :host codeberg
-                 :repo "akib/emacs-eat"
-                 :files ("*.el" ("term" "term/*.el") "*.texi"
-                         "*.ti" ("terminfo/e" "terminfo/e/*")
-                         ("terminfo/65" "terminfo/65/*")
-                         ("integration" "integration/*")
-                         (:exclude ".dir-locals.el" "*-tests.el"))))
+		 :host codeberg
+		 :repo "akib/emacs-eat"
+		 :files ("*.el" ("term" "term/*.el") "*.texi"
+			 "*.ti" ("terminfo/e" "terminfo/e/*")
+			 ("terminfo/65" "terminfo/65/*")
+			 ("integration" "integration/*")
+			 (:exclude ".dir-locals.el" "*-tests.el"))))
 
 (use-package term-toggle
   :ensure t
@@ -1968,7 +1998,7 @@
     ("r" consult-ripgrep "ripgrep")
     ("d" rlr/consult-rg "rg from dir")
     ("f" rlr/consult-fd "find from dir"))
-    ))
+   ))
 
 (pretty-hydra-define hydra-window
   (:color teal :quit-key "q" title: "Windows")
@@ -1990,9 +2020,9 @@
     ("i" make-frame-invisible "invisible frame")
     ("f" toggle-frame-fullscreen "fullscreen")
     ("n" make-frame-command "new frame"))
-"Writeroom"
-(("W" writeroom-mode "toggle writeroom")
-("M" writeroom-toggle-mode-line "toggle modeline"))))
+   "Writeroom"
+   (("W" writeroom-mode "toggle writeroom")
+    ("M" writeroom-toggle-mode-line "toggle modeline"))))
 
 (pretty-hydra-define hydra-new
   (:color teal :quit-key "q" title: "New")
@@ -2221,15 +2251,7 @@
  "C-x 9" #'hydra-logic/body)
 
 (general-define-key
-
-
- ;; Toggle term
-
-
  ;; Editing
-
-
-
  ;; "s-/" #'avy-goto-char-timer
  "C-x 4 b" #'consult-buffer-other-window
  "C-x 5 b" #'consult-buffer-other-frame
@@ -2237,30 +2259,51 @@
  "M-s m" #'consult-multi-occur
  )
 
+(defun open-emacs-config ()
+  (interactive)
+  (find-file "~/.config/emacs/README.org"))
+
+(defun open-fish-functions ()
+  (interactive)
+  (dired "~/.config/fish/functions"))
+
 (general-define-key
- :prefix "C-c"
- ;; bind "C-c a" to #'org-agenda
- "a" #'org-agenda
- "2" #'rlr/find-file-below
- "3" #'rlr/find-file-right
- "b" #'consult-bookmark
- "c" #'org-capture
- "D" #'crux-delete-file-and-buffer
- ;; "h" #'consult-history
- "k" #'crux-kill-other-buffers
- "l" #'dictionary-search
- "m" #'consult-mark
- "n b" #'hugo-draft-post
- "o" #'consult-outline
- "r" #'crux-rename-file-and-buffer
- "s" #'goto-scratch
- "S" #'crux-cleanup-buffer-or-region
- "t" #'crux-visit-term-buffer
- "u" #'unfill-paragraph
- "w" #'ace-window
- "z" #'reveal-in-osx-finder
- "g l" #'avy-goto-line
- "g w" #'avy-goto-word-1)
+   :prefix "C-c"
+   ;; bind "C-c a" to #'org-agenda
+   "f f" #'find-file
+   "f k" #'crux-kill-other-buffers
+   "f r" #'consult-buffer
+   "f R" #'crux-rename-file-and-buffer
+   "f P" #'open-emacs-config
+   "f S" #'open-fish-functions
+   ;; Projects
+   "p f" #'consult-project-buffer
+   "p d" #'project-find-dired
+"t a" #'centaur-tabs-ace-jump
+"t f" #'centaur-tabs-forward-group
+"t k" #'centaur-tabs-kill-unmodified-buffers-in-current-group
+"t K" #'centaur-tabs-kill-other-buffers-in-current-group
+   "a" #'org-agenda
+   "2" #'rlr/find-file-below
+   "3" #'rlr/find-file-right
+   "b" #'consult-bookmark
+   "c" #'org-capture
+   "D" #'crux-delete-file-and-buffer
+   ;; "h" #'consult-history
+   "k" #'crux-kill-other-buffers
+   "l" #'dictionary-search
+   "m" #'consult-mark
+   "n b" #'hugo-draft-post
+   "o" #'consult-outline
+   "r" #'crux-rename-file-and-buffer
+   "s" #'goto-scratch
+   "S" #'crux-cleanup-buffer-or-region
+   ;; "t" #'crux-visit-term-buffer
+   "u" #'unfill-paragraph
+   "w" #'ace-window
+   "z" #'reveal-in-osx-finder
+   "g l" #'avy-goto-line
+   "g w" #'avy-goto-word-1)
 
 (setq default-directory "~/")
 
