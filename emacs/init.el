@@ -175,6 +175,7 @@
   (setq centaur-tabs-set-icons nil)
   (setq centaur-tabs-show-new-tab-button nil)
   (setq centaur-tabs-set-close-button nil)
+  (setq centaur-tabs-height 32)
   (setq centaur-tabs-enable-ido-completion nil)
   (setq centaur-tabs-set-modified-marker t)
   (setq centaur-tabs-cycle-scope 'tabs)
@@ -293,11 +294,11 @@
   (delete-other-windows))
 
 (general-define-key
-;; "s-]" #'xah-next-user-buffer
-;; "s-[" #'xah-previous-user-buffer
-;; "s-}" #'xah-next-emacs-buffer
-;; "s-{" #'xah-previous-emacs-buffer
-)
+ ;; "s-]" #'xah-next-user-buffer
+ ;; "s-[" #'xah-previous-user-buffer
+ ;; "s-}" #'xah-next-emacs-buffer
+ ;; "s-{" #'xah-previous-emacs-buffer
+ )
 
 (setq initial-scratch-message nil
       initial-major-mode 'org-mode)
@@ -1002,7 +1003,13 @@
   (setq org-html-validation-link nil)
   (setq org-todo-keyword-faces
 	'(("DONE" . "green4") ("TODO" . org-warning)))
-  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
+  (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/"))
+  )
+
+(use-package mixed-pitch
+  :hook
+  ;; If you want it in all text modes:
+  (text-mode . mixed-pitch-mode))
 
 (use-package org-contrib
   :config
@@ -1032,8 +1039,8 @@
   (add-to-list 'org-latex-classes
 	       '("org-article"
 		 "\\documentclass{article}
-	  [NO-DEFAULT-PACKAGES]
-	  [NO-PACKAGES]"
+	    [NO-DEFAULT-PACKAGES]
+	    [NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1042,8 +1049,8 @@
   (add-to-list 'org-latex-classes
 	       '("org-handout"
 		 "\\documentclass{pdfhandout}
-	  [NO-DEFAULT-PACKAGES]
-	  [NO-PACKAGES]"
+	    [NO-DEFAULT-PACKAGES]
+	    [NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1052,8 +1059,8 @@
   (add-to-list 'org-latex-classes
 	       '("org-beamer"
 		 "\\documentclass{beamer}
-	  [NO-DEFAULT-PACKAGES]
-	  [NO-PACKAGES]"
+	    [NO-DEFAULT-PACKAGES]
+	    [NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1073,7 +1080,7 @@
 		 (apostrophe        :utf-8 "’" :html "&rsquo;")))
   )
 
-    ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+      ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 

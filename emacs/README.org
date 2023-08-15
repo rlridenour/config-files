@@ -492,6 +492,7 @@ Centaur Tabs
     (setq centaur-tabs-set-icons nil)
     (setq centaur-tabs-show-new-tab-button nil)
     (setq centaur-tabs-set-close-button nil)
+    (setq centaur-tabs-height 32)
     (setq centaur-tabs-enable-ido-completion nil)
     (setq centaur-tabs-set-modified-marker t)
     (setq centaur-tabs-cycle-scope 'tabs)
@@ -517,7 +518,7 @@ Centaur Tabs
      "C-8" #'centaur-tabs-select-visible-tab
      "C-9" #'centaur-tabs-select-visible-tab
      ))
-     #+end_src
+#+end_src
 
 ** Appearance Keybindings
 
@@ -690,12 +691,12 @@ Kills all open buffers except the current one. From https://github.com/ocodo/.em
 #+end_src
 
 #+begin_src emacs-lisp
-(general-define-key
-;; "s-]" #'xah-next-user-buffer
-;; "s-[" #'xah-previous-user-buffer
-;; "s-}" #'xah-next-emacs-buffer
-;; "s-{" #'xah-previous-emacs-buffer
-)
+  (general-define-key
+   ;; "s-]" #'xah-next-user-buffer
+   ;; "s-[" #'xah-previous-user-buffer
+   ;; "s-}" #'xah-next-emacs-buffer
+   ;; "s-{" #'xah-previous-emacs-buffer
+   )
 #+end_src
 
 
@@ -705,40 +706,40 @@ Kills all open buffers except the current one. From https://github.com/ocodo/.em
 Remove scratch buffer message and set the mode to org-mode.
 
 #+begin_src emacs-lisp
-(setq initial-scratch-message nil
-      initial-major-mode 'org-mode)
+  (setq initial-scratch-message nil
+	initial-major-mode 'org-mode)
 #+end_src
 
 Kill the contents of scratch buffer, not the buffer itself. From [[http://emacswiki.org/emacs/RecreateScratchBuffer][TN]].
 
 #+begin_src emacs-lisp
-(defun unkillable-scratch-buffer ()
-  (if (equal (buffer-name (current-buffer)) "*scratch*")
-      (progn
-	(delete-region (point-min) (point-max))
-	nil)
-    t))
-(add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
+  (defun unkillable-scratch-buffer ()
+    (if (equal (buffer-name (current-buffer)) "*scratch*")
+	(progn
+	  (delete-region (point-min) (point-max))
+	  nil)
+      t))
+  (add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
 #+end_src
 
 
 Create a new scratch buffer after saving.
 
 #+begin_src emacs-lisp
-(defun goto-scratch ()
-  "this sends you to the scratch buffer"
-  (interactive)
-  (let ((goto-scratch-buffer (get-buffer-create "*scratch*")))
-    (switch-to-buffer goto-scratch-buffer)
-    (org-mode)))
+  (defun goto-scratch ()
+    "this sends you to the scratch buffer"
+    (interactive)
+    (let ((goto-scratch-buffer (get-buffer-create "*scratch*")))
+      (switch-to-buffer goto-scratch-buffer)
+      (org-mode)))
 #+end_src
 
 Use ~persistent-scratch~ to save scratch file between sessions.
 
 #+begin_src emacs-lisp
-(use-package persistent-scratch
-  :config
-  (persistent-scratch-setup-default))
+  (use-package persistent-scratch
+    :config
+    (persistent-scratch-setup-default))
 #+end_src
 
 
@@ -747,15 +748,15 @@ Use ~persistent-scratch~ to save scratch file between sessions.
 Load Abbreviations
 
 #+begin_src emacs-lisp
-(load "~/Dropbox/emacs/my-emacs-abbrev")
+  (load "~/Dropbox/emacs/my-emacs-abbrev")
 #+end_src
 
 Save bookmarks as soon as they are made.
 
 #+begin_src emacs-lisp
-(require 'bookmark)
-(bookmark-bmenu-list)
-(setq bookmark-save-flag 1)
+  (require 'bookmark)
+  (bookmark-bmenu-list)
+  (setq bookmark-save-flag 1)
 #+end_src
 
 
@@ -764,17 +765,17 @@ Save bookmarks as soon as they are made.
 Keybindings for files and buffers.
 
 #+begin_src emacs-lisp
-(general-define-key
- "C-x c" #'save-buffers-kill-emacs
- "C-x C-b" #'ibuffer
- "C-`" #'iterm-goto-filedir-or-home
- "s-o" #'find-file
- "s-k" #'kill-this-buffer
- "M-s-k" #'kill-buffer-and-window
- "s-K" #'nuke-all-buffers
- "s-r" #'consult-buffer
- "M-s-r" #'consult-buffer-other-window
- "C-S-a" #'embark-act)
+  (general-define-key
+   "C-x c" #'save-buffers-kill-emacs
+   "C-x C-b" #'ibuffer
+   "C-`" #'iterm-goto-filedir-or-home
+   "s-o" #'find-file
+   "s-k" #'kill-this-buffer
+   "M-s-k" #'kill-buffer-and-window
+   "s-K" #'nuke-all-buffers
+   "s-r" #'consult-buffer
+   "M-s-r" #'consult-buffer-other-window
+   "C-S-a" #'embark-act)
 #+end_src
 
 
@@ -791,108 +792,108 @@ Keybindings for files and buffers.
 Functions for handling windows.
 
 #+begin_src emacs-lisp
-(defun delete-window-balance ()
-  "Delete window and rebalance the remaining ones."
-  (interactive)
-  (delete-window)
-  (balance-windows))
+  (defun delete-window-balance ()
+    "Delete window and rebalance the remaining ones."
+    (interactive)
+    (delete-window)
+    (balance-windows))
 #+end_src
 
 #+begin_src emacs-lisp
-(defun split-window-below-focus ()
-  "Split window horizontally and move focus to other window."
-  (interactive)
-  (split-window-below)
-  (balance-windows)
-  (other-window 1))
+  (defun split-window-below-focus ()
+    "Split window horizontally and move focus to other window."
+    (interactive)
+    (split-window-below)
+    (balance-windows)
+    (other-window 1))
 #+end_src
 
 #+begin_src emacs-lisp
-(defun split-window-right-focus ()
-  "Split window vertically and move focus to other window."
-  (interactive)
-  (split-window-right)
-  (balance-windows)
-  (other-window 1))
+  (defun split-window-right-focus ()
+    "Split window vertically and move focus to other window."
+    (interactive)
+    (split-window-right)
+    (balance-windows)
+    (other-window 1))
 #+end_src
 
 #+begin_src emacs-lisp
-(defun rlr/find-file-right ()
-  "Split window vertically and select recent file."
-  (interactive)
-  (split-window-right-focus)
-  (consult-buffer))
+  (defun rlr/find-file-right ()
+    "Split window vertically and select recent file."
+    (interactive)
+    (split-window-right-focus)
+    (consult-buffer))
 #+end_src
 
 #+begin_src emacs-lisp
-(defun rlr/find-file-below ()
-  "Split window horizontally and select recent file."
-  (interactive)
-  (split-window-below-focus)
-  (consult-buffer))
+  (defun rlr/find-file-below ()
+    "Split window horizontally and select recent file."
+    (interactive)
+    (split-window-below-focus)
+    (consult-buffer))
 #+end_src
 
 #+begin_src emacs-lisp
-(defun transpose-windows ()
-  "Transpose two windows.  If more or less than two windows are visible, error."
-  (interactive)
-  (unless (= 2 (count-windows))
-    (error "There are not 2 windows."))
-  (let* ((windows (window-list))
-	 (w1 (car windows))
-	 (w2 (nth 1 windows))
-	 (w1b (window-buffer w1))
-	 (w2b (window-buffer w2)))
-    (set-window-buffer w1 w2b)
-    (set-window-buffer w2 w1b)))
+  (defun transpose-windows ()
+    "Transpose two windows.  If more or less than two windows are visible, error."
+    (interactive)
+    (unless (= 2 (count-windows))
+      (error "There are not 2 windows."))
+    (let* ((windows (window-list))
+	   (w1 (car windows))
+	   (w2 (nth 1 windows))
+	   (w1b (window-buffer w1))
+	   (w2b (window-buffer w2)))
+      (set-window-buffer w1 w2b)
+      (set-window-buffer w2 w1b)))
 #+end_src
 
 #+begin_src emacs-lisp
-(defun toggle-window-split ()
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-	     (next-win-buffer (window-buffer (next-window)))
-	     (this-win-edges (window-edges (selected-window)))
-	     (next-win-edges (window-edges (next-window)))
-	     (this-win-2nd (not (and (<= (car this-win-edges)
-					 (car next-win-edges))
-				     (<= (cadr this-win-edges)
-					 (cadr next-win-edges)))))
-	     (splitter
-	      (if (= (car this-win-edges)
-		     (car (window-edges (next-window))))
-		  'split-window-horizontally
-		'split-window-vertically)))
-	(delete-other-windows)
-	(let ((first-win (selected-window)))
-	  (funcall splitter)
-	  (if this-win-2nd (other-window 1))
-	  (set-window-buffer (selected-window) this-win-buffer)
-	  (set-window-buffer (next-window) next-win-buffer)
-	  (select-window first-win)
-	  (if this-win-2nd (other-window 1))))))
+  (defun toggle-window-split ()
+    (interactive)
+    (if (= (count-windows) 2)
+	(let* ((this-win-buffer (window-buffer))
+	       (next-win-buffer (window-buffer (next-window)))
+	       (this-win-edges (window-edges (selected-window)))
+	       (next-win-edges (window-edges (next-window)))
+	       (this-win-2nd (not (and (<= (car this-win-edges)
+					   (car next-win-edges))
+				       (<= (cadr this-win-edges)
+					   (cadr next-win-edges)))))
+	       (splitter
+		(if (= (car this-win-edges)
+		       (car (window-edges (next-window))))
+		    'split-window-horizontally
+		  'split-window-vertically)))
+	  (delete-other-windows)
+	  (let ((first-win (selected-window)))
+	    (funcall splitter)
+	    (if this-win-2nd (other-window 1))
+	    (set-window-buffer (selected-window) this-win-buffer)
+	    (set-window-buffer (next-window) next-win-buffer)
+	    (select-window first-win)
+	    (if this-win-2nd (other-window 1))))))
 #+end_src
 
 
 #+begin_src emacs-lisp
-(defun toggle-frame-maximized-undecorated () (interactive) (let* ((frame (selected-frame)) (on? (and (frame-parameter frame 'undecorated) (eq (frame-parameter frame 'fullscreen) 'maximized))) (geom (frame-monitor-attribute 'geometry)) (x (nth 0 geom)) (y (nth 1 geom)) (display-height (nth 3 geom)) (display-width (nth 2 geom)) (cut (if on? (if ns-auto-hide-menu-bar 26 50) (if ns-auto-hide-menu-bar 4 26)))) (set-frame-position frame x y) (set-frame-parameter frame 'fullscreen-restore 'maximized) (set-frame-parameter nil 'fullscreen 'maximized) (set-frame-parameter frame 'undecorated (not on?)) (set-frame-height frame (- display-height cut) nil t) (set-frame-width frame (- display-width 20) nil t) (set-frame-position frame x y)))
+  (defun toggle-frame-maximized-undecorated () (interactive) (let* ((frame (selected-frame)) (on? (and (frame-parameter frame 'undecorated) (eq (frame-parameter frame 'fullscreen) 'maximized))) (geom (frame-monitor-attribute 'geometry)) (x (nth 0 geom)) (y (nth 1 geom)) (display-height (nth 3 geom)) (display-width (nth 2 geom)) (cut (if on? (if ns-auto-hide-menu-bar 26 50) (if ns-auto-hide-menu-bar 4 26)))) (set-frame-position frame x y) (set-frame-parameter frame 'fullscreen-restore 'maximized) (set-frame-parameter nil 'fullscreen 'maximized) (set-frame-parameter frame 'undecorated (not on?)) (set-frame-height frame (- display-height cut) nil t) (set-frame-width frame (- display-width 20) nil t) (set-frame-position frame x y)))
 #+end_src
 
 ** Window Keybindings
 
 #+begin_src emacs-lisp
-(general-define-key
- ;; "C-1" #'delete-other-windows
- ;; "C-2" #'split-window-below-focus
- ;; "C-3" #'split-window-right-focus
- "s-6" #'toggle-window-split
- "S-C-<left>" #'shrink-window-horizontally
- "S-C-<right>" #'enlarge-window-horizontally
- "S-C-<down>" #'shrink-window
- "S-C-<up>" #'enlarge-window
- "C-x w" #'delete-frame
- "M-o" #'crux-other-window-or-switch-buffer)
+  (general-define-key
+   ;; "C-1" #'delete-other-windows
+   ;; "C-2" #'split-window-below-focus
+   ;; "C-3" #'split-window-right-focus
+   "s-6" #'toggle-window-split
+   "S-C-<left>" #'shrink-window-horizontally
+   "S-C-<right>" #'enlarge-window-horizontally
+   "S-C-<down>" #'shrink-window
+   "S-C-<up>" #'enlarge-window
+   "C-x w" #'delete-frame
+   "M-o" #'crux-other-window-or-switch-buffer)
 #+end_src
 
 
@@ -1183,7 +1184,7 @@ Functions for handling windows.
     (add-to-list 'completion-at-point-functions #'cape-dict)
     )
 
-    #+end_src
+#+end_src
 
 
 * Editing
@@ -1618,7 +1619,7 @@ Use deadgrep to search with ripgrep.
 ** Org
 
 #+begin_src emacs-lisp
-      ;;;; = org-mode - the one and only writing environment (and more)
+	;;;; = org-mode - the one and only writing environment (and more)
 
   (use-package org
     :straight (:type built-in)
@@ -1635,7 +1636,13 @@ Use deadgrep to search with ripgrep.
     (setq org-html-validation-link nil)
     (setq org-todo-keyword-faces
 	  '(("DONE" . "green4") ("TODO" . org-warning)))
-    (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/")))
+    (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/"))
+    )
+
+  (use-package mixed-pitch
+    :hook
+    ;; If you want it in all text modes:
+    (text-mode . mixed-pitch-mode))
 
   (use-package org-contrib
     :config
@@ -1665,8 +1672,8 @@ Use deadgrep to search with ripgrep.
     (add-to-list 'org-latex-classes
 		 '("org-article"
 		   "\\documentclass{article}
-	    [NO-DEFAULT-PACKAGES]
-	    [NO-PACKAGES]"
+	      [NO-DEFAULT-PACKAGES]
+	      [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1675,8 +1682,8 @@ Use deadgrep to search with ripgrep.
     (add-to-list 'org-latex-classes
 		 '("org-handout"
 		   "\\documentclass{pdfhandout}
-	    [NO-DEFAULT-PACKAGES]
-	    [NO-PACKAGES]"
+	      [NO-DEFAULT-PACKAGES]
+	      [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1685,8 +1692,8 @@ Use deadgrep to search with ripgrep.
     (add-to-list 'org-latex-classes
 		 '("org-beamer"
 		   "\\documentclass{beamer}
-	    [NO-DEFAULT-PACKAGES]
-	    [NO-PACKAGES]"
+	      [NO-DEFAULT-PACKAGES]
+	      [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1706,7 +1713,7 @@ Use deadgrep to search with ripgrep.
 		   (apostrophe        :utf-8 "’" :html "&rsquo;")))
     )
 
-      ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+	;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
