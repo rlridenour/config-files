@@ -91,9 +91,30 @@
 
 (use-package all-the-icons)
 
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  (setq doom-modeline-enable-word-count t))
+(setq-default mode-line-format
+  '("%e"
+     " %o "
+     "%* "
+     my-modeline-buffer-name
+     my-modeline-major-mode))
+
+(defvar-local my-modeline-buffer-name
+  '(:eval
+     (when (mode-line-window-selected-p)
+       (propertize (format " %s " (buffer-name))
+
+	 'face '(t :inherit bold))))
+  "Mode line construct to display the buffer name.")
+
+(put 'my-modeline-buffer-name 'risky-local-variable t)
+
+(defvar-local my-modeline-major-mode
+  '(:eval
+     (list
+       (propertize (capitalize (symbol-name major-mode)) 'face 'bold)))
+  "Mode line construct to display the major mode.")
+
+(put 'my-modeline-major-mode 'risky-local-variable t)
 
 ;; Main typeface
 (set-face-attribute 'default nil :family "SF Mono" :height 160 :weight 'medium)
@@ -123,10 +144,6 @@
 
 (general-define-key
  "<f9>" #'modus-themes-toggle)
-
-(use-package solaire-mode
-  :config
-  (solaire-global-mode +1))
 
 (setq visible-bell nil
       ring-bell-function 'flash-mode-line)
@@ -879,6 +896,7 @@
   (add-to-list 'meow-mode-state-list '(term-mode . insert))
   (add-to-list 'meow-mode-state-list '(eat-mode . insert))
   (setq meow-use-clipboard t)
+  (meow-setup-indicator)
   (meow-global-mode 1))
 
 (use-package hungry-delete
@@ -985,8 +1003,6 @@
  "s-l" #'hydra-locate/body
  "s-f" #'consult-line
  "<f5>" #'deadgrep)
-
-;;;; = org-mode - the one and only writing environment (and more)
 
 (use-package org
   :straight (:type built-in)
@@ -1956,7 +1972,7 @@
     ("i" aggressive-indent-mode "indent" :toggle t)
     ("f" auto-fill-mode "fill" :toggle t)
     ("l" display-line-numbers-mode "linum" :toggle t)
-    ("m" toggle-frame-maximized-undecorated "max" :toggle t)
+    ("m" mixed-pitch-mode "mixed-pitch" :toggle t)
     ("p" smartparens-mode "smartparens" :toggle t)
     ("t" toggle-truncate-lines "truncate" :toggle t)
     ("s" whitespace-mode "whitespace" :toggle t))

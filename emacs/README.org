@@ -355,11 +355,40 @@ Add icons.
 
 Doom Modeline
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   (setq doom-modeline-enable-word-count t))
 #+end_src
+
+#+begin_src emacs-lisp
+(setq-default mode-line-format
+  '("%e"
+     " %o "
+     "%* "
+     my-modeline-buffer-name
+     my-modeline-major-mode))
+
+(defvar-local my-modeline-buffer-name
+  '(:eval
+     (when (mode-line-window-selected-p)
+       (propertize (format " %s " (buffer-name))
+
+	 'face '(t :inherit bold))))
+  "Mode line construct to display the buffer name.")
+
+(put 'my-modeline-buffer-name 'risky-local-variable t)
+
+(defvar-local my-modeline-major-mode
+  '(:eval
+     (list
+       (propertize (capitalize (symbol-name major-mode)) 'face 'bold)))
+  "Mode line construct to display the major mode.")
+
+(put 'my-modeline-major-mode 'risky-local-variable t)
+
+#+end_src
+
 
 
 
@@ -411,17 +440,6 @@ Try nano theme.
   :straight (nano-theme :type git :host github :repo "rougier/nano-theme")
   :config
   (load-theme 'nano t))
-#+end_src
-
-
-
-
-Distinguish popup buffers.
-
-#+begin_src emacs-lisp
-(use-package solaire-mode
-  :config
-  (solaire-global-mode +1))
 #+end_src
 
 Flash modeline instead of warning bell.
@@ -1406,6 +1424,7 @@ Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-o
     (add-to-list 'meow-mode-state-list '(term-mode . insert))
     (add-to-list 'meow-mode-state-list '(eat-mode . insert))
     (setq meow-use-clipboard t)
+    (meow-setup-indicator)
     (meow-global-mode 1))
 #+end_src
 
@@ -1619,8 +1638,6 @@ Use deadgrep to search with ripgrep.
 ** Org
 
 #+begin_src emacs-lisp
-	;;;; = org-mode - the one and only writing environment (and more)
-
   (use-package org
     :straight (:type built-in)
     :init
@@ -1638,12 +1655,18 @@ Use deadgrep to search with ripgrep.
 	  '(("DONE" . "green4") ("TODO" . org-warning)))
     (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/"))
     )
+#+end_src
 
+Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle hydra, bound to ~s-t~.
+
+#+begin_src emacs-lisp
   (use-package mixed-pitch
     :hook
     ;; If you want it in all text modes:
     (text-mode . mixed-pitch-mode))
+#+end_src
 
+#+begin_src emacs-lisp
   (use-package org-contrib
     :config
     (require 'ox-extra)
@@ -2897,7 +2920,7 @@ Unset some keys.
       ("i" aggressive-indent-mode "indent" :toggle t)
       ("f" auto-fill-mode "fill" :toggle t)
       ("l" display-line-numbers-mode "linum" :toggle t)
-      ("m" toggle-frame-maximized-undecorated "max" :toggle t)
+      ("m" mixed-pitch-mode "mixed-pitch" :toggle t)
       ("p" smartparens-mode "smartparens" :toggle t)
       ("t" toggle-truncate-lines "truncate" :toggle t)
       ("s" whitespace-mode "whitespace" :toggle t))
@@ -2909,10 +2932,6 @@ Unset some keys.
       ("w" wc-mode "word-count" :toggle t)
       ("S" auto-save-visited-mode "auto-save" :toggle t)
       ("C" cua-selection-mode "rectangle" :toggle t))))
-#+end_src
-
-
-
 #+end_src
 
 #+begin_src emacs-lisp
