@@ -319,6 +319,13 @@ Make help buffers active when created, so pressing "q" will immediately close th
 (setq Man-notify-method 'aggressive)
 #+end_src
 
+#+begin_src emacs-lisp
+(use-package helpful)
+#+end_src
+
+
+
+
 *** Which Key
 
 #+begin_src emacs-lisp
@@ -382,7 +389,7 @@ Doom Modeline
 (defvar-local my-modeline-major-mode
   '(:eval
      (list
-       (propertize (capitalize (symbol-name major-mode)) 'face 'bold)))
+       (propertize (capitalize (symbol-name major-mode)))))
   "Mode line construct to display the major mode.")
 
 (put 'my-modeline-major-mode 'risky-local-variable t)
@@ -3322,13 +3329,20 @@ Open fish functions directory.
    "f R" #'crux-rename-file-and-buffer
    "f P" #'open-emacs-config
    "f S" #'open-fish-functions
+   ;; Helpful
+   "H c" #'helpful-command
+   "H F" #'helpful-callable
+   "H h" #'helpful-at-point
+   "H f" #'helpful-function
+   "H v" #'helpful-variable
+   "H k" #'helpful-key
    ;; Projects
    "p f" #'consult-project-buffer
    "p d" #'project-find-dired
-"t a" #'centaur-tabs-ace-jump
-"t f" #'centaur-tabs-forward-group
-"t k" #'centaur-tabs-kill-unmodified-buffers-in-current-group
-"t K" #'centaur-tabs-kill-other-buffers-in-current-group
+   "t a" #'centaur-tabs-ace-jump
+   "t f" #'centaur-tabs-forward-group
+   "t k" #'centaur-tabs-kill-unmodified-buffers-in-current-group
+   "t K" #'centaur-tabs-kill-other-buffers-in-current-group
    "a" #'org-agenda
    "2" #'rlr/find-file-below
    "3" #'rlr/find-file-right

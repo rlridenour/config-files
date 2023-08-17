@@ -77,6 +77,8 @@
 (setq help-window-select t)
 (setq Man-notify-method 'aggressive)
 
+(use-package helpful)
+
 (use-package which-key
   :config
   (which-key-mode))
@@ -111,7 +113,7 @@
 (defvar-local my-modeline-major-mode
   '(:eval
      (list
-       (propertize (capitalize (symbol-name major-mode)) 'face 'bold)))
+       (propertize (capitalize (symbol-name major-mode)))))
   "Mode line construct to display the major mode.")
 
 (put 'my-modeline-major-mode 'risky-local-variable t)
@@ -2291,42 +2293,49 @@
   (dired "~/.config/fish/functions"))
 
 (general-define-key
-   :prefix "C-c"
-   ;; bind "C-c a" to #'org-agenda
-   "f f" #'find-file
-   "f k" #'crux-kill-other-buffers
-   "f r" #'consult-buffer
-   "f R" #'crux-rename-file-and-buffer
-   "f P" #'open-emacs-config
-   "f S" #'open-fish-functions
-   ;; Projects
-   "p f" #'consult-project-buffer
-   "p d" #'project-find-dired
-"t a" #'centaur-tabs-ace-jump
-"t f" #'centaur-tabs-forward-group
-"t k" #'centaur-tabs-kill-unmodified-buffers-in-current-group
-"t K" #'centaur-tabs-kill-other-buffers-in-current-group
-   "a" #'org-agenda
-   "2" #'rlr/find-file-below
-   "3" #'rlr/find-file-right
-   "b" #'consult-bookmark
-   "c" #'org-capture
-   "D" #'crux-delete-file-and-buffer
-   ;; "h" #'consult-history
-   "k" #'crux-kill-other-buffers
-   "l" #'dictionary-search
-   "m" #'consult-mark
-   "n b" #'hugo-draft-post
-   "o" #'consult-outline
-   "r" #'crux-rename-file-and-buffer
-   "s" #'goto-scratch
-   "S" #'crux-cleanup-buffer-or-region
-   ;; "t" #'crux-visit-term-buffer
-   "u" #'unfill-paragraph
-   "w" #'ace-window
-   "z" #'reveal-in-osx-finder
-   "g l" #'avy-goto-line
-   "g w" #'avy-goto-word-1)
+ :prefix "C-c"
+ ;; bind "C-c a" to #'org-agenda
+ "f f" #'find-file
+ "f k" #'crux-kill-other-buffers
+ "f r" #'consult-buffer
+ "f R" #'crux-rename-file-and-buffer
+ "f P" #'open-emacs-config
+ "f S" #'open-fish-functions
+ ;; Helpful
+ "H c" #'helpful-command
+ "H F" #'helpful-callable
+ "H h" #'helpful-at-point
+ "H f" #'helpful-function
+ "H v" #'helpful-variable
+ "H k" #'helpful-key
+ ;; Projects
+ "p f" #'consult-project-buffer
+ "p d" #'project-find-dired
+ "t a" #'centaur-tabs-ace-jump
+ "t f" #'centaur-tabs-forward-group
+ "t k" #'centaur-tabs-kill-unmodified-buffers-in-current-group
+ "t K" #'centaur-tabs-kill-other-buffers-in-current-group
+ "a" #'org-agenda
+ "2" #'rlr/find-file-below
+ "3" #'rlr/find-file-right
+ "b" #'consult-bookmark
+ "c" #'org-capture
+ "D" #'crux-delete-file-and-buffer
+ ;; "h" #'consult-history
+ "k" #'crux-kill-other-buffers
+ "l" #'dictionary-search
+ "m" #'consult-mark
+ "n b" #'hugo-draft-post
+ "o" #'consult-outline
+ "r" #'crux-rename-file-and-buffer
+ "s" #'goto-scratch
+ "S" #'crux-cleanup-buffer-or-region
+ ;; "t" #'crux-visit-term-buffer
+ "u" #'unfill-paragraph
+ "w" #'ace-window
+ "z" #'reveal-in-osx-finder
+ "g l" #'avy-goto-line
+ "g w" #'avy-goto-word-1)
 
 (setq default-directory "~/")
 
