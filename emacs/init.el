@@ -1016,7 +1016,7 @@
   ;; (setq org-startup-indented t)
   (setq org-adapt-indentation nil)
   ;; (setq org-hide-leading-stars nil)
-  (setq org-hide-emphasis-markers t)
+  (setq org-hide-emphasis-markers nil)
   ;; (setq org-footnote-section nil)
   (setq org-html-validation-link nil)
   (setq org-todo-keyword-faces
@@ -1324,9 +1324,6 @@
 
 ;; Display 7 full days in the agenda.
 (setq org-agenda-span 7)
-
-(use-package org-appear
-  :hook (org-mode . org-appear-mode))
 
 (use-package org-bulletproof
   :defer t

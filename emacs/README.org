@@ -1655,7 +1655,7 @@ Use deadgrep to search with ripgrep.
     ;; (setq org-startup-indented t)
     (setq org-adapt-indentation nil)
     ;; (setq org-hide-leading-stars nil)
-    (setq org-hide-emphasis-markers t)
+    (setq org-hide-emphasis-markers nil)
     ;; (setq org-footnote-section nil)
     (setq org-html-validation-link nil)
     (setq org-todo-keyword-faces
@@ -1971,7 +1971,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
   (setq org-agenda-span 7)
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package org-appear
     :hook (org-mode . org-appear-mode))
 #+end_src
