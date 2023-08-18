@@ -6,7 +6,6 @@ omf/
 xm1/
 ranger/
 karabiner/automatic_backups/
-nvim
 rstudio/
 iterm2/
 fish_history
@@ -73,3 +72,4 @@ emacs/url/
 emacs/persist/
 emacs/mastodon*
 emacs/projects
+nvim/lazy-lock.json
