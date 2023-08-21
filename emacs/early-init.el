@@ -40,6 +40,11 @@
 (setq-default cursor-in-non-selected-windows nil
 	      frame-title-format '("%f [%m]"))
 
+(defun my/focus-new-client-frame ()
+(select-frame-set-input-focus (selected-frame)))
+
+(add-hook 'server-after-make-frame-hook #'my/focus-new-client-frame)
+
 (setq initial-major-mode 'org-mode)
 
 (set-face-attribute 'default nil :height 160)

@@ -87,36 +87,7 @@
 (column-number-mode)
 (global-visual-line-mode 1)
 
-(use-package hl-line+
-  :config
-  (toggle-hl-line-when-idle 1))
-
 (use-package all-the-icons)
-
-(setq-default mode-line-format
-  '("%e"
-     " %o "
-     "%* "
-     my-modeline-buffer-name
-     my-modeline-major-mode))
-
-(defvar-local my-modeline-buffer-name
-  '(:eval
-     (when (mode-line-window-selected-p)
-       (propertize (format " %s " (buffer-name))
-
-	 'face '(t :inherit bold))))
-  "Mode line construct to display the buffer name.")
-
-(put 'my-modeline-buffer-name 'risky-local-variable t)
-
-(defvar-local my-modeline-major-mode
-  '(:eval
-     (list
-       (propertize (capitalize (symbol-name major-mode)))))
-  "Mode line construct to display the major mode.")
-
-(put 'my-modeline-major-mode 'risky-local-variable t)
 
 ;; Main typeface
 (set-face-attribute 'default nil :family "SF Mono" :height 160 :weight 'medium)
@@ -146,6 +117,13 @@
 
 (general-define-key
  "<f9>" #'modus-themes-toggle)
+
+(use-package mood-line
+:config
+(mood-line-mode))
+
+(setq display-time-24hr-format t)
+(display-time-mode)
 
 (setq visible-bell nil
       ring-bell-function 'flash-mode-line)
@@ -898,7 +876,7 @@
   (add-to-list 'meow-mode-state-list '(term-mode . insert))
   (add-to-list 'meow-mode-state-list '(eat-mode . insert))
   (setq meow-use-clipboard t)
-  (meow-setup-indicator)
+  ;; (meow-setup-indicator)
   (meow-global-mode 1))
 
 (use-package hungry-delete
@@ -1027,7 +1005,8 @@
 (use-package mixed-pitch
   :hook
   ;; If you want it in all text modes:
-  (text-mode . mixed-pitch-mode))
+  ;; (text-mode . mixed-pitch-mode)
+  )
 
 (use-package org-contrib
   :config
@@ -1945,6 +1924,13 @@
 
 (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
 
+(use-package mastodon
+  :ensure t
+  :config
+  (mastodon-discover)
+  (setq mastodon-instance-url "https://emacs.ch/"
+	mastodon-active-user "randyridenour"))
+
 (general-unbind
   "C-z"
   "s-p"
@@ -1977,10 +1963,10 @@
     ("s" whitespace-mode "whitespace" :toggle t))
    " "
    (("c" cdlatex-mode "cdlatex" :toggle t)
-    ("o" olivetti-mode "olivetti" :toggle t)
+    ("w" writeroom-mode "writeroom" :toggle t)
     ("r" read-only-mode "read-only" :toggle t)
     ("v" view-mode "view" :toggle t)
-    ("w" wc-mode "word-count" :toggle t)
+    ("W" wc-mode "word-count" :toggle t)
     ("S" auto-save-visited-mode "auto-save" :toggle t)
     ("C" cua-selection-mode "rectangle" :toggle t))))
 
