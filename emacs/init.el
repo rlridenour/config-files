@@ -53,6 +53,8 @@
   :config
   (general-auto-unbind-keys))
 
+(setq package-install-upgrade-built-in t)
+
 (setq ns-right-option-modifier 'hyper)
 
 (set-language-environment "UTF-8")
@@ -102,7 +104,6 @@
 (setq-default line-spacing 0.25)
 
 (use-package modus-themes
-  :ensure t
   :straight (modus-themes :type git :flavor melpa :host sourcehut :repo "protesilaos/modus-themes")
   :config
   ;; Add all your customizations prior to loading the themes
@@ -607,7 +608,6 @@
 
 
 (use-package marginalia
-  :ensure t
   :config
   (marginalia-mode))
 
@@ -637,7 +637,6 @@
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
-  :ensure t ; only need to install it, embark loads it after consult if found
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -1455,7 +1454,6 @@
   :commands (math-delimiters-no-dollars math-delimiters-mode)
   :hook ((LaTeX-mode . math-delimiters-mode)
 	 (org-mode . math-delimiters-mode))
-  :ensure nil
   :config (progn
 	    (setq math-delimiters-compressed-display-math nil)
 
@@ -1879,7 +1877,6 @@
 			 (:exclude ".dir-locals.el" "*-tests.el"))))
 
 (use-package term-toggle
-  :ensure t
   :straight (term-toggle :host github :repo "amno1/emacs-term-toggle")
   :config
   (setq term-toggle-no-confirm-exit t)
@@ -1928,7 +1925,6 @@
 (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
 
 (use-package mastodon
-  :ensure t
   :config
   (mastodon-discover)
   (setq mastodon-instance-url "https://emacs.ch/"

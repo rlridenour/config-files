@@ -251,6 +251,11 @@ Install General now so that it can be used to bind keys in use-package declarati
   (general-auto-unbind-keys))
 #+end_src
 
+#+begin_src emacs-lisp
+(setq package-install-upgrade-built-in t)
+#+end_src
+
+
 
 * Default Settings
 :PROPERTIES:
@@ -392,7 +397,6 @@ Add some space between lines.
 
 #+begin_src emacs-lisp
 (use-package modus-themes
-  :ensure t
   :straight (modus-themes :type git :flavor melpa :host sourcehut :repo "protesilaos/modus-themes")
   :config
   ;; Add all your customizations prior to loading the themes
@@ -1088,7 +1092,6 @@ Functions for handling windows.
 
 
   (use-package marginalia
-    :ensure t
     :config
     (marginalia-mode))
 
@@ -1118,7 +1121,6 @@ Functions for handling windows.
 
   ;; Consult users will also want the embark-consult package.
   (use-package embark-consult
-    :ensure t ; only need to install it, embark loads it after consult if found
     :hook
     (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -2124,7 +2126,6 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     :commands (math-delimiters-no-dollars math-delimiters-mode)
     :hook ((LaTeX-mode . math-delimiters-mode)
 	   (org-mode . math-delimiters-mode))
-    :ensure nil
     :config (progn
 	      (setq math-delimiters-compressed-display-math nil)
 
@@ -2759,7 +2760,6 @@ https://github.com/amno1/emacs-term-toggle
 
 #+begin_src emacs-lisp
   (use-package term-toggle
-    :ensure t
     :straight (term-toggle :host github :repo "amno1/emacs-term-toggle")
     :config
     (setq term-toggle-no-confirm-exit t)
@@ -2856,7 +2856,6 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
 
 #+begin_src emacs-lisp
   (use-package mastodon
-    :ensure t
     :config
     (mastodon-discover)
     (setq mastodon-instance-url "https://emacs.ch/"
