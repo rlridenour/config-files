@@ -86,6 +86,7 @@
 (line-number-mode)
 (column-number-mode)
 (global-visual-line-mode 1)
+(hl-line-mode)
 
 (use-package all-the-icons)
 
@@ -902,7 +903,9 @@
   (show-smartparens-global-mode t)
   (setq sp-show-pair-from-inside t))
 
-(use-package aggressive-indent)
+(use-package aggressive-indent
+  :config
+  (global-aggressive-indent-mode 1))
 
 (use-package titlecase
   :defer t

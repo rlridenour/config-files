@@ -352,6 +352,7 @@ Make help buffers active when created, so pressing "q" will immediately close th
 (line-number-mode)
 (column-number-mode)
 (global-visual-line-mode 1)
+(hl-line-mode)
 #+end_src
 
 Highlight line at point.
@@ -1460,8 +1461,12 @@ Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-o
 
 ** Aggressive Indent
 
+[[https://github.com/Malabarba/aggressive-indent-mode][Aggressive-Indent-Mode]] can be toggled on and off using the toggle Hydra.
+
 #+begin_src emacs-lisp
-  (use-package aggressive-indent)
+  (use-package aggressive-indent
+    :config
+    (global-aggressive-indent-mode 1))
 #+end_src
 
 
