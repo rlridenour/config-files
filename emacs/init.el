@@ -53,8 +53,6 @@
   :config
   (general-auto-unbind-keys))
 
-(setq package-install-upgrade-built-in t)
-
 (setq ns-right-option-modifier 'hyper)
 
 (set-language-environment "UTF-8")
@@ -119,6 +117,8 @@
 
 (general-define-key
  "<f9>" #'modus-themes-toggle)
+
+
 
 (use-package mood-line
 :config
@@ -200,6 +200,8 @@
    "C-8" #'centaur-tabs-select-visible-tab
    "C-9" #'centaur-tabs-select-visible-tab
    ))
+
+(use-package rainbow-mode)
 
 (general-define-key
  "C-+" #'text-scale-increase
@@ -1005,7 +1007,7 @@
   )
 
 (use-package mixed-pitch
-  :hook
+  ;; :hook
   ;; If you want it in all text modes:
   ;; (text-mode . mixed-pitch-mode)
   )

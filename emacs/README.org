@@ -251,12 +251,6 @@ Install General now so that it can be used to bind keys in use-package declarati
   (general-auto-unbind-keys))
 #+end_src
 
-#+begin_src emacs-lisp
-(setq package-install-upgrade-built-in t)
-#+end_src
-
-
-
 * Default Settings
 :PROPERTIES:
 :header-args: :tangle init.el
@@ -414,6 +408,12 @@ Add some space between lines.
  "<f9>" #'modus-themes-toggle)
 #+end_src
 
+#+begin_src emacs-lisp
+
+
+#+end_src
+
+
 
 Use mood-line for the modeline. It's fast and simple.
 
@@ -523,6 +523,13 @@ Centaur Tabs
      "C-9" #'centaur-tabs-select-visible-tab
      ))
 #+end_src
+
+#+begin_src emacs-lisp
+(use-package rainbow-mode)
+#+end_src
+
+
+
 
 ** Appearance Keybindings
 
@@ -1649,7 +1656,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 
 #+begin_src emacs-lisp
   (use-package mixed-pitch
-    :hook
+    ;; :hook
     ;; If you want it in all text modes:
     ;; (text-mode . mixed-pitch-mode)
     )
