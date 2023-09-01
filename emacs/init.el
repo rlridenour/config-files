@@ -169,7 +169,7 @@
 (general-define-key
  "s-d" #'goto-dashboard)
 
-(use-package centaur-tabs
+(use-package centaur-tabs :tangle no
   :init
   (setq centaur-tabs-set-icons nil)
   (setq centaur-tabs-show-new-tab-button nil)

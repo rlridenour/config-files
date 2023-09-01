@@ -491,7 +491,7 @@ Use rainbow delimiters.
 Centaur Tabs
 
 #+begin_src emacs-lisp
-  (use-package centaur-tabs
+  (use-package centaur-tabs :tangle no
     :init
     (setq centaur-tabs-set-icons nil)
     (setq centaur-tabs-show-new-tab-button nil)
