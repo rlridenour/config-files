@@ -1798,6 +1798,8 @@ Version 2016-06-19"
   :init
   (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 
+(use-package lua-mode)
+
 (use-package magit
   :defer t
   :config
