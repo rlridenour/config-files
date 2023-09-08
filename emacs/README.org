@@ -490,8 +490,8 @@ Use rainbow delimiters.
 
 Centaur Tabs
 
-#+begin_src emacs-lisp
-  (use-package centaur-tabs :tangle no
+#+begin_src emacs-lisp :tangle no
+  (use-package centaur-tabs
     :init
     (setq centaur-tabs-set-icons nil)
     (setq centaur-tabs-show-new-tab-button nil)
@@ -701,12 +701,80 @@ Kills all open buffers except the current one. From https://github.com/ocodo/.em
     (delete-other-windows))
 #+end_src
 
+These are functions to cycle through both user and Emacs buffers, from [[http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html][Xah Lee]].
+
 #+begin_src emacs-lisp
+(defun xah-next-user-buffer ()
+  "Switch to the next user buffer.
+“user buffer” is determined by `xah-user-buffer-q'.
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Version 2016-06-19"
+  (interactive)
+  (next-buffer)
+  (let ((i 0))
+    (while (< i 20)
+      (if (not (xah-user-buffer-q))
+          (progn (next-buffer)
+                 (setq i (1+ i)))
+        (progn (setq i 100))))))
+
+(defun xah-previous-user-buffer ()
+  "Switch to the previous user buffer.
+“user buffer” is determined by `xah-user-buffer-q'.
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Version 2016-06-19"
+  (interactive)
+  (previous-buffer)
+  (let ((i 0))
+    (while (< i 20)
+      (if (not (xah-user-buffer-q))
+          (progn (previous-buffer)
+                 (setq i (1+ i)))
+        (progn (setq i 100))))))
+
+(defun xah-user-buffer-q ()
+  "Return t if current buffer is a user buffer, else nil.
+Typically, if buffer name starts with *, it's not considered a user buffer.
+This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
+You can override this function to get your idea of “user buffer”.
+version 2016-06-18"
+  (interactive)
+  (if (string-equal "*" (substring (buffer-name) 0 1))
+      nil
+    (if (string-equal major-mode "dired-mode")
+        nil
+      t
+      )))
+
+(defun xah-next-emacs-buffer ()
+  "Switch to the next emacs buffer.
+“emacs buffer” here is buffer whose name starts with *.
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Version 2016-06-19"
+  (interactive)
+  (next-buffer)
+  (let ((i 0))
+    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
+      (setq i (1+ i)) (next-buffer))))
+
+(defun xah-previous-emacs-buffer ()
+  "Switch to the previous emacs buffer.
+“emacs buffer” here is buffer whose name starts with *.
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Version 2016-06-19"
+  (interactive)
+  (previous-buffer)
+  (let ((i 0))
+    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
+      (setq i (1+ i)) (previous-buffer))))
+
   (general-define-key
-   ;; "s-]" #'xah-next-user-buffer
-   ;; "s-[" #'xah-previous-user-buffer
-   ;; "s-}" #'xah-next-emacs-buffer
-   ;; "s-{" #'xah-previous-emacs-buffer
+   "s-]" #'xah-next-user-buffer
+   "s-[" #'xah-previous-user-buffer
+   "s-}" #'xah-next-emacs-buffer
+   "s-{" #'xah-previous-emacs-buffer
+     "C-<tab>" #'xah-next-user-buffer
+     "M-<tab>" #'xah-next-emacs-buffer
    )
 #+end_src
 
@@ -1974,9 +2042,15 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     :config
     (setq org-bulletproof-default-ordered-bullet "1.")
     (global-org-bulletproof-mode +1))
-
-
 #+end_src
+
+#+begin_src emacs-lisp
+(use-package gnuplot)
+#+end_src
+
+
+
+
 
 ** Bibtex
 
@@ -3362,6 +3436,14 @@ Open fish functions directory.
 :PROPERTIES:
 :header-args: :tangle init.el
 :END:
+
+Make a function to reload the Emacs config file to test changes.
+
+#+begin_src emacs-lisp
+(defun reload-user-init-file()
+  (interactive)
+  (load-file user-init-file))
+#+end_src
 
 Set default directory.
 

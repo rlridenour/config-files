@@ -169,38 +169,6 @@
 (general-define-key
  "s-d" #'goto-dashboard)
 
-(use-package centaur-tabs :tangle no
-  :init
-  (setq centaur-tabs-set-icons nil)
-  (setq centaur-tabs-show-new-tab-button nil)
-  (setq centaur-tabs-set-close-button nil)
-  (setq centaur-tabs-height 32)
-  (setq centaur-tabs-enable-ido-completion nil)
-  (setq centaur-tabs-set-modified-marker t)
-  (setq centaur-tabs-cycle-scope 'tabs)
-  :config
-  (centaur-tabs-mode t)
-  :hook
-  (emacs-startup . centaur-tabs-mode)
-  (dashboard-mode . centaur-tabs-local-mode)
-  :general
-  ("s-[" #'centaur-tabs-backward
-   "s-]" #'centaur-tabs-forward
-   "s-{" #'centaur-tabs-backward-group
-   "s-}" #'centaur-tabs-forward-group
-   "C-<tab>" #'centaur-tabs-forward
-   "M-<tab>" #'centaur-tabs-forward-group
-   "C-1" #'centaur-tabs-select-visible-tab
-   "C-2" #'centaur-tabs-select-visible-tab
-   "C-3" #'centaur-tabs-select-visible-tab
-   "C-4" #'centaur-tabs-select-visible-tab
-   "C-5" #'centaur-tabs-select-visible-tab
-   "C-6" #'centaur-tabs-select-visible-tab
-   "C-7" #'centaur-tabs-select-visible-tab
-   "C-8" #'centaur-tabs-select-visible-tab
-   "C-9" #'centaur-tabs-select-visible-tab
-   ))
-
 (use-package rainbow-mode)
 
 (general-define-key
@@ -294,12 +262,78 @@
    (buffer-list))
   (delete-other-windows))
 
-(general-define-key
- ;; "s-]" #'xah-next-user-buffer
- ;; "s-[" #'xah-previous-user-buffer
- ;; "s-}" #'xah-next-emacs-buffer
- ;; "s-{" #'xah-previous-emacs-buffer
- )
+(defun xah-next-user-buffer ()
+  "Switch to the next user buffer.
+“user buffer” is determined by `xah-user-buffer-q'.
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Version 2016-06-19"
+  (interactive)
+  (next-buffer)
+  (let ((i 0))
+    (while (< i 20)
+      (if (not (xah-user-buffer-q))
+          (progn (next-buffer)
+                 (setq i (1+ i)))
+        (progn (setq i 100))))))
+
+(defun xah-previous-user-buffer ()
+  "Switch to the previous user buffer.
+“user buffer” is determined by `xah-user-buffer-q'.
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Version 2016-06-19"
+  (interactive)
+  (previous-buffer)
+  (let ((i 0))
+    (while (< i 20)
+      (if (not (xah-user-buffer-q))
+          (progn (previous-buffer)
+                 (setq i (1+ i)))
+        (progn (setq i 100))))))
+
+(defun xah-user-buffer-q ()
+  "Return t if current buffer is a user buffer, else nil.
+Typically, if buffer name starts with *, it's not considered a user buffer.
+This function is used by buffer switching command and close buffer command, so that next buffer shown is a user buffer.
+You can override this function to get your idea of “user buffer”.
+version 2016-06-18"
+  (interactive)
+  (if (string-equal "*" (substring (buffer-name) 0 1))
+      nil
+    (if (string-equal major-mode "dired-mode")
+        nil
+      t
+      )))
+
+(defun xah-next-emacs-buffer ()
+  "Switch to the next emacs buffer.
+“emacs buffer” here is buffer whose name starts with *.
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Version 2016-06-19"
+  (interactive)
+  (next-buffer)
+  (let ((i 0))
+    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
+      (setq i (1+ i)) (next-buffer))))
+
+(defun xah-previous-emacs-buffer ()
+  "Switch to the previous emacs buffer.
+“emacs buffer” here is buffer whose name starts with *.
+URL `http://xahlee.info/emacs/emacs/elisp_next_prev_user_buffer.html'
+Version 2016-06-19"
+  (interactive)
+  (previous-buffer)
+  (let ((i 0))
+    (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
+      (setq i (1+ i)) (previous-buffer))))
+
+  (general-define-key
+   "s-]" #'xah-next-user-buffer
+   "s-[" #'xah-previous-user-buffer
+   "s-}" #'xah-next-emacs-buffer
+   "s-{" #'xah-previous-emacs-buffer
+     "C-<tab>" #'xah-next-user-buffer
+     "M-<tab>" #'xah-next-emacs-buffer
+   )
 
 (setq initial-scratch-message nil
       initial-major-mode 'org-mode)
@@ -1315,6 +1349,8 @@
   (setq org-bulletproof-default-ordered-bullet "1.")
   (global-org-bulletproof-mode +1))
 
+(use-package gnuplot)
+
 (use-package citar
   :defer t
   :bind (("C-c C-b" . citar-insert-citation)
@@ -2320,6 +2356,10 @@
  "z" #'reveal-in-osx-finder
  "g l" #'avy-goto-line
  "g w" #'avy-goto-word-1)
+
+(defun reload-user-init-file()
+  (interactive)
+  (load-file user-init-file))
 
 (setq default-directory "~/")
 
