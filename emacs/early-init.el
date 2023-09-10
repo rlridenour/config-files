@@ -41,7 +41,7 @@
 	      frame-title-format '("%f [%m]"))
 
 (defun my/focus-new-client-frame ()
-(select-frame-set-input-focus (selected-frame)))
+  (select-frame-set-input-focus (selected-frame)))
 
 (add-hook 'server-after-make-frame-hook #'my/focus-new-client-frame)
 

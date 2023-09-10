@@ -4,6 +4,9 @@
 (defconst rr-emacs-dir (expand-file-name user-emacs-directory)
   "The path to the emacs.d directory.")
 
+;; set load path
+(add-to-list 'load-path (concat user-emacs-directory "elisp"))
+
 (defconst rr-cache-dir "~/.cache/emacs/"
   "The directory for Emacs activity files.")
 
@@ -121,8 +124,8 @@
 
 
 (use-package mood-line
-:config
-(mood-line-mode))
+  :config
+  (mood-line-mode))
 
 (setq display-time-24hr-format t)
 (display-time-mode)
@@ -272,9 +275,9 @@ Version 2016-06-19"
   (let ((i 0))
     (while (< i 20)
       (if (not (xah-user-buffer-q))
-          (progn (next-buffer)
-                 (setq i (1+ i)))
-        (progn (setq i 100))))))
+	  (progn (next-buffer)
+		 (setq i (1+ i)))
+	(progn (setq i 100))))))
 
 (defun xah-previous-user-buffer ()
   "Switch to the previous user buffer.
@@ -286,9 +289,9 @@ Version 2016-06-19"
   (let ((i 0))
     (while (< i 20)
       (if (not (xah-user-buffer-q))
-          (progn (previous-buffer)
-                 (setq i (1+ i)))
-        (progn (setq i 100))))))
+	  (progn (previous-buffer)
+		 (setq i (1+ i)))
+	(progn (setq i 100))))))
 
 (defun xah-user-buffer-q ()
   "Return t if current buffer is a user buffer, else nil.
@@ -300,7 +303,7 @@ version 2016-06-18"
   (if (string-equal "*" (substring (buffer-name) 0 1))
       nil
     (if (string-equal major-mode "dired-mode")
-        nil
+	nil
       t
       )))
 
@@ -326,14 +329,14 @@ Version 2016-06-19"
     (while (and (not (string-equal "*" (substring (buffer-name) 0 1))) (< i 20))
       (setq i (1+ i)) (previous-buffer))))
 
-  (general-define-key
-   "s-]" #'xah-next-user-buffer
-   "s-[" #'xah-previous-user-buffer
-   "s-}" #'xah-next-emacs-buffer
-   "s-{" #'xah-previous-emacs-buffer
-     "C-<tab>" #'xah-next-user-buffer
-     "M-<tab>" #'xah-next-emacs-buffer
-   )
+(general-define-key
+ "s-]" #'xah-next-user-buffer
+ "s-[" #'xah-previous-user-buffer
+ "s-}" #'xah-next-emacs-buffer
+ "s-{" #'xah-previous-emacs-buffer
+ "C-<tab>" #'xah-next-user-buffer
+ "M-<tab>" #'xah-next-emacs-buffer
+ )
 
 (setq initial-scratch-message nil
       initial-major-mode 'org-mode)
@@ -1070,12 +1073,18 @@ Version 2016-06-19"
 
 ;; Some export settings
 
+
+;; Add arara export
+
+(require 'ox-arara)
+
+
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
 	       '("org-article"
 		 "\\documentclass{article}
-	    [NO-DEFAULT-PACKAGES]
-	    [NO-PACKAGES]"
+	      [NO-DEFAULT-PACKAGES]
+	      [NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1084,8 +1093,8 @@ Version 2016-06-19"
   (add-to-list 'org-latex-classes
 	       '("org-handout"
 		 "\\documentclass{pdfhandout}
-	    [NO-DEFAULT-PACKAGES]
-	    [NO-PACKAGES]"
+	      [NO-DEFAULT-PACKAGES]
+	      [NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1094,8 +1103,8 @@ Version 2016-06-19"
   (add-to-list 'org-latex-classes
 	       '("org-beamer"
 		 "\\documentclass{beamer}
-	    [NO-DEFAULT-PACKAGES]
-	    [NO-PACKAGES]"
+	      [NO-DEFAULT-PACKAGES]
+	      [NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1115,7 +1124,7 @@ Version 2016-06-19"
 		 (apostrophe        :utf-8 "’" :html "&rsquo;")))
   )
 
-      ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+	;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
