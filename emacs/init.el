@@ -1238,39 +1238,18 @@ Version 2016-06-19"
 
 (setq org-latex-pdf-process '("arara %f"))
 
-(defun rlr/dwim-mkt ()
-  "Run arara and open PDF."
-  (interactive)
-  (dwim-shell-command-on-marked-files
-   "Compile with arara"
-   "mkt <<f>>"
-   :silent-success t
-   )
-  )
+
 (defun rlr/org-mkt ()
-  "Make PDF with Arara."
+  "Make PDF with latexmk."
   (interactive)
   (org-latex-export-to-latex)
   (async-shell-command-no-window (concat "mkt " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
 
-(defun rlr/dwim-org-mkt ()
+(defun rlr/org-arara ()
   "Make PDF with Arara."
   (interactive)
-  (org-latex-export-to-latex)
-  (dwim-shell-command-on-marked-files
-   "Compile with arara"
-   "mkt <<fne>>.tex"
-   :silent-success t
-   )
-  )
-
-
-(defun rlr/org-mktc ()
-  "Compile continuously with arara."
-  (interactive)
-  (org-latex-export-to-latex)
-  (start-process-shell-command (concat "mktc-" (buffer-file-name)) (concat "mktc-" (buffer-file-name)) (concat "mktc " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
-
+  (org-arara-export-to-latex)
+  (async-shell-command-no-window (concat "mkarara " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
 
 (defun rlr/org-date ()
   "Update existing date: timestamp on a Hugo post."
@@ -1467,8 +1446,6 @@ Version 2016-06-19"
   (shell-command (concat "mkt " (shell-quote-argument(buffer-file-name))))
   (TeX-view))
 
-
-
 ;; Run continuously
 
 (defun rlr/tex-mktc ()
@@ -1476,6 +1453,22 @@ Version 2016-06-19"
   (interactive)
   (async-shell-command-no-window (concat "mktc " (shell-quote-argument(buffer-file-name))))
   )
+
+(defun rlr/tex-arara ()
+  "Compile with arara."
+  (interactive)
+  (save-buffer)
+  (async-shell-command-no-window (concat "mkarara " (shell-quote-argument(buffer-file-name))))
+  (TeX-view))
+
+;; Run continuously
+
+(defun rlr/tex-arara-c ()
+  "Compile continuously with arara."
+  (interactive)
+  (async-shell-command-no-window (concat "mkarara-c " (shell-quote-argument(buffer-file-name))))
+  )
+
 
 ;;   (TeX-view))
 
@@ -1802,6 +1795,8 @@ Version 2016-06-19"
 	(markdown "https://github.com/ikatyang/tree-sitter-markdown")
 	(toml "https://github.com/tree-sitter/tree-sitter-toml")
 	(yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+
+(use-package fish-mode)
 
 (use-package web-mode
   :init
@@ -2234,7 +2229,8 @@ Version 2016-06-19"
   ("Bibtex"
    (("r" citar-insert-citation "citation"))
    "LaTeXmk"
-   (("m" rlr/tex-mkt "compile")
+   (("m" rlr/tex-arara "arara")
+    ("l" rlr/tex-mkt "latexmk")
     ("w" rlr/tex-mktc "watch")
     ("c" tex-clean "clean aux")
     ("C" tex-clean-all "clean all")
@@ -2244,7 +2240,8 @@ Version 2016-06-19"
   (:quit-key "q")
   ("Export"
    (
-    ("m" rlr/org-mkt "Make PDF with Arara")
+    ("m" rlr/org-arara "Make PDF with Arara")
+    ("l" rlr/org-mkt "Make PDF with latexmk")
     ("el" org-latex-export-to-latex "Org to LaTeX")
     ("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("eB" org-beamer-export-to-latex "Org to Beamer-LaTeX")
