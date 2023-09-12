@@ -1,3 +1,3 @@
 function mklua
-   latexmk -lualatex -pvc -interaction=nonstopmode -synctex=1 -quiet $argv
+    latexmk -lualatex -pvc -interaction=nonstopmode -synctex=1 -quiet -pv $argv
 end
