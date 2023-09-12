@@ -1137,12 +1137,12 @@ Version 2016-06-19"
 
 
 (defun
-    arara-slides ()
+    make-slides ()
   ;; (interactive)
   (async-shell-command-no-window "mkslides"))
 
 (defun
-    arara-notes ()
+    make-notes ()
   ;; (interactive)
   (async-shell-command-no-window "mknotes"))
 
@@ -1153,7 +1153,7 @@ Version 2016-06-19"
   (find-file "*-slides.org" t)
   (org-beamer-export-to-latex)
   (kill-buffer)
-  (arara-slides)
+  (make-slides)
   (find-file "*-data.org" t))
 
 
@@ -1163,7 +1163,7 @@ Version 2016-06-19"
   (find-file "*-notes.org" t)
   (org-beamer-export-to-latex)
   (kill-buffer)
-  (arara-notes)
+  (make-notes)
   (find-file "*-data.org" t))
 
 (defun canvas-notes ()
@@ -1239,11 +1239,18 @@ Version 2016-06-19"
 (setq org-latex-pdf-process '("arara %f"))
 
 
-(defun rlr/org-mkt ()
-  "Make PDF with latexmk."
+(defun rlr/org-mkpdf ()
+  "Make PDF with pdf latexmk."
   (interactive)
   (org-latex-export-to-latex)
-  (async-shell-command-no-window (concat "mkt " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+  (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+
+(defun rlr/org-mklua ()
+  "Make PDF with lua latexmk."
+  (interactive)
+  (org-latex-export-to-latex)
+  (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+
 
 (defun rlr/org-arara ()
   "Make PDF with Arara."
@@ -1439,20 +1446,36 @@ Version 2016-06-19"
 ;;   (interactive)
 ;;   (async-shell-command-no-window (concat "mkt " (shell-quote-argument(buffer-file-name)))))
 
-(defun rlr/tex-mkt ()
-  "Compile with arara."
+(defun rlr/tex-mkpdf ()
+  "Compile with pdf latexmk."
   (interactive)
   (save-buffer)
-  (shell-command (concat "mkt " (shell-quote-argument(buffer-file-name))))
+  (shell-command (concat "mkpdf " (shell-quote-argument(buffer-file-name))))
   (TeX-view))
 
 ;; Run continuously
 
 (defun rlr/tex-mktc ()
-  "Compile continuously with arara."
+  "Compile continuously with pdf latexmk."
   (interactive)
-  (async-shell-command-no-window (concat "mktc " (shell-quote-argument(buffer-file-name))))
+  (async-shell-command-no-window (concat "mkpdfc " (shell-quote-argument(buffer-file-name))))
   )
+
+(defun rlr/tex-mklua ()
+  "Compile with lua latexmk."
+  (interactive)
+  (save-buffer)
+  (shell-command (concat "mklua " (shell-quote-argument(buffer-file-name))))
+  (TeX-view))
+
+;; Run continuously
+
+(defun rlr/tex-mkluac ()
+  "Compile continuously with lua latexmk."
+  (interactive)
+  (async-shell-command-no-window (concat "mkluac " (shell-quote-argument(buffer-file-name))))
+  )
+
 
 (defun rlr/tex-arara ()
   "Compile with arara."
@@ -2225,23 +2248,24 @@ Version 2016-06-19"
     ("c" markdown-complete-buffer "complete"))))
 
 (major-mode-hydra-define latex-mode
-  (:quit-key "q")
-  ("Bibtex"
-   (("r" citar-insert-citation "citation"))
-   "LaTeXmk"
-   (("m" rlr/tex-arara "arara")
-    ("l" rlr/tex-mkt "latexmk")
-    ("w" rlr/tex-mktc "watch")
-    ("c" tex-clean "clean aux")
-    ("C" tex-clean-all "clean all")
-    ("n" latex-word-count "word count"))))
+    (:quit-key "q")
+    ("Bibtex"
+     (("r" citar-insert-citation "citation"))
+     "LaTeXmk"
+     (("m" rlr/tex-mkpdf "PDFLaTeX")
+      ("l" rlr/tex-mklua "LuaLaTeX")
+      ("w" rlr/tex-mktc "watch PDFLaTeX")
+("L" rlr/tex-mklua "watch LuaLaTeX")
+      ("c" tex-clean "clean aux")
+      ("C" tex-clean-all "clean all")
+      ("n" latex-word-count "word count"))))
 
 (major-mode-hydra-define org-mode
   (:quit-key "q")
   ("Export"
    (
-    ("m" rlr/org-arara "Make PDF with Arara")
-    ("l" rlr/org-mkt "Make PDF with latexmk")
+    ("m" rlr/org-mkpdf "Make PDF with PDFLaTeX")
+    ("l" rlr/org-mklua "Make PDF with LuaLaTeX")
     ("el" org-latex-export-to-latex "Org to LaTeX")
     ("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
     ("eB" org-beamer-export-to-latex "Org to Beamer-LaTeX")
@@ -2263,7 +2287,7 @@ Version 2016-06-19"
     ("ff" org-footnote-action "edit footnote")
     ("fc" citar-insert-citation "citation")
     ("b" org-cycle-list-bullet "cycle bullets" :exit nil)
-    ("l" org-mac-link-safari-insert-frontmost-url "insert safari link")
+    ("il" org-mac-link-safari-insert-frontmost-url "insert safari link")
     ("y" yankpad-set-category "set yankpad")
     )
    "View"

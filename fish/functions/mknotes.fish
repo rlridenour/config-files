@@ -3,5 +3,5 @@ function mknotes
 		    # arara $file
 		    mkpdf $file 
 		end
-		open -g *-notes.pdf
+		# open -g *-notes.pdf
 end
