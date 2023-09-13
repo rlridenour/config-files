@@ -1243,13 +1243,13 @@ Version 2016-06-19"
   "Make PDF with pdf latexmk."
   (interactive)
   (org-latex-export-to-latex)
-  (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+  (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument
 
 (defun rlr/org-mklua ()
   "Make PDF with lua latexmk."
   (interactive)
   (org-latex-export-to-latex)
-  (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+  (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
 
 
 (defun rlr/org-arara ()
@@ -1450,7 +1450,7 @@ Version 2016-06-19"
   "Compile with pdf latexmk."
   (interactive)
   (save-buffer)
-  (shell-command (concat "mkpdf " (shell-quote-argument(buffer-file-name))))
+  (shell-command (concat "mkpdf " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
   (TeX-view))
 
 ;; Run continuously
@@ -1458,14 +1458,14 @@ Version 2016-06-19"
 (defun rlr/tex-mktc ()
   "Compile continuously with pdf latexmk."
   (interactive)
-  (async-shell-command-no-window (concat "mkpdfc " (shell-quote-argument(buffer-file-name))))
+  (async-shell-command-no-window (concat "mkpdfc " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
   )
 
 (defun rlr/tex-mklua ()
   "Compile with lua latexmk."
   (interactive)
   (save-buffer)
-  (shell-command (concat "mklua " (shell-quote-argument(buffer-file-name))))
+  (shell-command (concat "mklua " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
   (TeX-view))
 
 ;; Run continuously
@@ -1473,7 +1473,7 @@ Version 2016-06-19"
 (defun rlr/tex-mkluac ()
   "Compile continuously with lua latexmk."
   (interactive)
-  (async-shell-command-no-window (concat "mkluac " (shell-quote-argument(buffer-file-name))))
+  (async-shell-command-no-window (concat "mkluac " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
   )
 
 
