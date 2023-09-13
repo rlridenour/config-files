@@ -1243,7 +1243,7 @@ Version 2016-06-19"
   "Make PDF with pdf latexmk."
   (interactive)
   (org-latex-export-to-latex)
-  (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument
+  (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
 
 (defun rlr/org-mklua ()
   "Make PDF with lua latexmk."
@@ -1450,7 +1450,7 @@ Version 2016-06-19"
   "Compile with pdf latexmk."
   (interactive)
   (save-buffer)
-  (shell-command (concat "mkpdf " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
+  (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
   (TeX-view))
 
 ;; Run continuously
@@ -1465,7 +1465,7 @@ Version 2016-06-19"
   "Compile with lua latexmk."
   (interactive)
   (save-buffer)
-  (shell-command (concat "mklua " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
+  (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
   (TeX-view))
 
 ;; Run continuously

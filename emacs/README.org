@@ -1932,7 +1932,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     "Make PDF with pdf latexmk."
     (interactive)
     (org-latex-export-to-latex)
-    (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument
+    (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
 
   (defun rlr/org-mklua ()
     "Make PDF with lua latexmk."
@@ -2169,7 +2169,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     "Compile with pdf latexmk."
     (interactive)
     (save-buffer)
-    (shell-command (concat "mkpdf " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
+    (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
     (TeX-view))
 
   ;; Run continuously
@@ -2184,7 +2184,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     "Compile with lua latexmk."
     (interactive)
     (save-buffer)
-    (shell-command (concat "mklua " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
+    (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-nondirectory buffer-file-name))))
     (TeX-view))
 
   ;; Run continuously
@@ -3499,6 +3499,7 @@ Reset garbage collection.
 #+begin_src emacs-lisp
   (setq gc-cons-threshold (* 2 1000 1000))
 #+end_src
+
 
 
 #+begin_src emacs-lisp
