@@ -1932,9 +1932,12 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     "Make PDF with pdf latexmk."
     (interactive)
     (org-latex-export-to-latex)
-    (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex")))))
-    (async-shell-command-no-window (concat "open -g " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "pdf")))))
-)
+    (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
+
+  (defun rlr/org-open-pdf ()
+    "Open PDF in background with default viewer."
+    (interactive)
+    (async-shell-command-no-window (concat "open -g " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "pdf"))))))
 
   (defun rlr/org-mklua ()
     "Make PDF with lua latexmk."
@@ -3322,6 +3325,7 @@ Unset some keys.
     ("Export"
      (
       ("m" rlr/org-mkpdf "Make PDF with PDFLaTeX")
+      ("p" rlr/org-open-pdf "View PDF")
       ("l" rlr/org-mklua "Make PDF with LuaLaTeX")
       ("el" org-latex-export-to-latex "Org to LaTeX")
       ("eb" org-beamer-export-to-pdf "Org to Beamer-PDF")
