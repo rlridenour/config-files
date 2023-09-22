@@ -3,5 +3,5 @@ function mkslides
 		    # arara $file
 		    mkpdf $file
 		end
-		# open -g *-slides.pdf
+		open -g *-slides.pdf
 end
