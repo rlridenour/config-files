@@ -1932,7 +1932,9 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     "Make PDF with pdf latexmk."
     (interactive)
     (org-latex-export-to-latex)
-    (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
+    (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex")))))
+    (async-shell-command-no-window (concat "open -g " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "pdf")))))
+)
 
   (defun rlr/org-mklua ()
     "Make PDF with lua latexmk."
@@ -2812,6 +2814,15 @@ Force ediff to show diffs in the same frame side-by-side.
 
 
 ** Shells
+
+Don't ask to create new shell buffers.
+
+#+begin_src emacs-lisp
+(setq async-shell-command-buffer "new-buffer")
+#+end_src
+
+
+
 
 Run async shell command without creating a window.
 

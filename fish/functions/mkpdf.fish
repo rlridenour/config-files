@@ -1,3 +1,3 @@
 function mkpdf
-    latexmk -pdf -interaction=nonstopmode -synctex=1 -quiet -pv $argv
+    latexmk -pdf -interaction=nonstopmode -synctex=1 -quiet $argv
 end
