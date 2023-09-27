@@ -1387,6 +1387,24 @@ Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-o
 #+end_src
 
 
+Function to jump out of matched pairs.
+
+#+begin_src emacs-lisp
+(defun jump-out-of-pair ()
+	(interactive)
+	(let ((found (search-forward-regexp "[])}\"'`*=]" nil t)))
+		(when found
+			(cond ((or (looking-back "\\*\\*" 2)
+		 (looking-back "``" 2)
+		 (looking-back "''" 2)
+		 (looking-back "==" 2))
+			 (forward-char))
+			(t (forward-char 0))))))
+
+(global-set-key (kbd "M-1") 'jump-out-of-pair)
+#+end_src
+
+
 
 ** Meow
 :PROPERTIES:
