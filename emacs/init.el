@@ -198,9 +198,9 @@
 ;; Remove duplicates on mode change
 (setq recentf-auto-cleanup 'mode)
 ;; Max number of files saved
-(setq recentf-max-saved-items 200)
+(setq recentf-max-saved-items 500)
 ;; Max number of files served in files menu
-(setq recentf-max-menu-items 2048)
+(setq recentf-max-menu-items 50)
 (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
 (recentf-mode)
 
@@ -819,19 +819,6 @@ Version 2016-06-19"
   (forward-line -1)
   (indent-according-to-mode))
 
-(defun jump-out-of-pair ()
-	(interactive)
-	(let ((found (search-forward-regexp "[])}\"'`*=]" nil t)))
-		(when found
-			(cond ((or (looking-back "\\*\\*" 2)
-		 (looking-back "``" 2)
-		 (looking-back "''" 2)
-		 (looking-back "==" 2))
-			 (forward-char))
-			(t (forward-char 0))))))
-
-(global-set-key (kbd "M-1") 'jump-out-of-pair)
-
 (use-package meow
   :init
   (defun meow-setup ()
@@ -1096,8 +1083,8 @@ Version 2016-06-19"
   (add-to-list 'org-latex-classes
 	       '("org-article"
 		 "\\documentclass{article}
-	      [NO-DEFAULT-PACKAGES]
-	      [NO-PACKAGES]"
+		[NO-DEFAULT-PACKAGES]
+		[NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1106,8 +1093,8 @@ Version 2016-06-19"
   (add-to-list 'org-latex-classes
 	       '("org-handout"
 		 "\\documentclass{pdfhandout}
-	      [NO-DEFAULT-PACKAGES]
-	      [NO-PACKAGES]"
+		[NO-DEFAULT-PACKAGES]
+		[NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1116,8 +1103,8 @@ Version 2016-06-19"
   (add-to-list 'org-latex-classes
 	       '("org-beamer"
 		 "\\documentclass{beamer}
-	      [NO-DEFAULT-PACKAGES]
-	      [NO-PACKAGES]"
+		[NO-DEFAULT-PACKAGES]
+		[NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1137,7 +1124,7 @@ Version 2016-06-19"
 		 (apostrophe        :utf-8 "’" :html "&rsquo;")))
   )
 
-	;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+	  ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
@@ -1163,6 +1150,7 @@ Version 2016-06-19"
 (defun lecture-slides ()
   "publish org data file as beamer slides"
   (interactive)
+  (save-buffer)
   (find-file "*-slides.org" t)
   (org-beamer-export-to-latex)
   (kill-buffer)
@@ -1173,6 +1161,7 @@ Version 2016-06-19"
 (defun lecture-notes ()
   "publish org data file as beamer notes"
   (interactive)
+  (save-buffer)
   (find-file "*-notes.org" t)
   (org-beamer-export-to-latex)
   (kill-buffer)
@@ -2409,6 +2398,20 @@ Version 2016-06-19"
  "z" #'reveal-in-osx-finder
  "g l" #'avy-goto-line
  "g w" #'avy-goto-word-1)
+
+(defun jump-out-of-pair ()
+	(interactive)
+	(let ((found (search-forward-regexp "[])}\"'`*=]" nil t)))
+	  ;; 
+		(when found
+			(cond ((or (looking-back "\\*\\*" 2)
+		 (looking-back "``" 2)
+		 (looking-back "''" 2)
+		 (looking-back "==" 2))
+			 (forward-char))
+			(t (forward-char 0))))))
+
+(global-set-key (kbd "M-1") 'jump-out-of-pair)
 
 (defun reload-user-init-file()
   (interactive)
