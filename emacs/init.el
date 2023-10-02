@@ -1171,6 +1171,7 @@ Version 2016-06-19"
 (defun canvas-notes ()
   "Copy HTML slide notes for Canvas"
   (interactive)
+  (save-buffer)
   (shell-command "canvas-notes")
   (find-file "canvas.org")
   (canvas-copy)
@@ -1185,6 +1186,7 @@ Version 2016-06-19"
 (defun canvas-copy ()
   "Copy html for canvas pages"
   (interactive)
+  (save-buffer)
   (org-html-export-to-html)
   (shell-command "canvas")
   )
@@ -1244,6 +1246,7 @@ Version 2016-06-19"
 (defun rlr/org-mkpdf ()
   "Make PDF with pdf latexmk."
   (interactive)
+  (save-buffer)
   (org-latex-export-to-latex)
   (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
 
@@ -1255,6 +1258,7 @@ Version 2016-06-19"
 (defun rlr/org-mklua ()
   "Make PDF with lua latexmk."
   (interactive)
+  (save-buffer)
   (org-latex-export-to-latex)
   (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
 
@@ -1262,6 +1266,7 @@ Version 2016-06-19"
 (defun rlr/org-arara ()
   "Make PDF with Arara."
   (interactive)
+  (save-buffer)
   (org-arara-export-to-latex)
   (async-shell-command-no-window (concat "mkarara " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
 
