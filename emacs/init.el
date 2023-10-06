@@ -2387,6 +2387,7 @@ Version 2016-06-19"
  "3" #'rlr/find-file-right
  "b" #'consult-bookmark
  "c" #'org-capture
+ "d" #'insert-date-string
  "D" #'crux-delete-file-and-buffer
  ;; "h" #'consult-history
  "k" #'crux-kill-other-buffers
