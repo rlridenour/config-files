@@ -324,6 +324,22 @@ Open links in default Mac browser.
   (setq browse-url-browser-function 'browse-url-default-macosx-browser)
 #+end_src
 
+World clock settings.
+
+#+begin_src emacs-lisp
+(setq world-clock-list
+    '(
+      ("America/Chicago" "Oklahoma City")
+      ("Pacific/Honolulu" "Honolulu")
+      ("America/New York" "New York")
+      ("Etc/UTC" "UTC")))
+
+  (setq world-clock-time-format "%a, %d %b %H:%M %p %Z")
+#+end_src
+
+
+
+
 ** Help
 
 Make help buffers active when created, so pressing "q" will immediately close them.

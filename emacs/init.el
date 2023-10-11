@@ -77,6 +77,15 @@
 
 (setq browse-url-browser-function 'browse-url-default-macosx-browser)
 
+(setq world-clock-list
+    '(
+      ("America/Chicago" "Oklahoma City")
+      ("Pacific/Honolulu" "Honolulu")
+      ("America/New York" "New York")
+      ("Etc/UTC" "UTC")))
+
+  (setq world-clock-time-format "%a, %d %b %H:%M %p %Z")
+
 (setq help-window-select t)
 (setq Man-notify-method 'aggressive)
 
