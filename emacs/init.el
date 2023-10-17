@@ -81,7 +81,7 @@
     '(
       ("America/Chicago" "Oklahoma City")
       ("Pacific/Honolulu" "Honolulu")
-      ("America/New York" "New York")
+      ("America/New_York" "New York")
       ("Etc/UTC" "UTC")))
 
   (setq world-clock-time-format "%a, %d %b %H:%M %p %Z")
