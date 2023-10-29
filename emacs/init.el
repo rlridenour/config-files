@@ -1765,58 +1765,55 @@ Version 2016-06-19"
 (use-package writeroom-mode)
 
 ;; Denote
-(use-package denote
-  :config
-  (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes")
-  (setq denote-infer-keywords t)
-  (setq denote-sort-keywords t)
-  (setq denote-prompts '(title keywords))
-  (setq denote-date-format nil)
-  )
+  (use-package denote
+    :config
+    (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes")
+    (setq denote-infer-keywords t)
+    (setq denote-sort-keywords t)
+    (setq denote-prompts '(title keywords))
+    (setq denote-date-format nil)
+    )
 
-(use-package consult-notes
-  :config
-  (setq consult-notes-sources
-	`(("Notes"  ?n ,denote-directory)
-	  ;; ("Books"  ?b "~/Documents/books")
-	  )))
+  (use-package consult-notes
+    :config
+(consult-notes-denote-mode))
 
-(defun my-denote-journal ()
-  "Create an entry tagged 'journal' with the date as its title."
-  (interactive)
-  (denote
-   (format-time-string "%A %B %d %Y") ; format like Tuesday June 14 2022
-   '("journal"))) ; multiple keywords are a list of strings: '("one" "two")
+  (defun my-denote-journal ()
+    "Create an entry tagged 'journal' with the date as its title."
+    (interactive)
+    (denote
+     (format-time-string "%A %B %d %Y") ; format like Tuesday June 14 2022
+     '("journal"))) ; multiple keywords are a list of strings: '("one" "two")
 
 
-(use-package citar-denote
-  :after citar denote
-  :config
-  (citar-denote-mode)
-  (setq citar-open-always-create-notes t))
+  (use-package citar-denote
+    :after citar denote
+    :config
+    (citar-denote-mode)
+    (setq citar-open-always-create-notes t))
 
-(use-package denote-menu)
+  (use-package denote-menu)
 
 
 
-  ;;;; = xeft - search notes with the xapian syntax
-;; Search large volume of data (notes) with search engine syntax
-;; +word -word AND NOT etc
-;; <tab>   to preview
-;; <enter> to open the file in the same buffer
-					;(use-package (xeft :host github :repo "casouri/xeft")
-(use-package xeft
-  :commands (xeft)
-  :config
-  (custom-set-faces '(xeft-excerpt-title ((t (:weight bold)))))
-  (custom-set-faces '(xeft-excerpt-body ((t (:height 150)))))
-  :custom
-  ;; Default extension for files created with xeft
-  (xeft-default-extension "org")
-  ;; Where is my search source
-  (xeft-directory rr-notes-dir)
-  ;; Only parse the root directory
-  (xeft-recursive nil))
+    ;;;; = xeft - search notes with the xapian syntax
+  ;; Search large volume of data (notes) with search engine syntax
+  ;; +word -word AND NOT etc
+  ;; <tab>   to preview
+  ;; <enter> to open the file in the same buffer
+					  ;(use-package (xeft :host github :repo "casouri/xeft")
+  (use-package xeft
+    :commands (xeft)
+    :config
+    (custom-set-faces '(xeft-excerpt-title ((t (:weight bold)))))
+    (custom-set-faces '(xeft-excerpt-body ((t (:height 150)))))
+    :custom
+    ;; Default extension for files created with xeft
+    (xeft-default-extension "org")
+    ;; Where is my search source
+    (xeft-directory rr-notes-dir)
+    ;; Only parse the root directory
+    (xeft-recursive nil))
 
 (use-package avy
   :defer t

@@ -2581,10 +2581,7 @@ Use Writeroom for distraction free editing.
 
   (use-package consult-notes
     :config
-    (setq consult-notes-sources
-	  `(("Notes"  ?n ,denote-directory)
-	    ;; ("Books"  ?b "~/Documents/books")
-	    )))
+(consult-notes-denote-mode))
 
   (defun my-denote-journal ()
     "Create an entry tagged 'journal' with the date as its title."
