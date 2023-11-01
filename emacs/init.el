@@ -1367,6 +1367,8 @@ Version 2016-06-19"
 
 (use-package gnuplot)
 
+(use-package org-noter)
+
 (use-package citar
   :defer t
   :bind (("C-c C-b" . citar-insert-citation)
@@ -2002,14 +2004,16 @@ Version 2016-06-19"
   :defer)
 
 (use-package pdf-tools
-  :config
-  (pdf-tools-install)
-  (setq-default pdf-view-display-size 'fit-width)
-  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-  :custom
-  (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+    :config
+    (pdf-tools-install)
+    (setq-default pdf-view-display-size 'fit-width)
+    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+    :custom
+    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
 
-(add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
+  (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
+
+;; (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 
 (use-package mastodon
   :config
@@ -2409,7 +2413,8 @@ Version 2016-06-19"
  "w" #'ace-window
  "z" #'reveal-in-osx-finder
  "g l" #'avy-goto-line
- "g w" #'avy-goto-word-1)
+ "g w" #'avy-goto-word-1
+ "C-g" #'pdf-sync-forward-search)
 
 (defun jump-out-of-pair ()
 	(interactive)

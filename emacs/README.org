@@ -2077,6 +2077,12 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
   (use-package gnuplot)
 #+end_src
 
+Org-noter
+
+#+begin_src emacs-lisp
+(use-package org-noter)
+#+end_src
+
 
 
 
@@ -3000,6 +3006,8 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
     (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
 
   (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
+
+;; (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 #+end_src
 
 
@@ -3507,7 +3515,8 @@ Open fish functions directory.
    "w" #'ace-window
    "z" #'reveal-in-osx-finder
    "g l" #'avy-goto-line
-   "g w" #'avy-goto-word-1)
+   "g w" #'avy-goto-word-1
+   "C-g" #'pdf-sync-forward-search)
 #+end_src
 
 
