@@ -1790,8 +1790,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-article"
 		   "\\documentclass{article}
-		  [NO-DEFAULT-PACKAGES]
-		  [NO-PACKAGES]"
+		    [NO-DEFAULT-PACKAGES]
+		    [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1800,8 +1800,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-handout"
 		   "\\documentclass{pdfhandout}
-		  [NO-DEFAULT-PACKAGES]
-		  [NO-PACKAGES]"
+		    [NO-DEFAULT-PACKAGES]
+		    [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1810,8 +1810,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-beamer"
 		   "\\documentclass{beamer}
-		  [NO-DEFAULT-PACKAGES]
-		  [NO-PACKAGES]"
+		    [NO-DEFAULT-PACKAGES]
+		    [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1831,7 +1831,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 		   (apostrophe        :utf-8 "’" :html "&rsquo;")))
     )
 
-	    ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+	      ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
@@ -1994,6 +1994,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 	  ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
 	   "** TODO %?\n  %i\n  %a")
 	  ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
+	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+	  ("c" "Note" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes.org" "Notes")
 	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
 	  )
 	)
@@ -2625,8 +2627,9 @@ Use Writeroom for distraction free editing.
     (xeft-directory rr-notes-dir)
     ;; Only parse the root directory
     (xeft-recursive nil))
-
 #+end_src
+
+
 
 * Navigation
 :PROPERTIES:

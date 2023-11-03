@@ -1092,8 +1092,8 @@ Version 2016-06-19"
   (add-to-list 'org-latex-classes
 	       '("org-article"
 		 "\\documentclass{article}
-		[NO-DEFAULT-PACKAGES]
-		[NO-PACKAGES]"
+		  [NO-DEFAULT-PACKAGES]
+		  [NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1102,8 +1102,8 @@ Version 2016-06-19"
   (add-to-list 'org-latex-classes
 	       '("org-handout"
 		 "\\documentclass{pdfhandout}
-		[NO-DEFAULT-PACKAGES]
-		[NO-PACKAGES]"
+		  [NO-DEFAULT-PACKAGES]
+		  [NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1112,8 +1112,8 @@ Version 2016-06-19"
   (add-to-list 'org-latex-classes
 	       '("org-beamer"
 		 "\\documentclass{beamer}
-		[NO-DEFAULT-PACKAGES]
-		[NO-PACKAGES]"
+		  [NO-DEFAULT-PACKAGES]
+		  [NO-PACKAGES]"
 		 ("\\section{%s}" . "\\section*{%s}")
 		 ("\\subsection{%s}" . "\\subsection*{%s}")
 		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1133,7 +1133,7 @@ Version 2016-06-19"
 		 (apostrophe        :utf-8 "’" :html "&rsquo;")))
   )
 
-	  ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+	    ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
@@ -1296,6 +1296,8 @@ Version 2016-06-19"
 	("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
 	 "** TODO %?\n  %i\n  %a")
 	("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
+	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+	("c" "Note" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes.org" "Notes")
 	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
 	)
       )
