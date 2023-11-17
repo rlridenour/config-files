@@ -1059,306 +1059,309 @@ Version 2016-06-19"
   )
 
 (use-package org-contrib
-  :config
-  (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines)))
+    :config
+    (require 'ox-extra)
+    (ox-extras-activate '(ignore-headlines)))
 
-;; Don't export headlines with :ignore: tag, but do export content.
-;;(require 'ox-extra)
-;;(ox-extras-activate '(ignore-headlines))
+  ;; Don't export headlines with :ignore: tag, but do export content.
+  ;;(require 'ox-extra)
+  ;;(ox-extras-activate '(ignore-headlines))
 
-;; Org-tempo is need for structure templates like "<s".
+  ;; Org-tempo is need for structure templates like "<s".
 
-(require 'org-tempo)
+  (require 'org-tempo)
 
-;; I need to keep whitespace at the end of lines for my Beamer slides.
+  ;; I need to keep whitespace at the end of lines for my Beamer slides.
 
-;; (add-hook 'text-mode-hook 'doom-disable-delete-trailing-whitespace-h)
+  ;; (add-hook 'text-mode-hook 'doom-disable-delete-trailing-whitespace-h)
 
-(use-package orgonomic
-  :defer t
-  :straight (orgonomic :host github :repo "aaronjensen/emacs-orgonomic")
-  :hook (org-mode . orgonomic-mode))
+  (use-package orgonomic
+    :defer t
+    :straight (orgonomic :host github :repo "aaronjensen/emacs-orgonomic")
+    :hook (org-mode . orgonomic-mode))
 
-;; Some export settings
-
-
-;; Add arara export
-
-(require 'ox-arara)
+  ;; Some export settings
 
 
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-	       '("org-article"
-		 "\\documentclass{article}
-		  [NO-DEFAULT-PACKAGES]
-		  [NO-PACKAGES]"
-		 ("\\section{%s}" . "\\section*{%s}")
-		 ("\\subsection{%s}" . "\\subsection*{%s}")
-		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-	       '("org-handout"
-		 "\\documentclass{pdfhandout}
-		  [NO-DEFAULT-PACKAGES]
-		  [NO-PACKAGES]"
-		 ("\\section{%s}" . "\\section*{%s}")
-		 ("\\subsection{%s}" . "\\subsection*{%s}")
-		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-	       '("org-beamer"
-		 "\\documentclass{beamer}
-		  [NO-DEFAULT-PACKAGES]
-		  [NO-PACKAGES]"
-		 ("\\section{%s}" . "\\section*{%s}")
-		 ("\\subsection{%s}" . "\\subsection*{%s}")
-		 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-		 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  )
+  ;; Add arara export
 
-(setq org-export-with-smart-quotes t)
-
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-export-smart-quotes-alist
-	       '("en-us"
-		 (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
-		 (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
-		 (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
-		 (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
-		 (apostrophe        :utf-8 "’" :html "&rsquo;")))
-  )
-
-	    ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+  (require 'ox-arara)
 
 
+  (with-eval-after-load 'ox-latex
+    (add-to-list 'org-latex-classes
+		 '("org-article"
+		   "\\documentclass{article}
+		    [NO-DEFAULT-PACKAGES]
+		    [NO-PACKAGES]"
+		   ("\\section{%s}" . "\\section*{%s}")
+		   ("\\subsection{%s}" . "\\subsection*{%s}")
+		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+    (add-to-list 'org-latex-classes
+		 '("org-handout"
+		   "\\documentclass{pdfhandout}
+		    [NO-DEFAULT-PACKAGES]
+		    [NO-PACKAGES]"
+		   ("\\section{%s}" . "\\section*{%s}")
+		   ("\\subsection{%s}" . "\\subsection*{%s}")
+		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+    (add-to-list 'org-latex-classes
+		 '("org-beamer"
+		   "\\documentclass{beamer}
+		    [NO-DEFAULT-PACKAGES]
+		    [NO-PACKAGES]"
+		   ("\\section{%s}" . "\\section*{%s}")
+		   ("\\subsection{%s}" . "\\subsection*{%s}")
+		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+    )
 
-(use-package org-footnote-assistant
-  :straight (org-footnote-assistant :type git :host github :repo "lazzalazza/org-footnote-assistant")
-  :commands (org-footnote-assistant)
-  :after (org)
-  :config
-  (org-footnote-assistant-mode 1))
+  (setq org-export-with-smart-quotes t)
 
+  (with-eval-after-load 'ox-latex
+    (add-to-list 'org-export-smart-quotes-alist
+		 '("en-us"
+		   (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
+		   (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+		   (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+		   (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+		   (apostrophe        :utf-8 "’" :html "&rsquo;")))
+    )
 
-(defun
-    make-slides ()
-  ;; (interactive)
-  (async-shell-command-no-window "mkslides"))
-
-(defun
-    make-notes ()
-  ;; (interactive)
-  (async-shell-command-no-window "mknotes"))
-
-
-(defun lecture-slides ()
-  "publish org data file as beamer slides"
-  (interactive)
-  (save-buffer)
-  (find-file "*-slides.org" t)
-  (org-beamer-export-to-latex)
-  (kill-buffer)
-  (make-slides)
-  (find-file "*-data.org" t))
-
-
-(defun lecture-notes ()
-  "publish org data file as beamer notes"
-  (interactive)
-  (save-buffer)
-  (find-file "*-notes.org" t)
-  (org-beamer-export-to-latex)
-  (kill-buffer)
-  (make-notes)
-  (find-file "*-data.org" t))
-
-(defun canvas-notes ()
-  "Copy HTML slide notes for Canvas"
-  (interactive)
-  (save-buffer)
-  (shell-command "canvas-notes")
-  (find-file "canvas.org")
-  (canvas-copy)
-  (kill-buffer)
-  (delete-file "canvas-data.org"))
+	      ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
-(defun present ()
-  (interactive)
-  (async-shell-command "present"))
 
-(defun canvas-copy ()
-  "Copy html for canvas pages"
-  (interactive)
-  (save-buffer)
-  (org-html-export-to-html)
-  (shell-command "canvas")
-  )
-
-(defun  create-args ()
-  (interactive)
-  (kill-ring-save (region-beginning) (region-end))
-  (exchange-point-and-mark)
-  (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
-  (previous-line)
-  ;; (previous-line)
-  (org-beginning-of-line)
-  (forward-word)
-  (forward-char)
-  (forward-char)
-  (insert "\\underline{")
-  (org-end-of-line)
-  (insert "}")
-  (next-line)
-  (org-beginning-of-line)
-  (forward-word)
-  (insert "[\\phantom{\\(\\therefore\\)}]")
-  (next-line)
-  (next-line)
-  (org-return)
-  (org-return)
-  (org-yank)
-  (exchange-point-and-mark)
-  (yas-expand-snippet (yas-lookup-snippet "arg-wrap-html"))
-  )
+  (use-package org-footnote-assistant
+    :straight (org-footnote-assistant :type git :host github :repo "lazzalazza/org-footnote-assistant")
+    :commands (org-footnote-assistant)
+    :after (org)
+    :config
+    (org-footnote-assistant-mode 1))
 
 
-(defun  create-tex-arg ()
-  (interactive)
-  (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
-  (previous-line)
-  (previous-line)
-  (forward-word)
-  (forward-char)
-  (forward-char)
-  (insert "\\underline{")
-  (org-end-of-line)
-  (insert "}")
-  (next-line)
-  (org-beginning-of-line)
-  (forward-word)
-  (insert "[\\phantom{\\(\\therefore\\)}]")
-  (next-line)
-  (next-line)
-  (org-return)
-  (org-return)
-  )
+  (defun
+      make-slides ()
+    ;; (interactive)
+    (async-shell-command-no-window "mkslides"))
 
-(setq org-latex-pdf-process '("arara %f"))
+  (defun
+      make-notes ()
+    ;; (interactive)
+    (async-shell-command-no-window "mknotes"))
+
+(defalias 'convert-snote-to-anote
+   (kmacro "C-s E N V : SPC n o t e <return> <down> <down> C-SPC C-s * <return> <up> s-c a n o t e <tab> s-v <return>"))
 
 
-(defun rlr/org-mkpdf ()
-  "Make PDF with pdf latexmk."
-  (interactive)
-  (save-buffer)
-  (org-latex-export-to-latex)
-  (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
-
-(defun rlr/org-open-pdf ()
-  "Open PDF in background with default viewer."
-  (interactive)
-  (async-shell-command-no-window (concat "open -g " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "pdf"))))))
-
-(defun rlr/org-mklua ()
-  "Make PDF with lua latexmk."
-  (interactive)
-  (save-buffer)
-  (org-latex-export-to-latex)
-  (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
+  (defun lecture-slides ()
+    "publish org data file as beamer slides"
+    (interactive)
+    (save-buffer)
+    (find-file "*-slides.org" t)
+    (org-beamer-export-to-latex)
+    (kill-buffer)
+    (make-slides)
+    (find-file "*-data.org" t))
 
 
-(defun rlr/org-arara ()
-  "Make PDF with Arara."
-  (interactive)
-  (save-buffer)
-  (org-arara-export-to-latex)
-  (async-shell-command-no-window (concat "mkarara " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+  (defun lecture-notes ()
+    "publish org data file as beamer notes"
+    (interactive)
+    (save-buffer)
+    (find-file "*-notes.org" t)
+    (org-beamer-export-to-latex)
+    (kill-buffer)
+    (make-notes)
+    (find-file "*-data.org" t))
 
-(defun rlr/org-date ()
-  "Update existing date: timestamp on a Hugo post."
-  (interactive)
-  (save-excursion (
-		   goto-char 1)
-		  (re-search-forward "^#\\+date:")
-		  (let ((beg (point)))
-		    (end-of-line)
-		    (delete-region beg (point)))
-		  (insert (concat " " (format-time-string "%B %e, %Y")))))
+  (defun canvas-notes ()
+    "Copy HTML slide notes for Canvas"
+    (interactive)
+    (save-buffer)
+    (shell-command "canvas-notes")
+    (find-file "canvas.org")
+    (canvas-copy)
+    (kill-buffer)
+    (delete-file "canvas-data.org"))
 
-;; Org-capture
-(setq org-capture-templates
-      '(
-	("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
-	 "** TODO %?\n  %i\n  %a")
-	("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
-	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
-	("c" "Note" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes.org" "Notes")
-	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+
+  (defun present ()
+    (interactive)
+    (async-shell-command "present"))
+
+  (defun canvas-copy ()
+    "Copy html for canvas pages"
+    (interactive)
+    (save-buffer)
+    (org-html-export-to-html)
+    (shell-command "canvas")
+    )
+
+  (defun  create-args ()
+    (interactive)
+    (kill-ring-save (region-beginning) (region-end))
+    (exchange-point-and-mark)
+    (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
+    (previous-line)
+    ;; (previous-line)
+    (org-beginning-of-line)
+    (forward-word)
+    (forward-char)
+    (forward-char)
+    (insert "\\underline{")
+    (org-end-of-line)
+    (insert "}")
+    (next-line)
+    (org-beginning-of-line)
+    (forward-word)
+    (insert "[\\phantom{\\(\\therefore\\)}]")
+    (next-line)
+    (next-line)
+    (org-return)
+    (org-return)
+    (org-yank)
+    (exchange-point-and-mark)
+    (yas-expand-snippet (yas-lookup-snippet "arg-wrap-html"))
+    )
+
+
+  (defun  create-tex-arg ()
+    (interactive)
+    (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
+    (previous-line)
+    (previous-line)
+    (forward-word)
+    (forward-char)
+    (forward-char)
+    (insert "\\underline{")
+    (org-end-of-line)
+    (insert "}")
+    (next-line)
+    (org-beginning-of-line)
+    (forward-word)
+    (insert "[\\phantom{\\(\\therefore\\)}]")
+    (next-line)
+    (next-line)
+    (org-return)
+    (org-return)
+    )
+
+  (setq org-latex-pdf-process '("arara %f"))
+
+
+  (defun rlr/org-mkpdf ()
+    "Make PDF with pdf latexmk."
+    (interactive)
+    (save-buffer)
+    (org-latex-export-to-latex)
+    (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
+
+  (defun rlr/org-open-pdf ()
+    "Open PDF in background with default viewer."
+    (interactive)
+    (async-shell-command-no-window (concat "open -g " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "pdf"))))))
+
+  (defun rlr/org-mklua ()
+    "Make PDF with lua latexmk."
+    (interactive)
+    (save-buffer)
+    (org-latex-export-to-latex)
+    (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
+
+
+  (defun rlr/org-arara ()
+    "Make PDF with Arara."
+    (interactive)
+    (save-buffer)
+    (org-arara-export-to-latex)
+    (async-shell-command-no-window (concat "mkarara " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+
+  (defun rlr/org-date ()
+    "Update existing date: timestamp on a Hugo post."
+    (interactive)
+    (save-excursion (
+		     goto-char 1)
+		    (re-search-forward "^#\\+date:")
+		    (let ((beg (point)))
+		      (end-of-line)
+		      (delete-region beg (point)))
+		    (insert (concat " " (format-time-string "%B %e, %Y")))))
+
+  ;; Org-capture
+  (setq org-capture-templates
+	'(
+	  ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
+	   "** TODO %?\n  %i\n  %a")
+	  ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
+	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+	  ("c" "Note" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes.org" "Notes")
+	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+	  )
 	)
-      )
 
-(with-eval-after-load 'org-capture
-  (add-to-list 'org-capture-templates
-	       '("n" "New note (with Denote)" plain
-		 (file denote-last-path)
-		 #'denote-org-capture
-		 :no-save t
-		 :immediate-finish nil
-		 :kill-buffer t
-		 :jump-to-captured t)))
-
-
-(setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
-
-(define-key global-map "\C-cc" 'org-capture)
-
-;; Org super agenda
-
-(use-package org-super-agenda
-  :after org-agenda
-  :init
-  (setq org-agenda-skip-scheduled-if-done t
-	org-agenda-skip-deadline-if-done t
-	org-agenda-include-deadlines t
-	org-agenda-block-separator nil
-	org-agenda-compact-blocks t
-	org-agenda-start-day nil ;; i.e. today
-	org-agenda-span 1
-	org-agenda-start-on-weekday nil)
-  (setq org-agenda-custom-commands
-	'(("c" "Super view"
-	   ((agenda "" ((org-agenda-overriding-header "")
-			(org-super-agenda-groups
-			 '((:name "Today"
-				  :time-grid t
-				  :date today
-				  :order 1)))))
-	    (alltodo "" ((org-agenda-overriding-header "")
-			 (org-super-agenda-groups
-			  '((:log t)
-			    (:name "Important"
-				   :priority "A"
-				   :order 4)
-			    (:name "Today's tasks"
-				   :file-path "journal/")
-			    (:name "Due Today"
-				   :deadline today
-				   :order 2)
-			    (:name "Overdue"
-				   :deadline past
-				   :order 3)
-			    (:discard (:not (:todo "TODO")))))))))))
-  :config
-  (org-super-agenda-mode))
+  (with-eval-after-load 'org-capture
+    (add-to-list 'org-capture-templates
+		 '("n" "New note (with Denote)" plain
+		   (file denote-last-path)
+		   #'denote-org-capture
+		   :no-save t
+		   :immediate-finish nil
+		   :kill-buffer t
+		   :jump-to-captured t)))
 
 
-;; Display 7 full days in the agenda.
-(setq org-agenda-span 7)
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
+
+  (define-key global-map "\C-cc" 'org-capture)
+
+  ;; Org super agenda
+
+  (use-package org-super-agenda
+    :after org-agenda
+    :init
+    (setq org-agenda-skip-scheduled-if-done t
+	  org-agenda-skip-deadline-if-done t
+	  org-agenda-include-deadlines t
+	  org-agenda-block-separator nil
+	  org-agenda-compact-blocks t
+	  org-agenda-start-day nil ;; i.e. today
+	  org-agenda-span 1
+	  org-agenda-start-on-weekday nil)
+    (setq org-agenda-custom-commands
+	  '(("c" "Super view"
+	     ((agenda "" ((org-agenda-overriding-header "")
+			  (org-super-agenda-groups
+			   '((:name "Today"
+				    :time-grid t
+				    :date today
+				    :order 1)))))
+	      (alltodo "" ((org-agenda-overriding-header "")
+			   (org-super-agenda-groups
+			    '((:log t)
+			      (:name "Important"
+				     :priority "A"
+				     :order 4)
+			      (:name "Today's tasks"
+				     :file-path "journal/")
+			      (:name "Due Today"
+				     :deadline today
+				     :order 2)
+			      (:name "Overdue"
+				     :deadline past
+				     :order 3)
+			      (:discard (:not (:todo "TODO")))))))))))
+    :config
+    (org-super-agenda-mode))
+
+
+  ;; Display 7 full days in the agenda.
+  (setq org-agenda-span 7)
 
 (use-package org-bulletproof
   :defer t

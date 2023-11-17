@@ -1853,6 +1853,9 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     ;; (interactive)
     (async-shell-command-no-window "mknotes"))
 
+(defalias 'convert-snote-to-anote
+   (kmacro "C-s E N V : SPC n o t e <return> <down> <down> C-SPC C-s * <return> <up> s-c a n o t e <tab> s-v <return>"))
+
 
   (defun lecture-slides ()
     "publish org data file as beamer slides"
