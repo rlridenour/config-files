@@ -374,7 +374,9 @@ Make help buffers active when created, so pressing "q" will immediately close th
   (line-number-mode)
   (column-number-mode)
   (global-visual-line-mode 1)
-  (hl-line-mode)
+  (global-hl-line-mode)
+(setq hl-line-sticky-flag nil)
+(setq global-hl-line-sticky-flag nil)
 #+end_src
 
 Highlight line at point.
@@ -411,7 +413,6 @@ Add some space between lines.
   (setq-default line-spacing 0.25)
 #+end_src
 
-
 #+begin_src emacs-lisp
   (use-package modus-themes
     :straight (modus-themes :type git :flavor melpa :host sourcehut :repo "protesilaos/modus-themes")
@@ -431,11 +432,13 @@ Add some space between lines.
    "<f9>" #'modus-themes-toggle)
 #+end_src
 
-#+begin_src emacs-lisp
+Add extra padding between elements. See [[https://protesilaos.com/codelog/2023-11-15-spacious-padding-extra-ui-dev/][Emacs: ‘spacious-padding’ covers more User Interface elements | Protesilaos Stavrou]]
 
-
+#+begin_src emacs-lisp :tangle no
+(use-package spacious-padding
+:config
+(spacious-padding-mode 1))
 #+end_src
-
 
 
 Use mood-line for the modeline. It's fast and simple.
@@ -449,17 +452,30 @@ Use mood-line for the modeline. It's fast and simple.
   (display-time-mode)
 #+end_src
 
+#+begin_src emacs-lisp :tangle no
+(use-package mini-echo
+:config
+(mini-echo-mode))
+#+end_src
+
 
 
 Flash modeline instead of warning bell.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (setq visible-bell nil
 	ring-bell-function 'flash-mode-line)
   (defun flash-mode-line ()
     (invert-face 'mode-line)
     (run-with-timer 0.1 nil #'invert-face 'mode-line))
 #+end_src
+
+Disable warning bell
+
+#+begin_src emacs-lisp
+(setq ring-bell-function 'ignore)
+#+end_src
+
 
 
 Immediately highlight matching pairs of parentheses and quotes.
@@ -511,45 +527,12 @@ Use rainbow delimiters.
    "s-d" #'goto-dashboard)
 #+end_src
 
-Centaur Tabs
-
-#+begin_src emacs-lisp :tangle no
-  (use-package centaur-tabs
-    :init
-    (setq centaur-tabs-set-icons nil)
-    (setq centaur-tabs-show-new-tab-button nil)
-    (setq centaur-tabs-set-close-button nil)
-    (setq centaur-tabs-height 32)
-    (setq centaur-tabs-enable-ido-completion nil)
-    (setq centaur-tabs-set-modified-marker t)
-    (setq centaur-tabs-cycle-scope 'tabs)
-    :config
-    (centaur-tabs-mode t)
-    :hook
-    (emacs-startup . centaur-tabs-mode)
-    (dashboard-mode . centaur-tabs-local-mode)
-    :general
-    ("s-[" #'centaur-tabs-backward
-     "s-]" #'centaur-tabs-forward
-     "s-{" #'centaur-tabs-backward-group
-     "s-}" #'centaur-tabs-forward-group
-     "C-<tab>" #'centaur-tabs-forward
-     "M-<tab>" #'centaur-tabs-forward-group
-     "C-1" #'centaur-tabs-select-visible-tab
-     "C-2" #'centaur-tabs-select-visible-tab
-     "C-3" #'centaur-tabs-select-visible-tab
-     "C-4" #'centaur-tabs-select-visible-tab
-     "C-5" #'centaur-tabs-select-visible-tab
-     "C-6" #'centaur-tabs-select-visible-tab
-     "C-7" #'centaur-tabs-select-visible-tab
-     "C-8" #'centaur-tabs-select-visible-tab
-     "C-9" #'centaur-tabs-select-visible-tab
-     ))
-#+end_src
 
 #+begin_src emacs-lisp
   (use-package rainbow-mode)
 #+end_src
+
+
 
 
 
@@ -1198,17 +1181,13 @@ Functions for handling windows.
     (("C-." . embark-act)         ;; pick some comfortable binding
      ("C-;" . embark-dwim)        ;; good alternative: M-.
      ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-
     :init
-
     ;; Optionally replace the key help with a completing-read interface
     (setq prefix-help-command #'embark-prefix-help-command)
-
     ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
     ;; strategy, if you want to see the documentation from multiple providers.
     (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
     ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
-
     :config
 
     ;; Hide the mode line of the Embark live/completions buffers
@@ -1221,6 +1200,44 @@ Functions for handling windows.
   (use-package embark-consult
     :hook
     (embark-collect-mode . consult-preview-at-point-mode))
+
+(defun embark-which-key-indicator ()
+  "An embark indicator that displays keymaps using which-key.
+The which-key help message will show the type and value of the
+current target followed by an ellipsis if there are further
+targets."
+  (lambda (&optional keymap targets prefix)
+    (if (null keymap)
+        (which-key--hide-popup-ignore-command)
+      (which-key--show-keymap
+       (if (eq (plist-get (car targets) :type) 'embark-become)
+           "Become"
+         (format "Act on %s '%s'%s"
+                 (plist-get (car targets) :type)
+                 (embark--truncate-target (plist-get (car targets) :target))
+                 (if (cdr targets) "…" "")))
+       (if prefix
+           (pcase (lookup-key keymap prefix 'accept-default)
+             ((and (pred keymapp) km) km)
+             (_ (key-binding prefix 'accept-default)))
+         keymap)
+       nil nil t (lambda (binding)
+                   (not (string-suffix-p "-argument" (cdr binding))))))))
+
+(setq embark-indicators
+  '(embark-which-key-indicator
+    embark-highlight-indicator
+    embark-isearch-highlight-indicator))
+
+(defun embark-hide-which-key-indicator (fn &rest args)
+  "Hide the which-key indicator immediately when using the completing-read prompter."
+  (which-key--hide-popup-ignore-command)
+  (let ((embark-indicators
+         (remq #'embark-which-key-indicator embark-indicators)))
+      (apply fn args)))
+
+(advice-add #'embark-completing-read-prompter
+            :around #'embark-hide-which-key-indicator)
 
   (use-package corfu
     ;; Optional customizations
@@ -2084,7 +2101,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 
 Org-noter
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (use-package org-noter)
 #+end_src
 
@@ -2590,16 +2607,12 @@ Use Writeroom for distraction free editing.
     (setq denote-date-format nil)
     )
 
+(require 'denote-journal-extras)
+
   (use-package consult-notes
     :config
 (consult-notes-denote-mode))
 
-  (defun my-denote-journal ()
-    "Create an entry tagged 'journal' with the date as its title."
-    (interactive)
-    (denote
-     (format-time-string "%A %B %d %Y") ; format like Tuesday June 14 2022
-     '("journal"))) ; multiple keywords are a list of strings: '("one" "two")
 
 
   (use-package citar-denote
@@ -3170,7 +3183,7 @@ Unset some keys.
       ("c" org-capture "capture")
       ("n" denote "note")
       ("v" denote-menu-list-notes "view notes")
-      ("j" my-denote-journal "journal"))
+      ("j" denote-journal-extras-new-or-existing-entry "journal"))
      ))
 #+end_src
 
@@ -3550,8 +3563,6 @@ Function to jump out of matched pairs. This is handy, but I've moved it to the e
 
   (global-set-key (kbd "M-1") 'jump-out-of-pair)
 #+end_src
-
-
 
 Make a function to reload the Emacs config file to test changes.
 
