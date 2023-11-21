@@ -1870,9 +1870,46 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     ;; (interactive)
     (async-shell-command-no-window "mknotes"))
 
-(defalias 'convert-snote-to-anote
-   (kmacro "C-s E N V : SPC n o t e <return> <down> <down> C-SPC C-s * <return> <up> s-c a n o t e <tab> s-v <return>"))
+  (defun duplicate-slide-note ()
+    (interactive)
+    (search-backward ":END:")
+    (next-line)
+    (kill-ring-save (point)
+		    (progn
+		      (search-forward "** ")
+		      (beginning-of-line)
+		      (point))
+		    )
+    (yas-expand-snippet (yas-lookup-snippet "beamer article notes"))
+    (yank)
+    )
 
+(defun duplicate-all-slide-notes ()
+    (interactive)
+    (save-excursion
+      (end-of-buffer)
+      (newline)
+      (newline)
+      (insert "** ")
+      (beginning-of-buffer)
+      (while (ignore-errors
+	       (search-forward ":BEAMER_ENV: note"))
+	(next-line)
+	(next-line)
+	(kill-ring-save (point)
+			(progn
+			  (search-forward "** ")
+			  (beginning-of-line)
+			  (point))
+			)
+	(yas-expand-snippet (yas-lookup-snippet "beamer article notes"))
+	(yank))
+      (end-of-buffer)
+      (search-backward "**")
+      (kill-line)
+      )
+    (save-buffer)
+    )
 
   (defun lecture-slides ()
     "publish org data file as beamer slides"
