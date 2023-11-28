@@ -1205,6 +1205,7 @@ targets."
       (end-of-buffer)
       (newline)
       (newline)
+      ;; Need a blank slide at the end to convert the last note.
       (insert "** ")
       (beginning-of-buffer)
       (while (ignore-errors
@@ -1219,6 +1220,7 @@ targets."
 			)
 	(yas-expand-snippet (yas-lookup-snippet "beamer article notes"))
 	(yank))
+      ;; Delete the blank slide that was added earlier.
       (end-of-buffer)
       (search-backward "**")
       (kill-line)
@@ -1367,7 +1369,7 @@ targets."
 	   "** TODO %?\n  %i\n  %a")
 	  ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
 	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
-	  ("c" "Note" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/notes.org" "Notes")
+	  ("c" "Quick note" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes/quick-notes.org" "Notes")
 	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
 	  )
 	)
@@ -1839,7 +1841,7 @@ targets."
 ;; Denote
   (use-package denote
     :config
-    (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes")
+    (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes/denote/")
     (setq denote-infer-keywords t)
     (setq denote-sort-keywords t)
     (setq denote-prompts '(title keywords))
@@ -2404,6 +2406,15 @@ targets."
     ("h" dired-omit-mode "Show hidden files")
     ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
     ("n" dired-toggle-read-only "edit Filenames"))))
+
+(major-mode-hydra-define denote-menu-mode
+(:quit-key "q")
+("Tools"
+(("f" denote-menu-filter "Filter by regex")
+("k" denote-menu-filter-by-keyword "Filter by keyword")
+("c" denote-menu-clear-filters "Clear filters")
+("d" denote-menu-export-to-dired "Dired")
+)))
 
 (defhydra hydra-org (:color teal)
   ("a" org-agenda "agenda")
