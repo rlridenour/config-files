@@ -132,9 +132,8 @@
 (general-define-key
  "<f9>" #'modus-themes-toggle)
 
-(use-package mood-line
-  :config
-  (mood-line-mode))
+(use-package doom-modeline
+  :init (doom-modeline-mode 1))
 
 (setq display-time-24hr-format t)
 (display-time-mode)

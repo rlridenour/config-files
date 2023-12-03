@@ -443,11 +443,21 @@ Add extra padding between elements. See [[https://protesilaos.com/codelog/2023-1
 
 Use mood-line for the modeline. It's fast and simple.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package mood-line
     :config
     (mood-line-mode))
+#+end_src
 
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :init (doom-modeline-mode 1))
+#+end_src
+
+
+
+
+#+begin_src emacs-lisp
   (setq display-time-24hr-format t)
   (display-time-mode)
 #+end_src
