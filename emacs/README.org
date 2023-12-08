@@ -1587,6 +1587,13 @@ Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-o
     (setq sp-show-pair-from-inside t))
 #+end_src
 
+** Expand-region
+
+#+begin_src emacs-lisp
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+#+end_src
+
 
 ** Aggressive Indent
 

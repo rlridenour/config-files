@@ -979,6 +979,9 @@ targets."
   (show-smartparens-global-mode t)
   (setq sp-show-pair-from-inside t))
 
+(use-package expand-region
+  :bind ("C-=" . er/expand-region))
+
 (use-package aggressive-indent
   :config
   (global-aggressive-indent-mode 1))
