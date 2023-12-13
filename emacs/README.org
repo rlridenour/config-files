@@ -1438,7 +1438,7 @@ Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-o
 :header-args: :tangle init.el
 :END:
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package meow
     :init
     (defun meow-setup ()
