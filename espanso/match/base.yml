@@ -83,7 +83,10 @@ matches:
 
   - trigger: ":ew"
     replace: "Excellent work!"
-    
+
+  - trigger: ":gi"
+    replace: "Good introduction."
+
     
 
     
