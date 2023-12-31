@@ -1344,6 +1344,60 @@ targets."
 
 (use-package gnuplot)
 
+(defun convert-qti-nyit ()
+  (interactive)
+  ;; Copy all to a temp buffer and set to text mode.
+  (let ((old-buffer (current-buffer)))
+    (with-temp-buffer
+      (insert-buffer-substring old-buffer)
+      (text-mode)
+      ;; convert multiple choice options, mark end of correct option with one "**"
+      (beginning-of-buffer)
+      (while (re-search-forward "1)" nil t)
+	(replace-match "a)"))
+      (beginning-of-buffer)
+      (while (re-search-forward "2)" nil t)
+	(replace-match "b)"))
+      (beginning-of-buffer)
+      (while (re-search-forward "3)" nil t)
+	(replace-match "c)"))
+      (beginning-of-buffer)
+      (while (re-search-forward "4)" nil t)
+	(replace-match "d)"))
+      (beginning-of-buffer)
+      (while (re-search-forward "5)" nil t)
+	(replace-match "e)"))
+      ;; convert multiple correct answer and essay questions
+      (beginning-of-buffer)
+      (while (re-search-forward "-" nil t)
+	(replace-match ""))
+      ;; Change correct multiple answer options to "*"
+      (beginning-of-buffer)
+      (while (re-search-forward "x" nil t)
+	(replace-match "*"))
+      (beginning-of-buffer)
+      ;; remove whitespace at beginning of lines
+      (while (re-search-forward "^\s-*" nil t)
+	(replace-match ""))
+      (beginning-of-buffer)
+      (while (re-search-forward "\\([0-9]\\)" nil t)
+	(replace-match "\n\\1"))
+      ;; move correct answer symbol to beginning of line
+      (beginning-of-buffer)
+      (while (re-search-forward "\\(^.*\\)\\(\*$\\)" nil t)
+	(replace-match "\*\\1"))
+      (delete-trailing-whitespace)
+      ;; delete empty line at end and beginning
+      (end-of-buffer)
+      (delete-char -1)
+      (beginning-of-buffer)
+      (kill-line)
+      ;; Copy result to clipboard
+      (clipboard-kill-ring-save (point-min) (point-max))
+      )
+    )
+  )
+
 (use-package citar
   :defer t
   :bind (("C-c C-b" . citar-insert-citation)
