@@ -1396,6 +1396,7 @@ targets."
       (clipboard-kill-ring-save (point-min) (point-max))
       )
     )
+  (browse-url "https://www.nyit.edu/its/canvas_exam_converter")
   )
 
 (use-package citar

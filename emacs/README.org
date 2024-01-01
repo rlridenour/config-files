@@ -2216,6 +2216,7 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 	(clipboard-kill-ring-save (point-min) (point-max))
 	)
       )
+    (browse-url "https://www.nyit.edu/its/canvas_exam_converter")
     )
 #+end_src
 
