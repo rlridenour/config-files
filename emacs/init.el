@@ -973,6 +973,7 @@ targets."
   ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
   (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
   :config
+  (setq org-list-allow-alphabetical t)
   (setq org-highlight-latex-and-related '(latex script entities))
   ;; (setq org-startup-indented t)
   (setq org-adapt-indentation nil)
@@ -1375,8 +1376,12 @@ targets."
       (beginning-of-buffer)
       (while (re-search-forward "x" nil t)
 	(replace-match "*"))
+      ;; Mark short answer responses with "**"
       (beginning-of-buffer)
+      (while (re-search-forward "+" nil t)
+	(replace-match "*"))
       ;; remove whitespace at beginning of lines
+      (beginning-of-buffer)
       (while (re-search-forward "^\s-*" nil t)
 	(replace-match ""))
       (beginning-of-buffer)
