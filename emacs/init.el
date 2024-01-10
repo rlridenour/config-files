@@ -135,6 +135,9 @@
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
 
+(set-face-attribute 'mode-line nil
+:foreground "black" :background "wheat3" :box '(:line-width 1 :color "black"))
+
 (setq display-time-24hr-format t)
 (display-time-mode)
 
@@ -144,8 +147,18 @@
 (setq show-paren-delay 0)
 
 (use-package rainbow-delimiters
-  :config
-  (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+    :config
+    (add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+    (set-face-foreground 'rainbow-delimiters-depth-1-face "#c66")  ; red
+    (set-face-foreground 'rainbow-delimiters-depth-2-face "#6c6")  ; green
+    (set-face-foreground 'rainbow-delimiters-depth-3-face "#69f")  ; blue
+    (set-face-foreground 'rainbow-delimiters-depth-4-face "#cc6")  ; yellow
+    (set-face-foreground 'rainbow-delimiters-depth-5-face "#6cc")  ; cyan
+    (set-face-foreground 'rainbow-delimiters-depth-6-face "#c6c")  ; magenta
+    (set-face-foreground 'rainbow-delimiters-depth-7-face "#ccc")  ; light gray
+    (set-face-foreground 'rainbow-delimiters-depth-8-face "#999")  ; medium gray
+    (set-face-foreground 'rainbow-delimiters-depth-9-face "#666")  ; dark gray
+)
 
 (use-package dashboard
   :config
@@ -1352,22 +1365,6 @@ targets."
     (with-temp-buffer
       (insert-buffer-substring old-buffer)
       (text-mode)
-      ;; convert multiple choice options, mark end of correct option with one "**"
-      (beginning-of-buffer)
-      (while (re-search-forward "1)" nil t)
-	(replace-match "a)"))
-      (beginning-of-buffer)
-      (while (re-search-forward "2)" nil t)
-	(replace-match "b)"))
-      (beginning-of-buffer)
-      (while (re-search-forward "3)" nil t)
-	(replace-match "c)"))
-      (beginning-of-buffer)
-      (while (re-search-forward "4)" nil t)
-	(replace-match "d)"))
-      (beginning-of-buffer)
-      (while (re-search-forward "5)" nil t)
-	(replace-match "e)"))
       ;; convert multiple correct answer and essay questions
       (beginning-of-buffer)
       (while (re-search-forward "-" nil t)
