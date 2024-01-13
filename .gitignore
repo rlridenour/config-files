@@ -73,3 +73,5 @@ emacs/persist/
 emacs/mastodon*
 emacs/projects
 nvim/lazy-lock.json
+emacs/network-security.data
+topgrade.toml
