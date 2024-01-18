@@ -3,6 +3,7 @@
 #+email: rlridenour@gmail.com
 #+auto_tangle: t
 
+
 * Early init file
 :PROPERTIES:
 :header-args: :tangle early-init.el
@@ -518,7 +519,7 @@ Use rainbow delimiters.
 
 
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package dashboard
     :config
     (dashboard-setup-startup-hook)
@@ -593,6 +594,7 @@ Backup files are in ~/Users/rlridenour/.cache/emacs/backup/~.
 Provide easy access to recently opened files.
 
 #+begin_src emacs-lisp
+  (recentf-mode)
     ;;;;; = recentf - recently opened files
   ;; Maintains a list of recently opened files
   ;; Where to save the recentf file - in the .cache
@@ -604,7 +606,7 @@ Provide easy access to recently opened files.
   ;; Max number of files served in files menu
   (setq recentf-max-menu-items 50)
   (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
-  (recentf-mode)
+
 
 #+end_src
 
@@ -1706,7 +1708,7 @@ Display suggestions in grid.
 
 #+begin_src emacs-lisp
 (add-to-list 'vertico-multiform-categories
-             '(jinx grid (vertico-grid-annotate . 20)))
+	     '(jinx grid (vertico-grid-annotate . 20)))
 #+end_src
 
 
@@ -1862,350 +1864,384 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 #+end_src
 
 #+begin_src emacs-lisp
-    (use-package org-contrib
-      :config
-      (require 'ox-extra)
-      (ox-extras-activate '(ignore-headlines)))
+  (use-package org-contrib
+    :config
+    (require 'ox-extra)
+    (ox-extras-activate '(ignore-headlines)))
 
-    ;; Don't export headlines with :ignore: tag, but do export content.
-    ;;(require 'ox-extra)
-    ;;(ox-extras-activate '(ignore-headlines))
+  ;; Don't export headlines with :ignore: tag, but do export content.
+  ;;(require 'ox-extra)
+  ;;(ox-extras-activate '(ignore-headlines))
 
-    ;; Org-tempo is need for structure templates like "<s".
+  ;; Org-tempo is need for structure templates like "<s".
 
-    (require 'org-tempo)
+  (require 'org-tempo)
 
-    ;; I need to keep whitespace at the end of lines for my Beamer slides.
+  ;; I need to keep whitespace at the end of lines for my Beamer slides.
 
-    ;; (add-hook 'text-mode-hook 'doom-disable-delete-trailing-whitespace-h)
+  ;; (add-hook 'text-mode-hook 'doom-disable-delete-trailing-whitespace-h)
 
-    (use-package orgonomic
-      :defer t
-      :straight (orgonomic :host github :repo "aaronjensen/emacs-orgonomic")
-      :hook (org-mode . orgonomic-mode))
+  (use-package orgonomic
+    :defer t
+    :straight (orgonomic :host github :repo "aaronjensen/emacs-orgonomic")
+    :hook (org-mode . orgonomic-mode))
 
-    ;; Some export settings
-
-
-    ;; Add arara export
-
-    (require 'ox-arara)
+  ;; Some export settings
 
 
-    (with-eval-after-load 'ox-latex
-      (add-to-list 'org-latex-classes
-		   '("org-article"
-		     "\\documentclass{article}
-		      [NO-DEFAULT-PACKAGES]
-		      [NO-PACKAGES]"
-		     ("\\section{%s}" . "\\section*{%s}")
-		     ("\\subsection{%s}" . "\\subsection*{%s}")
-		     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-		     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-      (add-to-list 'org-latex-classes
-		   '("org-handout"
-		     "\\documentclass{pdfhandout}
-		      [NO-DEFAULT-PACKAGES]
-		      [NO-PACKAGES]"
-		     ("\\section{%s}" . "\\section*{%s}")
-		     ("\\subsection{%s}" . "\\subsection*{%s}")
-		     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-		     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-      (add-to-list 'org-latex-classes
-		   '("org-beamer"
-		     "\\documentclass{beamer}
-		      [NO-DEFAULT-PACKAGES]
-		      [NO-PACKAGES]"
-		     ("\\section{%s}" . "\\section*{%s}")
-		     ("\\subsection{%s}" . "\\subsection*{%s}")
-		     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-		     ("\\paragraph{%s}" . "\\paragraph*{%s}")
-		     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-      )
+  ;; Add arara export
 
-    (setq org-export-with-smart-quotes t)
-
-    (with-eval-after-load 'ox-latex
-      (add-to-list 'org-export-smart-quotes-alist
-		   '("en-us"
-		     (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
-		     (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
-		     (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
-		     (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
-		     (apostrophe        :utf-8 "’" :html "&rsquo;")))
-      )
-
-		;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+  (require 'ox-arara)
 
 
+  (with-eval-after-load 'ox-latex
+    (add-to-list 'org-latex-classes
+		 '("org-article"
+		   "\\documentclass{article}
+			[NO-DEFAULT-PACKAGES]
+			[NO-PACKAGES]"
+		   ("\\section{%s}" . "\\section*{%s}")
+		   ("\\subsection{%s}" . "\\subsection*{%s}")
+		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+    (add-to-list 'org-latex-classes
+		 '("org-handout"
+		   "\\documentclass{pdfhandout}
+			[NO-DEFAULT-PACKAGES]
+			[NO-PACKAGES]"
+		   ("\\section{%s}" . "\\section*{%s}")
+		   ("\\subsection{%s}" . "\\subsection*{%s}")
+		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+    (add-to-list 'org-latex-classes
+		 '("org-beamer"
+		   "\\documentclass{beamer}
+			[NO-DEFAULT-PACKAGES]
+			[NO-PACKAGES]"
+		   ("\\section{%s}" . "\\section*{%s}")
+		   ("\\subsection{%s}" . "\\subsection*{%s}")
+		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+		   ("\\paragraph{%s}" . "\\paragraph*{%s}")
+		   ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+    )
 
-    (use-package org-footnote-assistant
-      :straight (org-footnote-assistant :type git :host github :repo "lazzalazza/org-footnote-assistant")
-      :commands (org-footnote-assistant)
-      :after (org)
-      :config
-      (org-footnote-assistant-mode 1))
+  (setq org-export-with-smart-quotes t)
+
+  (with-eval-after-load 'ox-latex
+    (add-to-list 'org-export-smart-quotes-alist
+		 '("en-us"
+		   (primary-opening   :utf-8 "“" :html "&ldquo;" :latex "\\enquote{"  :texinfo "``")
+		   (primary-closing   :utf-8 "”" :html "&rdquo;" :latex "}"           :texinfo "''")
+		   (secondary-opening :utf-8 "‘" :html "&lsquo;" :latex "\\enquote*{" :texinfo "`")
+		   (secondary-closing :utf-8 "’" :html "&rsquo;" :latex "}"           :texinfo "'")
+		   (apostrophe        :utf-8 "’" :html "&rsquo;")))
+    )
+
+		  ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
-    (defun
-	make-slides ()
-      ;; (interactive)
-      (async-shell-command-no-window "mkslides"))
 
-    (defun
-	make-notes ()
-      ;; (interactive)
-      (async-shell-command-no-window "mknotes"))
+  (use-package org-footnote-assistant
+    :straight (org-footnote-assistant :type git :host github :repo "lazzalazza/org-footnote-assistant")
+    :commands (org-footnote-assistant)
+    :after (org)
+    :config
+    (org-footnote-assistant-mode 1))
 
-    (defun duplicate-slide-note ()
-      (interactive)
-      (search-backward ":END:")
-      (next-line)
-      (kill-ring-save (point)
-		      (progn
-			(search-forward "** ")
-			(beginning-of-line)
-			(point))
-		      )
-      (yas-expand-snippet (yas-lookup-snippet "beamer article notes"))
-      (yank)
-      )
+
+  (defun
+      make-slides ()
+    ;; (interactive)
+    (async-shell-command-no-window "mkslides"))
+
+  (defun
+      make-notes ()
+    ;; (interactive)
+    (async-shell-command-no-window "mknotes"))
+
+  (defun duplicate-slide-note ()
+    (interactive)
+    (search-backward ":END:")
+    (next-line)
+    (kill-ring-save (point)
+		    (progn
+		      (search-forward "** ")
+		      (beginning-of-line)
+		      (point))
+		    )
+    (yas-expand-snippet (yas-lookup-snippet "beamer article notes"))
+    (yank)
+    )
 
   (defun duplicate-all-slide-notes ()
-      (interactive)
-      (save-excursion
-	(end-of-buffer)
-	(newline)
-	(newline)
-	;; Need a blank slide at the end to convert the last note.
-	(insert "** ")
-	(beginning-of-buffer)
-	(while (ignore-errors
-		 (search-forward ":BEAMER_ENV: note"))
-	  (next-line)
-	  (next-line)
-	  (kill-ring-save (point)
-			  (progn
-			    (search-forward "** ")
-			    (beginning-of-line)
-			    (point))
-			  )
-	  (yas-expand-snippet (yas-lookup-snippet "beamer article notes"))
-	  (yank))
-	;; Delete the blank slide that was added earlier.
-	(end-of-buffer)
-	(search-backward "**")
-	(kill-line)
-	)
-      (save-buffer)
+    (interactive)
+    (save-excursion
+      (end-of-buffer)
+      (newline)
+      (newline)
+      ;; Need a blank slide at the end to convert the last note.
+      (insert "** ")
+      (beginning-of-buffer)
+      (while (ignore-errors
+	       (search-forward ":BEAMER_ENV: note"))
+	(next-line)
+	(next-line)
+	(kill-ring-save (point)
+			(progn
+			  (search-forward "** ")
+			  (beginning-of-line)
+			  (point))
+			)
+	(yas-expand-snippet (yas-lookup-snippet "beamer article notes"))
+	(yank))
+      ;; Delete the blank slide that was added earlier.
+      (end-of-buffer)
+      (search-backward "**")
+      (kill-line)
       )
+    (save-buffer)
+    )
 
-    (defun lecture-slides ()
-      "publish org data file as beamer slides"
-      (interactive)
-      (save-buffer)
-      (find-file "*-slides.org" t)
-      (org-beamer-export-to-latex)
-      (kill-buffer)
-      (make-slides)
-      (find-file "*-data.org" t))
-
-
-    (defun lecture-notes ()
-      "publish org data file as beamer notes"
-      (interactive)
-      (save-buffer)
-      (find-file "*-notes.org" t)
-      (org-beamer-export-to-latex)
-      (kill-buffer)
-      (make-notes)
-      (find-file "*-data.org" t))
-
-    (defun canvas-notes ()
-      "Copy HTML slide notes for Canvas"
-      (interactive)
-      (save-buffer)
-      (shell-command "canvas-notes")
-      (find-file "canvas.org")
-      (canvas-copy)
-      (kill-buffer)
-      (delete-file "canvas-data.org"))
+  (defun lecture-slides ()
+    "publish org data file as beamer slides"
+    (interactive)
+    (save-buffer)
+    (find-file "*-slides.org" t)
+    (org-beamer-export-to-latex)
+    (kill-buffer)
+    (make-slides)
+    (find-file "*-data.org" t))
 
 
-    (defun present ()
-      (interactive)
-      (async-shell-command "present"))
+  (defun lecture-notes ()
+    "publish org data file as beamer notes"
+    (interactive)
+    (save-buffer)
+    (find-file "*-notes.org" t)
+    (org-beamer-export-to-latex)
+    (kill-buffer)
+    (make-notes)
+    (find-file "*-data.org" t))
 
-    (defun canvas-copy ()
-      "Copy html for canvas pages"
-      (interactive)
-      (save-buffer)
-      (org-html-export-to-html)
-      (shell-command "canvas")
-      )
-
-    (defun  create-args ()
-      (interactive)
-      (kill-ring-save (region-beginning) (region-end))
-      (exchange-point-and-mark)
-      (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
-      (previous-line)
-      ;; (previous-line)
-      (org-beginning-of-line)
-      (forward-word)
-      (forward-char)
-      (forward-char)
-      (insert "\\underline{")
-      (org-end-of-line)
-      (insert "}")
-      (next-line)
-      (org-beginning-of-line)
-      (forward-word)
-      (insert "[\\phantom{\\(\\therefore\\)}]")
-      (next-line)
-      (next-line)
-      (org-return)
-      (org-return)
-      (org-yank)
-      (exchange-point-and-mark)
-      (yas-expand-snippet (yas-lookup-snippet "arg-wrap-html"))
-      )
+  (defun canvas-notes ()
+    "Copy HTML slide notes for Canvas"
+    (interactive)
+    (save-buffer)
+    (shell-command "canvas-notes")
+    (find-file "canvas.org")
+    (canvas-copy)
+    (kill-buffer)
+    (delete-file "canvas-data.org"))
 
 
-    (defun  create-tex-arg ()
-      (interactive)
-      (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
-      (previous-line)
-      (previous-line)
-      (forward-word)
-      (forward-char)
-      (forward-char)
-      (insert "\\underline{")
-      (org-end-of-line)
-      (insert "}")
-      (next-line)
-      (org-beginning-of-line)
-      (forward-word)
-      (insert "[\\phantom{\\(\\therefore\\)}]")
-      (next-line)
-      (next-line)
-      (org-return)
-      (org-return)
-      )
+  (defun present ()
+    (interactive)
+    (async-shell-command "present"))
 
-    (setq org-latex-pdf-process '("arara %f"))
+  (defun canvas-copy ()
+    "Copy html for canvas pages"
+    (interactive)
+    (save-buffer)
+    (org-html-export-to-html)
+    (shell-command "canvas")
+    )
 
-
-    (defun rlr/org-mkpdf ()
-      "Make PDF with pdf latexmk."
-      (interactive)
-      (save-buffer)
-      (org-latex-export-to-latex)
-      (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
-
-    (defun rlr/org-open-pdf ()
-      "Open PDF in background with default viewer."
-      (interactive)
-      (async-shell-command-no-window (concat "open -g " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "pdf"))))))
-
-    (defun rlr/org-mklua ()
-      "Make PDF with lua latexmk."
-      (interactive)
-      (save-buffer)
-      (org-latex-export-to-latex)
-      (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
+  (defun  create-args ()
+    (interactive)
+    (kill-ring-save (region-beginning) (region-end))
+    (exchange-point-and-mark)
+    (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
+    (previous-line)
+    ;; (previous-line)
+    (org-beginning-of-line)
+    (forward-word)
+    (forward-char)
+    (forward-char)
+    (insert "\\underline{")
+    (org-end-of-line)
+    (insert "}")
+    (next-line)
+    (org-beginning-of-line)
+    (forward-word)
+    (insert "[\\phantom{\\(\\therefore\\)}]")
+    (next-line)
+    (next-line)
+    (org-return)
+    (org-return)
+    (org-yank)
+    (exchange-point-and-mark)
+    (yas-expand-snippet (yas-lookup-snippet "arg-wrap-html"))
+    )
 
 
-    (defun rlr/org-arara ()
-      "Make PDF with Arara."
-      (interactive)
-      (save-buffer)
-      (org-arara-export-to-latex)
-      (async-shell-command-no-window (concat "mkarara " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+  (defun  create-tex-arg ()
+    (interactive)
+    (yas-expand-snippet (yas-lookup-snippet "arg-wrap-tex"))
+    (previous-line)
+    (previous-line)
+    (forward-word)
+    (forward-char)
+    (forward-char)
+    (insert "\\underline{")
+    (org-end-of-line)
+    (insert "}")
+    (next-line)
+    (org-beginning-of-line)
+    (forward-word)
+    (insert "[\\phantom{\\(\\therefore\\)}]")
+    (next-line)
+    (next-line)
+    (org-return)
+    (org-return)
+    )
 
-    (defun rlr/org-date ()
-      "Update existing date: timestamp on a Hugo post."
-      (interactive)
-      (save-excursion (
-		       goto-char 1)
-		      (re-search-forward "^#\\+date:")
-		      (let ((beg (point)))
-			(end-of-line)
-			(delete-region beg (point)))
-		      (insert (concat " " (format-time-string "%B %e, %Y")))))
+  (setq org-latex-pdf-process '("arara %f"))
 
-    ;; Org-capture
-    (setq org-capture-templates
-	  '(
-	    ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
-	     "** TODO %?\n  %i\n  %a")
-	    ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
-	     "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
-	    ("c" "Quick note" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes/quick-notes.org" "Notes")
-	     "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
-	    )
+
+  (defun rlr/org-mkpdf ()
+    "Make PDF with pdf latexmk."
+    (interactive)
+    (save-buffer)
+    (org-latex-export-to-latex)
+    (async-shell-command-no-window (concat "mkpdf " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
+
+  (defun rlr/org-open-pdf ()
+    "Open PDF in background with default viewer."
+    (interactive)
+    (async-shell-command-no-window (concat "open -g " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "pdf"))))))
+
+  (defun rlr/org-mklua ()
+    "Make PDF with lua latexmk."
+    (interactive)
+    (save-buffer)
+    (org-latex-export-to-latex)
+    (async-shell-command-no-window (concat "mklua " (shell-quote-argument(file-name-nondirectory (file-name-with-extension buffer-file-name "tex"))))))
+
+
+  (defun rlr/org-arara ()
+    "Make PDF with Arara."
+    (interactive)
+    (save-buffer)
+    (org-arara-export-to-latex)
+    (async-shell-command-no-window (concat "mkarara " (shell-quote-argument(file-name-sans-extension (buffer-file-name)))".tex")))
+
+  (defun rlr/org-date ()
+    "Update existing date: timestamp on a Hugo post."
+    (interactive)
+    (save-excursion (
+		     goto-char 1)
+		    (re-search-forward "^#\\+date:")
+		    (let ((beg (point)))
+		      (end-of-line)
+		      (delete-region beg (point)))
+		    (insert (concat " " (format-time-string "%B %e, %Y")))))
+
+  ;; Org-capture
+  (setq org-capture-templates
+	'(
+	  ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
+	   "** TODO %?\n  %i\n  %a")
+	  ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
+	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+	  ("c" "Quick note" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes/quick-notes.org" "Notes")
+	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
 	  )
+	)
 
-    (with-eval-after-load 'org-capture
-      (add-to-list 'org-capture-templates
-		   '("n" "New note (with Denote)" plain
-		     (file denote-last-path)
-		     #'denote-org-capture
-		     :no-save t
-		     :immediate-finish nil
-		     :kill-buffer t
-		     :jump-to-captured t)))
-
-
-    (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
-
-    (define-key global-map "\C-cc" 'org-capture)
-
-    ;; Org super agenda
-
-    (use-package org-super-agenda
-      :after org-agenda
-      :init
-      (setq org-agenda-skip-scheduled-if-done t
-	    org-agenda-skip-deadline-if-done t
-	    org-agenda-include-deadlines t
-	    org-agenda-block-separator nil
-	    org-agenda-compact-blocks t
-	    org-agenda-start-day nil ;; i.e. today
-	    org-agenda-span 1
-	    org-agenda-start-on-weekday nil)
-      (setq org-agenda-custom-commands
-	    '(("c" "Super view"
-	       ((agenda "" ((org-agenda-overriding-header "")
-			    (org-super-agenda-groups
-			     '((:name "Today"
-				      :time-grid t
-				      :date today
-				      :order 1)))))
-		(alltodo "" ((org-agenda-overriding-header "")
-			     (org-super-agenda-groups
-			      '((:log t)
-				(:name "Important"
-				       :priority "A"
-				       :order 4)
-				(:name "Today's tasks"
-				       :file-path "journal/")
-				(:name "Due Today"
-				       :deadline today
-				       :order 2)
-				(:name "Overdue"
-				       :deadline past
-				       :order 3)
-				(:discard (:not (:todo "TODO")))))))))))
-      :config
-      (org-super-agenda-mode))
+  (with-eval-after-load 'org-capture
+    (add-to-list 'org-capture-templates
+		 '("n" "New note (with Denote)" plain
+		   (file denote-last-path)
+		   #'denote-org-capture
+		   :no-save t
+		   :immediate-finish nil
+		   :kill-buffer t
+		   :jump-to-captured t)))
 
 
-    ;; Display 7 full days in the agenda.
-    (setq org-agenda-span 7)
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
+
+  (define-key global-map "\C-cc" 'org-capture)
+
+  ;; Use diary for appointments
+
+(setq diary-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/diary")
+
+  ;; Org super agenda
+  (use-package org-super-agenda
+    :after org-agenda
+    :init
+    (setq org-agenda-skip-scheduled-if-done t
+	  org-agenda-skip-deadline-if-done t
+	  org-agenda-include-deadlines t
+	  org-agenda-block-separator nil
+	  org-agenda-compact-blocks t
+	  org-agenda-start-day nil ;; i.e. today
+	  org-agenda-span 1
+	  org-agenda-include-diary t
+	  org-agenda-start-on-weekday nil)
+    (setq org-agenda-custom-commands
+	  '(("c" "Super view"
+	     ((agenda "" ((org-agenda-overriding-header "")
+			  (org-super-agenda-groups
+			   '((:name "Today"
+				    :time-grid t
+				    :date today
+				    :order 1)))))
+	      (alltodo "" ((org-agenda-overriding-header "")
+			   (org-super-agenda-groups
+			    '((:log t)
+			      (:name "Important"
+				     :priority "A"
+				     :order 4)
+			      (:name "Today's tasks"
+				     :file-path "journal/")
+			      (:name "Due Today"
+				     :deadline today
+				     :order 2)
+			      (:name "Overdue"
+				     :deadline past
+				     :order 3)
+			      (:discard (:not (:todo "TODO")))))))))))
+    :config
+    (org-super-agenda-mode))
+
+
+  ;; Display 7 full days in the agenda.
+  (setq org-agenda-span 7)
 #+end_src
+
+Auto refresh org agenda
+
+#+begin_src emacs-lisp
+(defvar refresh-agenda-time-seconds 60)
+
+(defvar refresh-agenda-timer nil
+  "Timer for `refresh-agenda-timer-function' to reschedule itself, or nil.")
+
+(defun refresh-agenda-timer-function ()
+  ;; If the user types a command while refresh-agenda-timer
+  ;; is active, the next time this function is called from
+  ;; its main idle timer, deactivate refresh-agenda-timer.
+  (when refresh-agenda-timer
+    (cancel-timer refresh-agenda-timer))
+
+  (org-agenda nil "a")
+
+  (setq refresh-agenda-timer
+    (run-with-idle-timer
+      ;; Compute an idle time break-length
+      ;; more than the current value.
+      (time-add (current-idle-time) refresh-agenda-time-seconds)
+      nil
+      'refresh-agenda-timer-function)))
+
+(run-with-idle-timer refresh-agenda-time-seconds t 'refresh-agenda-timer-function)
+#+end_src
+
+
 
 #+begin_src emacs-lisp :tangle no
   (use-package org-appear
@@ -2230,7 +2266,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 Org-noter
 
 #+begin_src emacs-lisp :tangle no
-(use-package org-noter)
+  (use-package org-noter)
 #+end_src
 
 Function for converting Org mode files to QTI file for importing into Canvas using [[https://www.nyit.edu/its/canvas_exam_converter][Canvas Exam Converter | Information Technology Services | New York Tech]]
@@ -2767,30 +2803,30 @@ Use Writeroom for distraction free editing.
 ** Common Lisp
 
 #+begin_src emacs-lisp
-(use-package paredit
-:config
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode)
-(add-hook 'ielm-mode-hook 'enable-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
-(add-hook 'lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'slime-repl-mode-hook 'enable-paredit-mode))
+  (use-package paredit
+    :config
+    (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+    (add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode)
+    (add-hook 'ielm-mode-hook 'enable-paredit-mode)
+    (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
+    (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+    (add-hook 'slime-repl-mode-hook 'enable-paredit-mode))
 #+end_src
 
 
 
 #+begin_src emacs-lisp
-(use-package slime
-:config
-(setq inferior-lisp-program "sbcl"))
+  (use-package slime
+    :config
+    (setq inferior-lisp-program "sbcl"))
 #+end_src
 
 
 #+begin_src emacs-lisp
-(defun override-slime-del-key ()
-  (define-key slime-repl-mode-map
-    (read-kbd-macro paredit-backward-delete-key) nil))
-(add-hook 'slime-repl-mode-hook 'override-slime-del-key)
+  (defun override-slime-del-key ()
+    (define-key slime-repl-mode-map
+		(read-kbd-macro paredit-backward-delete-key) nil))
+  (add-hook 'slime-repl-mode-hook 'override-slime-del-key)
 #+end_src
 
 
@@ -2812,11 +2848,11 @@ Use Writeroom for distraction free editing.
     (setq denote-date-format nil)
     )
 
-(require 'denote-journal-extras)
+  (require 'denote-journal-extras)
 
   (use-package consult-notes
     :config
-(consult-notes-denote-mode))
+    (consult-notes-denote-mode))
 
 
 
@@ -2830,7 +2866,7 @@ Use Writeroom for distraction free editing.
 
 
 
-    ;;;; = xeft - search notes with the xapian syntax
+      ;;;; = xeft - search notes with the xapian syntax
   ;; Search large volume of data (notes) with search engine syntax
   ;; +word -word AND NOT etc
   ;; <tab>   to preview
@@ -2896,7 +2932,7 @@ Use Writeroom for distraction free editing.
 ** Fish
 
 #+begin_src emacs-lisp
-(use-package fish-mode)
+  (use-package fish-mode)
 #+end_src
 
 ** HTML
@@ -3073,7 +3109,7 @@ Force ediff to show diffs in the same frame side-by-side.
 Don't ask to create new shell buffers.
 
 #+begin_src emacs-lisp
-(setq async-shell-command-buffer "new-buffer")
+  (setq async-shell-command-buffer "new-buffer")
 #+end_src
 
 
@@ -3231,7 +3267,7 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
 
   (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
 
-;; (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
+  ;; (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 #+end_src
 
 
@@ -3476,8 +3512,7 @@ Unset some keys.
 ** Major Mode Hydras
 
 
-
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
   (major-mode-hydra-define dashboard-mode
     (:quit-key "q")
     ("Open"
@@ -3565,7 +3600,7 @@ Unset some keys.
      (("m" rlr/tex-mkpdf "PDFLaTeX")
       ("l" rlr/tex-mklua "LuaLaTeX")
       ("w" rlr/tex-mktc "watch PDFLaTeX")
-("L" rlr/tex-mklua "watch LuaLaTeX")
+      ("L" rlr/tex-mklua "watch LuaLaTeX")
       ("c" tex-clean "clean aux")
       ("C" tex-clean-all "clean all")
       ("n" latex-word-count "word count"))))
@@ -3633,14 +3668,14 @@ Unset some keys.
 #+end_src
 
 #+begin_src emacs-lisp
-(major-mode-hydra-define denote-menu-mode
-(:quit-key "q")
-("Tools"
-(("f" denote-menu-filter "Filter by regex")
-("k" denote-menu-filter-by-keyword "Filter by keyword")
-("c" denote-menu-clear-filters "Clear filters")
-("d" denote-menu-export-to-dired "Dired")
-)))
+  (major-mode-hydra-define denote-menu-mode
+    (:quit-key "q")
+    ("Tools"
+     (("f" denote-menu-filter "Filter by regex")
+      ("k" denote-menu-filter-by-keyword "Filter by keyword")
+      ("c" denote-menu-clear-filters "Clear filters")
+      ("d" denote-menu-export-to-dired "Dired")
+      )))
 #+end_src
 
 
@@ -3791,6 +3826,14 @@ Set default directory.
 #+begin_src emacs-lisp
   (setq default-directory "~/")
 #+end_src
+
+#+begin_src emacs-lisp
+  (add-hook 'after-init-hook 'org-agenda-list)
+#+end_src
+
+
+
+
 
 Reset garbage collection.
 

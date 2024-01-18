@@ -75,7 +75,7 @@ matches:
   - trigger: ":sp"
     replace: "Spelling"
 
-  - trigger: "appt"
+  - trigger: ":appt"
     replace: "https://calendly.com/randy-ridenour/appointment"
 
   - trigger: ":gj"

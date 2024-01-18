@@ -160,35 +160,6 @@
     (set-face-foreground 'rainbow-delimiters-depth-9-face "#666")  ; dark gray
 )
 
-(use-package dashboard
-  :config
-  (dashboard-setup-startup-hook)
-  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-  (setq dashboard-week-agenda t)
-  (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
-  (setq dashboard-center-content t)
-  (setq dashboard-set-footer nil)
-  (setq dashboard-banner-logo-title nil)
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons nil)
-  (setq dashboard-set-navigator nil)
-  (setq dashboard-projects-backend 'project-el)
-  (setq dashboard-items '((agenda . 5)
-			  (recents  . 5)
-			  (bookmarks . 10)
-			  (projects . 5))))
-
-
-(defun goto-dashboard ()
-  "this sends you to the dashboard buffer"
-  (interactive)
-  (let ((goto-dashboard-buffer (get-buffer "*dashboard*")))
-    (switch-to-buffer goto-dashboard-buffer))
-  (dashboard-refresh-buffer))
-
-(general-define-key
- "s-d" #'goto-dashboard)
-
 (use-package rainbow-mode)
 
 (general-define-key
@@ -208,7 +179,8 @@
 ;; Do not automatically save
 (setq auto-save-default nil)
 
-;;;;; = recentf - recently opened files
+(recentf-mode)
+  ;;;;; = recentf - recently opened files
 ;; Maintains a list of recently opened files
 ;; Where to save the recentf file - in the .cache
 (setq recentf-save-file (expand-file-name "recentf" rr-cache-dir))
@@ -219,7 +191,6 @@
 ;; Max number of files served in files menu
 (setq recentf-max-menu-items 50)
 (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
-(recentf-mode)
 
 ;;;;; = saveplace - last position in file
 ;; Save point position in files between sessions.
@@ -923,7 +894,7 @@ targets."
  "S-<f7>" #'jinx-correct-all)
 
 (add-to-list 'vertico-multiform-categories
-             '(jinx grid (vertico-grid-annotate . 20)))
+	     '(jinx grid (vertico-grid-annotate . 20)))
 
 (setq case-replace nil)
 
@@ -1046,8 +1017,8 @@ targets."
     (add-to-list 'org-latex-classes
 		 '("org-article"
 		   "\\documentclass{article}
-		    [NO-DEFAULT-PACKAGES]
-		    [NO-PACKAGES]"
+			[NO-DEFAULT-PACKAGES]
+			[NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1056,8 +1027,8 @@ targets."
     (add-to-list 'org-latex-classes
 		 '("org-handout"
 		   "\\documentclass{pdfhandout}
-		    [NO-DEFAULT-PACKAGES]
-		    [NO-PACKAGES]"
+			[NO-DEFAULT-PACKAGES]
+			[NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1066,8 +1037,8 @@ targets."
     (add-to-list 'org-latex-classes
 		 '("org-beamer"
 		   "\\documentclass{beamer}
-		    [NO-DEFAULT-PACKAGES]
-		    [NO-PACKAGES]"
+			[NO-DEFAULT-PACKAGES]
+			[NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1087,7 +1058,7 @@ targets."
 		   (apostrophe        :utf-8 "’" :html "&rsquo;")))
     )
 
-	      ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+		  ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
@@ -1123,7 +1094,7 @@ targets."
     (yank)
     )
 
-(defun duplicate-all-slide-notes ()
+  (defun duplicate-all-slide-notes ()
     (interactive)
     (save-excursion
       (end-of-buffer)
@@ -1313,8 +1284,11 @@ targets."
 
   (define-key global-map "\C-cc" 'org-capture)
 
-  ;; Org super agenda
+  ;; Use diary for appointments
 
+(setq diary-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/diary")
+
+  ;; Org super agenda
   (use-package org-super-agenda
     :after org-agenda
     :init
@@ -1325,6 +1299,7 @@ targets."
 	  org-agenda-compact-blocks t
 	  org-agenda-start-day nil ;; i.e. today
 	  org-agenda-span 1
+	  org-agenda-include-diary t
 	  org-agenda-start-on-weekday nil)
     (setq org-agenda-custom-commands
 	  '(("c" "Super view"
@@ -1355,6 +1330,30 @@ targets."
 
   ;; Display 7 full days in the agenda.
   (setq org-agenda-span 7)
+
+(defvar refresh-agenda-time-seconds 60)
+
+(defvar refresh-agenda-timer nil
+  "Timer for `refresh-agenda-timer-function' to reschedule itself, or nil.")
+
+(defun refresh-agenda-timer-function ()
+  ;; If the user types a command while refresh-agenda-timer
+  ;; is active, the next time this function is called from
+  ;; its main idle timer, deactivate refresh-agenda-timer.
+  (when refresh-agenda-timer
+    (cancel-timer refresh-agenda-timer))
+
+  (org-agenda nil "a")
+
+  (setq refresh-agenda-timer
+    (run-with-idle-timer
+      ;; Compute an idle time break-length
+      ;; more than the current value.
+      (time-add (current-idle-time) refresh-agenda-time-seconds)
+      nil
+      'refresh-agenda-timer-function)))
+
+(run-with-idle-timer refresh-agenda-time-seconds t 'refresh-agenda-timer-function)
 
 (use-package org-bulletproof
   :defer t
@@ -1806,51 +1805,51 @@ targets."
 (use-package writeroom-mode)
 
 ;; Denote
-  (use-package denote
-    :config
-    (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes/denote/")
-    (setq denote-infer-keywords t)
-    (setq denote-sort-keywords t)
-    (setq denote-prompts '(title keywords))
-    (setq denote-date-format nil)
-    )
+(use-package denote
+  :config
+  (setq denote-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes/denote/")
+  (setq denote-infer-keywords t)
+  (setq denote-sort-keywords t)
+  (setq denote-prompts '(title keywords))
+  (setq denote-date-format nil)
+  )
 
 (require 'denote-journal-extras)
 
-  (use-package consult-notes
-    :config
-(consult-notes-denote-mode))
+(use-package consult-notes
+  :config
+  (consult-notes-denote-mode))
 
 
 
-  (use-package citar-denote
-    :after citar denote
-    :config
-    (citar-denote-mode)
-    (setq citar-open-always-create-notes t))
+(use-package citar-denote
+  :after citar denote
+  :config
+  (citar-denote-mode)
+  (setq citar-open-always-create-notes t))
 
-  (use-package denote-menu)
+(use-package denote-menu)
 
 
 
     ;;;; = xeft - search notes with the xapian syntax
-  ;; Search large volume of data (notes) with search engine syntax
-  ;; +word -word AND NOT etc
-  ;; <tab>   to preview
-  ;; <enter> to open the file in the same buffer
-					  ;(use-package (xeft :host github :repo "casouri/xeft")
-  (use-package xeft
-    :commands (xeft)
-    :config
-    (custom-set-faces '(xeft-excerpt-title ((t (:weight bold)))))
-    (custom-set-faces '(xeft-excerpt-body ((t (:height 150)))))
-    :custom
-    ;; Default extension for files created with xeft
-    (xeft-default-extension "org")
-    ;; Where is my search source
-    (xeft-directory rr-notes-dir)
-    ;; Only parse the root directory
-    (xeft-recursive nil))
+;; Search large volume of data (notes) with search engine syntax
+;; +word -word AND NOT etc
+;; <tab>   to preview
+;; <enter> to open the file in the same buffer
+					;(use-package (xeft :host github :repo "casouri/xeft")
+(use-package xeft
+  :commands (xeft)
+  :config
+  (custom-set-faces '(xeft-excerpt-title ((t (:weight bold)))))
+  (custom-set-faces '(xeft-excerpt-body ((t (:height 150)))))
+  :custom
+  ;; Default extension for files created with xeft
+  (xeft-default-extension "org")
+  ;; Where is my search source
+  (xeft-directory rr-notes-dir)
+  ;; Only parse the root directory
+  (xeft-recursive nil))
 
 (use-package avy
   :defer t
@@ -2039,14 +2038,14 @@ targets."
   :defer)
 
 (use-package pdf-tools
-    :config
-    (pdf-tools-install)
-    (setq-default pdf-view-display-size 'fit-width)
-    (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
-    :custom
-    (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
+  :config
+  (pdf-tools-install)
+  (setq-default pdf-view-display-size 'fit-width)
+  (define-key pdf-view-mode-map (kbd "C-s") 'isearch-forward)
+  :custom
+  (pdf-annot-activate-created-annotations t "automatically annotate highlights"))
 
-  (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
+(add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
 
 ;; (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 
@@ -2238,15 +2237,6 @@ targets."
   )
 ;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
 
-(major-mode-hydra-define dashboard-mode
-  (:quit-key "q")
-  ("Open"
-   (("m" consult-bookmark "bookmarks")
-    ("a" consult-org-agenda "consult-agenda")
-    ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
-    ("b" (find-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org") "web bookmarks")
-    )))
-
 (major-mode-hydra-define eww-mode
   (:quit-key "q")
   ("A"
@@ -2307,17 +2297,17 @@ targets."
     ("c" markdown-complete-buffer "complete"))))
 
 (major-mode-hydra-define latex-mode
-    (:quit-key "q")
-    ("Bibtex"
-     (("r" citar-insert-citation "citation"))
-     "LaTeXmk"
-     (("m" rlr/tex-mkpdf "PDFLaTeX")
-      ("l" rlr/tex-mklua "LuaLaTeX")
-      ("w" rlr/tex-mktc "watch PDFLaTeX")
-("L" rlr/tex-mklua "watch LuaLaTeX")
-      ("c" tex-clean "clean aux")
-      ("C" tex-clean-all "clean all")
-      ("n" latex-word-count "word count"))))
+  (:quit-key "q")
+  ("Bibtex"
+   (("r" citar-insert-citation "citation"))
+   "LaTeXmk"
+   (("m" rlr/tex-mkpdf "PDFLaTeX")
+    ("l" rlr/tex-mklua "LuaLaTeX")
+    ("w" rlr/tex-mktc "watch PDFLaTeX")
+    ("L" rlr/tex-mklua "watch LuaLaTeX")
+    ("c" tex-clean "clean aux")
+    ("C" tex-clean-all "clean all")
+    ("n" latex-word-count "word count"))))
 
 (major-mode-hydra-define org-mode
   (:quit-key "q")
@@ -2375,13 +2365,13 @@ targets."
     ("n" dired-toggle-read-only "edit Filenames"))))
 
 (major-mode-hydra-define denote-menu-mode
-(:quit-key "q")
-("Tools"
-(("f" denote-menu-filter "Filter by regex")
-("k" denote-menu-filter-by-keyword "Filter by keyword")
-("c" denote-menu-clear-filters "Clear filters")
-("d" denote-menu-export-to-dired "Dired")
-)))
+  (:quit-key "q")
+  ("Tools"
+   (("f" denote-menu-filter "Filter by regex")
+    ("k" denote-menu-filter-by-keyword "Filter by keyword")
+    ("c" denote-menu-clear-filters "Clear filters")
+    ("d" denote-menu-export-to-dired "Dired")
+    )))
 
 (defhydra hydra-org (:color teal)
   ("a" org-agenda "agenda")
@@ -2479,6 +2469,8 @@ targets."
   (load-file user-init-file))
 
 (setq default-directory "~/")
+
+(add-hook 'after-init-hook 'org-agenda-list)
 
 (setq gc-cons-threshold (* 2 1000 1000))
 
