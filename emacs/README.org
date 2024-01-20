@@ -724,7 +724,7 @@ Kills all open buffers except the current one. From https://github.com/ocodo/.em
      (lambda (buffer)
        (unless (or
 		(string= (buffer-name buffer) "*scratch*")
-		(string= (buffer-name buffer) "*dashboard*")
+		(string= (buffer-name buffer) "*Org Agenda*")
 		(string= (buffer-name buffer) "*Messages*"))
 	 (kill-buffer buffer)))
      (buffer-list))
@@ -1898,8 +1898,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-article"
 		   "\\documentclass{article}
-			[NO-DEFAULT-PACKAGES]
-			[NO-PACKAGES]"
+			  [NO-DEFAULT-PACKAGES]
+			  [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1908,8 +1908,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-handout"
 		   "\\documentclass{pdfhandout}
-			[NO-DEFAULT-PACKAGES]
-			[NO-PACKAGES]"
+			  [NO-DEFAULT-PACKAGES]
+			  [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1918,8 +1918,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-beamer"
 		   "\\documentclass{beamer}
-			[NO-DEFAULT-PACKAGES]
-			[NO-PACKAGES]"
+			  [NO-DEFAULT-PACKAGES]
+			  [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1939,7 +1939,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 		   (apostrophe        :utf-8 "’" :html "&rsquo;")))
     )
 
-		  ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+		    ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
@@ -2167,7 +2167,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 
   ;; Use diary for appointments
 
-(setq diary-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/diary")
+  (setq diary-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/diary")
 
   ;; Org super agenda
   (use-package org-super-agenda
@@ -2213,10 +2213,20 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
   (setq org-agenda-span 7)
 #+end_src
 
-Auto refresh org agenda
+View only the current day's agenda.
 
 #+begin_src emacs-lisp
-(defvar refresh-agenda-time-seconds 60)
+(setq org-agenda-custom-commands
+    '(("d" "Agenda for today" agenda ""
+        ((org-agenda-overriding-header "Today's agenda")
+         (org-agenda-span 'day)
+        ))))
+#+end_src
+
+Auto refresh org agenda every minute, from [[https://emacs.stackexchange.com/questions/47254/update-the-org-agenda-daily-view-automatically-on-background][Stack Exchange]]
+
+#+begin_src emacs-lisp :tangle no
+(defvar refresh-agenda-time-seconds 300)
 
 (defvar refresh-agenda-timer nil
   "Timer for `refresh-agenda-timer-function' to reschedule itself, or nil.")
@@ -2228,7 +2238,7 @@ Auto refresh org agenda
   (when refresh-agenda-timer
     (cancel-timer refresh-agenda-timer))
 
-  (org-agenda nil "a")
+  (org-agenda nil "d")
 
   (setq refresh-agenda-timer
     (run-with-idle-timer
@@ -2241,11 +2251,21 @@ Auto refresh org agenda
 (run-with-idle-timer refresh-agenda-time-seconds t 'refresh-agenda-timer-function)
 #+end_src
 
+#+begin_src emacs-lisp
+  (defun today-agenda ()
+    "Display today's agenda"
+    (interactive)
+    (org-agenda nil "d")
+    )
 
+  (general-define-key
+   "s-d" #'today-agenda)
+#+end_src
 
-#+begin_src emacs-lisp :tangle no
-  (use-package org-appear
-    :hook (org-mode . org-appear-mode))
+Start org agenda
+
+#+begin_src emacs-lisp
+(today-agenda)
 #+end_src
 
 
@@ -3511,9 +3531,8 @@ Unset some keys.
 
 ** Major Mode Hydras
 
-
-#+begin_src emacs-lisp :tangle yes
-  (major-mode-hydra-define dashboard-mode
+#+begin_src emacs-lisp
+  (major-mode-hydra-define org-agenda-mode
     (:quit-key "q")
     ("Open"
      (("m" consult-bookmark "bookmarks")
@@ -3827,9 +3846,8 @@ Set default directory.
   (setq default-directory "~/")
 #+end_src
 
-#+begin_src emacs-lisp
-  (add-hook 'after-init-hook 'org-agenda-list)
-#+end_src
+
+
 
 
 
