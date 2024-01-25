@@ -338,6 +338,35 @@ World clock settings.
   (setq world-clock-time-format "%a, %d %b %H:%M %p %Z")
 #+end_src
 
+** Calendar and Diary
+
+#+begin_src emacs-lisp :tangle no
+  (setq diary-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/diary/diary")
+(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+  (setq display-time-day-and-date t)
+  (diary)
+  (setq appt-display-diary nil)
+  (setq appt-display-interval 5)
+  (setq appt-message-warning-time 15)
+  (appt-activate)
+#+end_src
+
+#+begin_src emacs-lisp :tangle no
+(setq calendar-view-diary-initially-flag t
+       diary-number-of-entries 7
+       diary-display-function #'diary-fancy-display)
+ (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
+(calendar)
+#+end_src
+
+#+begin_src emacs-lisp 
+(defun my-calendar ()
+(interactive)
+(calendar)
+)
+#+end_src
+
 
 
 
@@ -519,12 +548,12 @@ Use rainbow delimiters.
 
 
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package dashboard
     :config
     (dashboard-setup-startup-hook)
     (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-    (setq dashboard-week-agenda t)
+    (setq dashboard-week-agenda nil)
     (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
     (setq dashboard-center-content t)
     (setq dashboard-set-footer nil)
@@ -538,6 +567,12 @@ Use rainbow delimiters.
 			    (bookmarks . 10)
 			    (projects . 5))))
 
+(defun dashboard-insert-agenda (&rest _)
+  "Insert a copy of org-agenda buffer."
+  (insert (save-window-excursion
+            (org-agenda nil "d")
+            (prog1 (buffer-string)
+              (kill-buffer)))))
 
   (defun goto-dashboard ()
     "this sends you to the dashboard buffer"
@@ -879,8 +914,8 @@ Keybindings for files and buffers.
    "C-x C-b" #'ibuffer
    "C-`" #'iterm-goto-filedir-or-home
    "s-o" #'find-file
-   "s-k" #'kill-this-buffer
-   "M-s-k" #'kill-buffer-and-window
+   "M-s-k" #'kill-this-buffer
+   "s-k" #'kill-buffer-and-window
    "s-K" #'nuke-all-buffers
    "s-r" #'consult-buffer
    "M-s-r" #'consult-buffer-other-window
@@ -1825,6 +1860,7 @@ Use deadgrep to search with ripgrep.
    "<f5>" #'deadgrep)
 #+end_src
 
+
 * Writing
 :PROPERTIES:
 :header-args: :tangle init.el
@@ -1847,6 +1883,7 @@ Use deadgrep to search with ripgrep.
     (setq org-hide-emphasis-markers nil)
     ;; (setq org-footnote-section nil)
     (setq org-html-validation-link nil)
+(setq org-time-stamp-rounding-minutes '(0 15))
     (setq org-todo-keyword-faces
 	  '(("DONE" . "green4") ("TODO" . org-warning)))
     (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/"))
@@ -1898,8 +1935,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-article"
 		   "\\documentclass{article}
-			  [NO-DEFAULT-PACKAGES]
-			  [NO-PACKAGES]"
+			    [NO-DEFAULT-PACKAGES]
+			    [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1908,8 +1945,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-handout"
 		   "\\documentclass{pdfhandout}
-			  [NO-DEFAULT-PACKAGES]
-			  [NO-PACKAGES]"
+			    [NO-DEFAULT-PACKAGES]
+			    [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1918,8 +1955,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-beamer"
 		   "\\documentclass{beamer}
-			  [NO-DEFAULT-PACKAGES]
-			  [NO-PACKAGES]"
+			    [NO-DEFAULT-PACKAGES]
+			    [NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1939,7 +1976,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 		   (apostrophe        :utf-8 "’" :html "&rsquo;")))
     )
 
-		    ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+		      ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
@@ -2143,6 +2180,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 	'(
 	  ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
 	   "** TODO %?\n  %i\n  %a")
+("e" "Event" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/events.org" "Future")
+	   "** %? %T")
 	  ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
 	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
 	  ("c" "Quick note" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/Documents/notes/quick-notes.org" "Notes")
@@ -2165,9 +2204,6 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 
   (define-key global-map "\C-cc" 'org-capture)
 
-  ;; Use diary for appointments
-
-  (setq diary-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/diary")
 
   ;; Org super agenda
   (use-package org-super-agenda
@@ -2180,8 +2216,15 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 	  org-agenda-compact-blocks t
 	  org-agenda-start-day nil ;; i.e. today
 	  org-agenda-span 1
-	  org-agenda-include-diary t
+	  org-agenda-window-setup "current-window"
+	  org-agenda-include-diary nil
 	  org-agenda-start-on-weekday nil)
+(setq org-agenda-time-grid
+  '((daily today require-timed remove-match)
+    ()
+    "......"
+    ""))
+
     (setq org-agenda-custom-commands
 	  '(("c" "Super view"
 	     ((agenda "" ((org-agenda-overriding-header "")
@@ -2213,53 +2256,23 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
   (setq org-agenda-span 7)
 #+end_src
 
-View only the current day's agenda.
+Display agenda for the day.
 
 #+begin_src emacs-lisp
 (setq org-agenda-custom-commands
     '(("d" "Agenda for today" agenda ""
-        ((org-agenda-overriding-header "Today's agenda")
-         (org-agenda-span 'day)
-        ))))
-#+end_src
-
-Auto refresh org agenda every minute, from [[https://emacs.stackexchange.com/questions/47254/update-the-org-agenda-daily-view-automatically-on-background][Stack Exchange]]
-
-#+begin_src emacs-lisp :tangle no
-(defvar refresh-agenda-time-seconds 300)
-
-(defvar refresh-agenda-timer nil
-  "Timer for `refresh-agenda-timer-function' to reschedule itself, or nil.")
-
-(defun refresh-agenda-timer-function ()
-  ;; If the user types a command while refresh-agenda-timer
-  ;; is active, the next time this function is called from
-  ;; its main idle timer, deactivate refresh-agenda-timer.
-  (when refresh-agenda-timer
-    (cancel-timer refresh-agenda-timer))
-
-  (org-agenda nil "d")
-
-  (setq refresh-agenda-timer
-    (run-with-idle-timer
-      ;; Compute an idle time break-length
-      ;; more than the current value.
-      (time-add (current-idle-time) refresh-agenda-time-seconds)
-      nil
-      'refresh-agenda-timer-function)))
-
-(run-with-idle-timer refresh-agenda-time-seconds t 'refresh-agenda-timer-function)
+	((org-agenda-overriding-header "Today's agenda")
+	 (org-agenda-span 'day)
+	))))
 #+end_src
 
 #+begin_src emacs-lisp
-  (defun today-agenda ()
-    "Display today's agenda"
-    (interactive)
-    (org-agenda nil "d")
-    )
+(defun today-agenda ()
+  "Display today's agenda"
+  (interactive)
+  (org-agenda nil "d")
+  )
 
-  (general-define-key
-   "s-d" #'today-agenda)
 #+end_src
 
 Start org agenda
@@ -2268,7 +2281,15 @@ Start org agenda
 (today-agenda)
 #+end_src
 
+Use Emacs appointment system for notifications.
 
+#+begin_src emacs-lisp
+(setq appt-time-msg-list nil)    ;; clear existing appt list
+;; (setq appt-message-warning-time '15)  ;; send first warning 15 minutes before appointment
+(org-agenda-to-appt) ;; generate the appt list from org agenda files on emacs launch
+(run-at-time "24:01" 3600 'org-agenda-to-appt) ;; update appt list hourly
+(add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt) ;; update appt list on agenda view
+#+end_src
 
 #+begin_src emacs-lisp
   (use-package org-bulletproof
@@ -3847,6 +3868,10 @@ Set default directory.
 #+end_src
 
 
+
+#+begin_src emacs-lisp
+;; (setq initial-buffer-choice 'my-calendar)
+#+end_src
 
 
 
