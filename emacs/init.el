@@ -2124,6 +2124,29 @@ targets."
 (define-key mu4e-headers-mode-map (kbd "d") 'my-move-to-trash)
 (define-key mu4e-view-mode-map (kbd "d") 'my-move-to-trash)
 
+(setq mu4e-contexts
+      `(
+	,(make-mu4e-context
+	  :name "fastmail"
+	  :enter-func
+	  (lambda ()
+	    (mu4e-message "Entering Fastmail context"))
+	  :leave-func
+	  (lambda () (mu4e-message "Leaving fastmail context"))
+	  :vars
+	  '((; A lot of stuff removed from here
+	     (smtpmail-smtp-server "smtp.fastmail.com")
+	     (smtpmail-default-smtp-server . "smtp.fastmail.com")
+	     (smtpmail-smtp-server . "smtp.fastmail.com")
+	     (smtpmail-local-domain . "fastmail.com")
+	     (user-mail-address . "rlridenour@fastmail.com"))))))
+
+(setq sendmail-program "/opt/homebrew/bin/msmtp"
+      send-mail-function 'smtpmail-send-it
+      message-sendmail-f-is-evil t
+      message-sendmail-extra-arguments '("--read-envelope-from")
+      message-send-mail-function 'message-send-mail-with-sendmail)
+
 (use-package mastodon
   :config
   (mastodon-discover)
@@ -2311,6 +2334,15 @@ targets."
    )
   )
 ;; (global-set-key (kbd "s-t") 'hydra-toggle/body)
+
+(major-mode-hydra-define dashboard-mode
+  (:quit-key "q")
+  ("Open"
+   (("m" consult-bookmark "bookmarks")
+    ("a" consult-org-agenda "consult-agenda")
+    ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
+    ("b" (find-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org") "web bookmarks")
+    )))
 
 (major-mode-hydra-define org-agenda-mode
   (:quit-key "q")

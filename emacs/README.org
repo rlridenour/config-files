@@ -1,6 +1,6 @@
 #+title: Emacs Configuration
 #+author: Randy Ridenour
-#+email: rlridenour@gmail.com
+#+email: rlridenour@fastmail.com
 #+auto_tangle: t
 
 
@@ -39,7 +39,7 @@ Set my name and email.
 
 #+begin_src emacs-lisp
   (setq user-full-name "Randy Ridenour"
-	user-mail-address "rlridenour@gmail.com")
+	user-mail-address "rlridenour@fastmail.com")
 #+end_src
 
 Silence the "Package cl is deprecated" warning. I might not need this, given that I've silenced all warnings in the next line.
@@ -62,7 +62,7 @@ Compile elisp.
 #+begin_src emacs-lisp
   (when (fboundp 'native-compile-async)
     (setq comp-deferred-compilation t
-	  comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
+	  comp-deferred-compilation-black-list '("/mu4e*\\.el$")))
 #+end_src
 
 Remove unnecessary GUI elements.
@@ -3355,6 +3355,35 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
 (define-key mu4e-view-mode-map (kbd "d") 'my-move-to-trash)
 #+end_src
 
+#+begin_src emacs-lisp
+  (setq mu4e-contexts
+	`(
+	  ,(make-mu4e-context
+	    :name "fastmail"
+	    :enter-func
+	    (lambda ()
+	      (mu4e-message "Entering Fastmail context"))
+	    :leave-func
+	    (lambda () (mu4e-message "Leaving fastmail context"))
+	    :vars
+	    '((; A lot of stuff removed from here
+	       (smtpmail-smtp-server "smtp.fastmail.com")
+	       (smtpmail-default-smtp-server . "smtp.fastmail.com")
+	       (smtpmail-smtp-server . "smtp.fastmail.com")
+	       (smtpmail-local-domain . "fastmail.com")
+	       (user-mail-address . "rlridenour@fastmail.com"))))))
+#+end_src
+
+#+begin_src emacs-lisp
+(setq sendmail-program "/opt/homebrew/bin/msmtp"
+      send-mail-function 'smtpmail-send-it
+      message-sendmail-f-is-evil t
+      message-sendmail-extra-arguments '("--read-envelope-from")
+      message-send-mail-function 'message-send-mail-with-sendmail)
+#+end_src
+
+
+
 
 
 
@@ -3598,6 +3627,20 @@ Unset some keys.
 
 
 ** Major Mode Hydras
+
+#+begin_src emacs-lisp
+(major-mode-hydra-define dashboard-mode
+  (:quit-key "q")
+  ("Open"
+   (("m" consult-bookmark "bookmarks")
+    ("a" consult-org-agenda "consult-agenda")
+    ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
+    ("b" (find-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org") "web bookmarks")
+    )))
+#+end_src
+
+
+
 
 #+begin_src emacs-lisp
   (major-mode-hydra-define org-agenda-mode
