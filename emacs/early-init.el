@@ -9,7 +9,7 @@
 (setq package-enable-at-startup nil)
 
 (setq user-full-name "Randy Ridenour"
-      user-mail-address "rlridenour@gmail.com")
+      user-mail-address "rlridenour@fastmail.com")
 
 (setq byte-compile-warnings '(cl-functions))
 
@@ -20,7 +20,7 @@
 
 (when (fboundp 'native-compile-async)
   (setq comp-deferred-compilation t
-	comp-deferred-compilation-black-list '("/mu4e.*\\.el$")))
+	comp-deferred-compilation-black-list '("/mu4e*\\.el$")))
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)

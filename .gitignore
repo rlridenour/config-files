@@ -76,3 +76,5 @@ nvim/lazy-lock.json
 emacs/network-security.data
 topgrade.toml
 pizauth.conf
+emacs/diary
+emacs/misc-elisp.org
