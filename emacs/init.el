@@ -1257,7 +1257,8 @@ targets."
     (org-return)
     )
 
-  (setq org-latex-pdf-process '("arara %f"))
+  ;; (setq org-latex-pdf-process '("arara %f"))
+  (setq org-latex-pdf-process '("mkpdf %f"))
 
 
   (defun rlr/org-mkpdf ()

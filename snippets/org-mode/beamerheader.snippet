@@ -1,12 +1,33 @@
 # -*- mode: snippet -*-
 # name: beamer header
-# key: beamerheader
+# key: beamer
 # --
+
 #+TITLE: ${1:Title}
+:drawer:
 #+AUTHOR: ${2:Dr.} Ridenour
-#+DATE: `(format-time-string "%B %e, %Y")`
-#+OPTIONS:   H:3
+#+DATE: 
+#+SUBTITLE: Beamer Slides
+#+BEAMER_HEADER: \institute{Department of Philosophy}
+#+LANGUAGE: en-us
 #+LaTeX_CLASS: beamer
-#+BEAMER_THEME: metropolis
+#+LaTeX_CLASS_options: [aspectratio=169,12pt,ignorenonframetext]
+#+BEAMER_THEME: obu
+#+OPTIONS: H:2
+#+LATEX_HEADER: \usepackage{fancyvrb, graphicx, amsmath, amssymb, bm, here}
+#+LATEX_HEADER: \usepackage{hyperref}
+# #+LATEX_HEADER: \setbeameroption{show notes on second screen}
+#+LATEX_HEADER: \setbeamerfont{note page}{size=\footnotesize}
+#+LATEX_HEADER: \addtobeamertemplate{note page}{\setbeamerfont{itemize/enumerate subbody}{size=\footnotesize}}{}
+#+LATEX_HEADER: \hypersetup{pdfkeywords={SP-Right}}
+#+LATEX_COMPILER: pdflatex
+#+OPTIONS: toc:nil
+#+startup: beamer 
+:end:
+
+** 
+\maketitle
+
+# For a TOC slide, add "\tableofcontents" under a level 2 heading.
 
 $0
