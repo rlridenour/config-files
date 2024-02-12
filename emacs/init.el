@@ -293,6 +293,11 @@
    (buffer-list))
   (delete-other-windows))
 
+(use-package super-save
+  :config
+  (setq super-save-auto-save-when-idle t)
+  (super-save-mode +1))
+
 (defun xah-next-user-buffer ()
   "Switch to the next user buffer.
 “user buffer” is determined by `xah-user-buffer-q'.
@@ -2092,61 +2097,6 @@ targets."
 (add-hook 'pdf-view-mode-hook (lambda() (display-line-numbers-mode -1) (blink-cursor-mode -1)))
 
 ;; (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
-
-(use-package mu4e
-:load-path "/opt/homebrew/Cellar/mu/1.10.8/share/emacs/site-lisp/mu/mu4e")
-
-;; for sending mails
-(require 'smtpmail)
-
-(setq
- mue4e-headers-skip-duplicates  t
- mu4e-view-show-images t
- mu4e-view-show-addresses t
- mu4e-compose-format-flowed nil
- mu4e-date-format "%y/%m/%d"
- mu4e-headers-date-format "%Y/%m/%d"
- mu4e-change-filenames-when-moving t
- mu4e-attachments-dir "~/Downloads"
-
- mu4e-maildir       "~/Maildir"   ;; top-level Maildir
- ;; note that these folders below must start with /
- ;; the paths are relative to maildir root
- mu4e-refile-folder "/Archive"
- mu4e-sent-folder   "/Sent"
- mu4e-drafts-folder "/Drafts"
- mu4e-trash-folder  "/Trash")
-
-;; this setting allows to re-sync and re-index mail
-;; by pressing U
-(setq mu4e-get-mail-command  "mbsync -a")
-
-(fset 'my-move-to-trash "mTrash")
-(define-key mu4e-headers-mode-map (kbd "d") 'my-move-to-trash)
-(define-key mu4e-view-mode-map (kbd "d") 'my-move-to-trash)
-
-(setq mu4e-contexts
-      `(
-	,(make-mu4e-context
-	  :name "fastmail"
-	  :enter-func
-	  (lambda ()
-	    (mu4e-message "Entering Fastmail context"))
-	  :leave-func
-	  (lambda () (mu4e-message "Leaving fastmail context"))
-	  :vars
-	  '((; A lot of stuff removed from here
-	     (smtpmail-smtp-server "smtp.fastmail.com")
-	     (smtpmail-default-smtp-server . "smtp.fastmail.com")
-	     (smtpmail-smtp-server . "smtp.fastmail.com")
-	     (smtpmail-local-domain . "fastmail.com")
-	     (user-mail-address . "rlridenour@fastmail.com"))))))
-
-(setq sendmail-program "/opt/homebrew/bin/msmtp"
-      send-mail-function 'smtpmail-send-it
-      message-sendmail-f-is-evil t
-      message-sendmail-extra-arguments '("--read-envelope-from")
-      message-send-mail-function 'message-send-mail-with-sendmail)
 
 (use-package mastodon
   :config
