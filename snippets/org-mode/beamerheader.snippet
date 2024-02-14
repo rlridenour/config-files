@@ -6,13 +6,14 @@
 #+TITLE: ${1:Title}
 :drawer:
 #+AUTHOR: ${2:Dr.} Ridenour
-#+DATE: 
-#+SUBTITLE: Beamer Slides
+#+DATE: `(format-time-string "%B %d, %Y")`
+#+SUBTITLE: $3
 #+BEAMER_HEADER: \institute{Department of Philosophy}
 #+LANGUAGE: en-us
 #+LaTeX_CLASS: beamer
 #+LaTeX_CLASS_options: [aspectratio=169,12pt,ignorenonframetext]
 #+BEAMER_THEME: obu
+# Use obu[sections] for section slides.
 #+OPTIONS: H:2
 #+LATEX_HEADER: \usepackage{fancyvrb, graphicx, amsmath, amssymb, bm, here}
 #+LATEX_HEADER: \usepackage{hyperref}
