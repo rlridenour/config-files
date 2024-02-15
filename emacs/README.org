@@ -2380,7 +2380,13 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
     :custom
     (org-cite-global-bibliography '("~/Dropbox/bibtex/rlr.bib"))
     (citar-bibliography '("~/Dropbox/bibtex/rlr.bib"))
-    (org-cite-csl-styles-dir "/usr/local/texlive/2023/texmf-dist/tex/latex/citation-style-language/styles"))
+    (org-cite-csl-styles-dir "/usr/local/texlive/2023/texmf-dist/tex/latex/citation-style-language/styles")
+    (org-cite-export-processors
+     '((md . (csl "chicago-author-date.csl"))   ; Footnote reliant
+       (latex biblatex)                                   ; For humanities
+       (odt . (csl "chicago-author-date.csl"))  ; Footnote reliant
+       (t . (csl "chicago-author-date.csl")))))      ; Fallback
+
 
   ;; Use ebib for bibtex file management
 
