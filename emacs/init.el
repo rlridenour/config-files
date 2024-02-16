@@ -1456,6 +1456,60 @@ targets."
   (browse-url "https://www.nyit.edu/its/canvas_exam_converter")
   )
 
+(defun my/org-toggle-emphasis (type)
+    "Toggle org emphasis TYPE (a character) at point."
+    (cl-labels ((in-emph (re)
+		  "See if in org emphasis given by RE."
+		  (and (org-in-regexp re 2)
+		       (>= (point) (match-beginning 3))
+		       (<= (point) (match-end 4))))
+		(de-emphasize ()
+		  "Remove most recently matched org emphasis markers."
+		  (save-excursion
+		    (replace-match "" nil nil nil 3)
+		    (delete-region (match-end 4) (1+ (match-end 4))))))
+      (let* ((res (vector org-emph-re org-verbatim-re))
+	     (idx (cl-case type (?/ 0) (?* 0) (?_ 0) (?+ 0) (?= 1) (?~ 1)))
+	     (re (aref res idx))
+	     (other-re (aref res (- 1 idx)))
+	     (type-re (string-replace (if (= idx 1) "=~" "*/_+")
+				      (char-to-string type) re))
+	     add-bounds offset is-word)
+	(save-match-data
+	  (if (region-active-p)
+	      (if (in-emph type-re) (de-emphasize) (org-emphasize type))
+	    (if (eq (char-before) type) (backward-char))
+	    (if (in-emph type-re)	;nothing marked, in emph text?
+		(de-emphasize)
+	      (setq add-bounds		; check other flavors
+		    (if (or (in-emph re) (in-emph other-re))
+			(cons (match-beginning 4) (match-end 4))
+		      (setq is-word t)
+		      (bounds-of-thing-at-point 'symbol))))
+	    (if add-bounds
+		(let ((off (- (point) (car add-bounds)))
+		      (at-end (= (point) (cdr add-bounds))))
+		  (set-mark (car add-bounds))
+		  (goto-char (cdr add-bounds))
+		  (org-emphasize type)	;deletes marked region!
+		  (unless is-word	; delete extra spaces
+		    (goto-char (car add-bounds))
+		    (when (eq (char-after) ?\s) (delete-char 1))
+		    (goto-char (+ 2 (cdr add-bounds)))
+		    (when (eq (char-after) ?\s) (delete-char 1)))
+		  (goto-char (+ (car add-bounds) off
+				(cond ((= off 0) 0) (at-end 2) (t 1)))))
+	      (if is-word (org-emphasize type))))))))
+
+(general-define-key
+:keymaps 'org-mode-map
+  "s-i" (lambda () (interactive) (my/org-toggle-emphasis ?/))
+  "s-b" (lambda () (interactive) (my/org-toggle-emphasis ?*))
+  "s-e" (lambda () (interactive) (my/org-toggle-emphasis ?~))
+  "s-=" (lambda () (interactive) (my/org-toggle-emphasis ?=))
+  "s-_" (lambda () (interactive) (my/org-toggle-emphasis ?_))
+  "s-+" (lambda () (interactive) (my/org-toggle-emphasis ?+)))
+
 (use-package citar
   :defer t
   :bind (("C-c C-b" . citar-insert-citation)
@@ -2276,6 +2330,7 @@ targets."
   (:color teal :quit-key "q" :title "Hydras")
   ("System"
    (("t" hydra-toggle/body)
+    ("b" hydra-buffers/body)
     ("h" hydra-hugo/body)
     ("p" powerthesaurus-hydra/body))
    "Unicode"
@@ -2450,7 +2505,7 @@ targets."
  "s-n" #'hydra-new/body
  "s-t" #'hydra-toggle/body
  "s-w" #'hydra-window/body
- "s-b" #'hydra-buffer/body
+ ;; "s-b" #'hydra-buffer/body
  "C-x 9" #'hydra-logic/body)
 
 (general-define-key
