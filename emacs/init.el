@@ -1425,9 +1425,9 @@ targets."
       (while (re-search-forward "-" nil t)
 	(replace-match ""))
       ;; Change correct multiple answer options to "*"
-      (beginning-of-buffer)
-      (while (re-search-forward "x" nil t)
-	(replace-match "*"))
+      ;; (beginning-of-buffer)
+      ;; (while (re-search-forward "x" nil t)
+      ;;   (replace-match "*"))
       ;; Mark short answer responses with "**"
       (beginning-of-buffer)
       (while (re-search-forward "+" nil t)
