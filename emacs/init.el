@@ -1502,6 +1502,9 @@ targets."
 				(cond ((= off 0) 0) (at-end 2) (t 1)))))
 	      (if is-word (org-emphasize type))))))))
 
+(use-package org-view-mode
+             :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
+
 (general-define-key
 :keymaps 'org-mode-map
   "s-i" (lambda () (interactive) (my/org-toggle-emphasis ?/))

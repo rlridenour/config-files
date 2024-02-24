@@ -2420,6 +2420,13 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 
 
 #+begin_src emacs-lisp
+(use-package org-view-mode
+             :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
+#+end_src
+
+
+
+#+begin_src emacs-lisp
 (general-define-key
 :keymaps 'org-mode-map
   "s-i" (lambda () (interactive) (my/org-toggle-emphasis ?/))
