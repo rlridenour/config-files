@@ -2335,9 +2335,10 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 	(while (re-search-forward "-" nil t)
 	  (replace-match ""))
 	;; Change correct multiple answer options to "*"
-	;; (beginning-of-buffer)
-	;; (while (re-search-forward "x" nil t)
-	;;   (replace-match "*"))
+	(beginning-of-buffer)
+(let ((case-fold-search nil))
+	(while (re-search-forward "X" nil t)
+	  (replace-match "*")))
 	;; Mark short answer responses with "**"
 	(beginning-of-buffer)
 	(while (re-search-forward "+" nil t)
@@ -2463,6 +2464,38 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
     :custom
     (ebib-preload-bib-files '("~/Dropbox/bibtex/rlr.bib")))
 #+end_src
+
+From [[https://gist.github.com/lgatto/f54888e7f16968f853346c67b232cae0][Create and yank bibtex entry from a DOI]]
+
+#+begin_src emacs-lisp
+(defun yank-bibtex-from-doi ()
+  "Create and yank bibtex entry from a DOI.
+This command expects a DOI, of the form e.g.
+10.1371/journal.pcbi.1004947 and will then grab the bibtex entry.
+No error handling is performed e.g. if the DOI is invalid.
+If you run this from a bibtex buffer, then run C-c C-q to reformat the entry
+after it is inserted."
+  (interactive)
+  (let* ((doi
+	  (read-from-minibuffer "doi: "))
+	 (cmd
+          (concat
+           "curl -LH \"Accept: application/x-bibtex\" "
+           "https://doi.org/"
+           doi))
+	 (bibtex
+          (shell-command-to-string
+           (concat cmd " 2>/dev/null"))))
+    (insert-for-yank bibtex)))
+#+end_src
+
+
+#+begin_src emacs-lisp
+(use-package org-cite-overlay
+:straight (org-cite-overlay :type git :host sourcehut :repo "swflint/org-cite-overlay"))
+#+end_src
+
+
 
 
 ** Markdown

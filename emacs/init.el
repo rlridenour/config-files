@@ -1414,47 +1414,48 @@ targets."
 (use-package gnuplot)
 
 (defun convert-qti-nyit ()
-  (interactive)
-  ;; Copy all to a temp buffer and set to text mode.
-  (let ((old-buffer (current-buffer)))
-    (with-temp-buffer
-      (insert-buffer-substring old-buffer)
-      (text-mode)
-      ;; convert multiple correct answer and essay questions
-      (beginning-of-buffer)
-      (while (re-search-forward "-" nil t)
-	(replace-match ""))
-      ;; Change correct multiple answer options to "*"
-      ;; (beginning-of-buffer)
-      ;; (while (re-search-forward "x" nil t)
-      ;;   (replace-match "*"))
-      ;; Mark short answer responses with "**"
-      (beginning-of-buffer)
-      (while (re-search-forward "+" nil t)
-	(replace-match "*"))
-      ;; remove whitespace at beginning of lines
-      (beginning-of-buffer)
-      (while (re-search-forward "^\s-*" nil t)
-	(replace-match ""))
-      (beginning-of-buffer)
-      (while (re-search-forward "\\([0-9]\\)" nil t)
-	(replace-match "\n\\1"))
-      ;; move correct answer symbol to beginning of line
-      (beginning-of-buffer)
-      (while (re-search-forward "\\(^.*\\)\\(\*$\\)" nil t)
-	(replace-match "\*\\1"))
-      (delete-trailing-whitespace)
-      ;; delete empty line at end and beginning
-      (end-of-buffer)
-      (delete-char -1)
-      (beginning-of-buffer)
-      (kill-line)
-      ;; Copy result to clipboard
-      (clipboard-kill-ring-save (point-min) (point-max))
+    (interactive)
+    ;; Copy all to a temp buffer and set to text mode.
+    (let ((old-buffer (current-buffer)))
+      (with-temp-buffer
+	(insert-buffer-substring old-buffer)
+	(text-mode)
+	;; convert multiple correct answer and essay questions
+	(beginning-of-buffer)
+	(while (re-search-forward "-" nil t)
+	  (replace-match ""))
+	;; Change correct multiple answer options to "*"
+	(beginning-of-buffer)
+(let ((case-fold-search nil))
+	(while (re-search-forward "X" nil t)
+	  (replace-match "*")))
+	;; Mark short answer responses with "**"
+	(beginning-of-buffer)
+	(while (re-search-forward "+" nil t)
+	  (replace-match "*"))
+	;; remove whitespace at beginning of lines
+	(beginning-of-buffer)
+	(while (re-search-forward "^\s-*" nil t)
+	  (replace-match ""))
+	(beginning-of-buffer)
+	(while (re-search-forward "\\([0-9]\\)" nil t)
+	  (replace-match "\n\\1"))
+	;; move correct answer symbol to beginning of line
+	(beginning-of-buffer)
+	(while (re-search-forward "\\(^.*\\)\\(\*$\\)" nil t)
+	  (replace-match "\*\\1"))
+	(delete-trailing-whitespace)
+	;; delete empty line at end and beginning
+	(end-of-buffer)
+	(delete-char -1)
+	(beginning-of-buffer)
+	(kill-line)
+	;; Copy result to clipboard
+	(clipboard-kill-ring-save (point-min) (point-max))
+	)
       )
+    (browse-url "https://www.nyit.edu/its/canvas_exam_converter")
     )
-  (browse-url "https://www.nyit.edu/its/canvas_exam_converter")
-  )
 
 (defun my/org-toggle-emphasis (type)
     "Toggle org emphasis TYPE (a character) at point."
@@ -1538,6 +1539,29 @@ targets."
   ;;(evil-set-initial-state 'ebib-log-mode 'emacs)
   :custom
   (ebib-preload-bib-files '("~/Dropbox/bibtex/rlr.bib")))
+
+(defun yank-bibtex-from-doi ()
+  "Create and yank bibtex entry from a DOI.
+This command expects a DOI, of the form e.g.
+10.1371/journal.pcbi.1004947 and will then grab the bibtex entry.
+No error handling is performed e.g. if the DOI is invalid.
+If you run this from a bibtex buffer, then run C-c C-q to reformat the entry
+after it is inserted."
+  (interactive)
+  (let* ((doi
+	  (read-from-minibuffer "doi: "))
+	 (cmd
+          (concat
+           "curl -LH \"Accept: application/x-bibtex\" "
+           "https://doi.org/"
+           doi))
+	 (bibtex
+          (shell-command-to-string
+           (concat cmd " 2>/dev/null"))))
+    (insert-for-yank bibtex)))
+
+(use-package org-cite-overlay
+:straight (org-cite-overlay :type git :host sourcehut :repo "swflint/org-cite-overlay"))
 
 (use-package markdown-mode
   :defer t
