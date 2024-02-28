@@ -2090,7 +2090,10 @@ after it is inserted."
   :general
   ( "<f6>" #'yankpad-insert))
 
-(setq dictionary-server "dict.org")
+(use-package osx-dictionary
+:bind
+("")
+)
 
 (setq async-shell-command-buffer "new-buffer")
 

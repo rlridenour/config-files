@@ -3248,9 +3248,23 @@ Make copying and moving files easier.
 
 Use [[dict.org]] for dictionary searches.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (setq dictionary-server "dict.org")
 #+end_src
+
+
+Use the Mac OS dictionary. From [[https://github.com/xuchunyang/osx-dictionary.el][xuchunyang/osx-dictionary.el: Mac OS X Dictionary.app interface for Emacs]]
+
+#+begin_src emacs-lisp
+(use-package osx-dictionary
+:bind
+("")
+)
+
+
+
+#+end_src
+
 
 
 ** Ediff
@@ -3270,9 +3284,6 @@ Don't ask to create new shell buffers.
 #+begin_src emacs-lisp
   (setq async-shell-command-buffer "new-buffer")
 #+end_src
-
-
-
 
 Run async shell command without creating a window.
 
@@ -4082,18 +4093,11 @@ Set default directory.
 ;; (setq initial-buffer-choice 'my-calendar)
 #+end_src
 
-
-
-
-
-
 Reset garbage collection.
 
 #+begin_src emacs-lisp
   (setq gc-cons-threshold (* 2 1000 1000))
 #+end_src
-
-
 
 #+begin_src emacs-lisp
   ;; Local Variables:
