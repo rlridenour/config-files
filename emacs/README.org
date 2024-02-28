@@ -852,6 +852,38 @@ These are functions to cycle through both user and Emacs buffers, from [[http://
    )
 #+end_src
 
+Use trackpad to switch buffers, from [[https://kitchingroup.cheme.cmu.edu/blog/2014/08/31/Using-Mac-gestures-in-Emacs/][Using Mac gestures in Emacs]].
+
+#+begin_src emacs-lisp
+(defvar *my-previous-buffer* t
+  "can we switch?")
+
+(defun my-previous-buffer ()
+  (interactive)
+  (message "custom prev: *my-previous-buffer*=%s" *my-previous-buffer*)
+  (when *my-previous-buffer*
+    (previous-buffer)
+    (setq *my-previous-buffer* nil)
+    (run-at-time "1 sec" nil (lambda ()
+                               (setq *my-previous-buffer* t)))))
+
+(defvar *my-next-buffer* t
+  "can we switch?")
+
+(defun my-next-buffer ()
+  (interactive)
+  (message "custom prev: *my-next-buffer*=%s" *my-next-buffer*)
+  (when *my-next-buffer*
+    (next-buffer)
+    (setq *my-next-buffer* nil)
+    (run-at-time "1 sec" nil (lambda ()
+                               (setq *my-next-buffer* t)))))
+
+(global-set-key [triple-wheel-right] 'my-previous-buffer)
+(global-set-key [triple-wheel-left] 'my-next-buffer)
+#+end_src
+
+
 
 
 ** Scratch Buffer
@@ -3256,12 +3288,7 @@ Use [[dict.org]] for dictionary searches.
 Use the Mac OS dictionary. From [[https://github.com/xuchunyang/osx-dictionary.el][xuchunyang/osx-dictionary.el: Mac OS X Dictionary.app interface for Emacs]]
 
 #+begin_src emacs-lisp
-(use-package osx-dictionary
-:bind
-("")
-)
-
-
+(use-package osx-dictionary)
 
 #+end_src
 
