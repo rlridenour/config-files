@@ -3877,9 +3877,7 @@ Unset some keys.
 #+end_src
 
 #+begin_src emacs-lisp
-
-
-  (major-mode-hydra-define latex-mode
+  (major-mode-hydra-define LaTeX-mode
     (:quit-key "q")
     ("Bibtex"
      (("r" citar-insert-citation "citation"))

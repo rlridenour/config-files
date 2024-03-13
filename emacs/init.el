@@ -2478,7 +2478,7 @@ after it is inserted."
     ("n" markdown-cleanup-list-numbers "clean-lists")
     ("c" markdown-complete-buffer "complete"))))
 
-(major-mode-hydra-define latex-mode
+(major-mode-hydra-define LaTeX-mode
   (:quit-key "q")
   ("Bibtex"
    (("r" citar-insert-citation "citation"))
