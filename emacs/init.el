@@ -186,9 +186,9 @@
 (defun dashboard-insert-agenda (&rest _)
   "Insert a copy of org-agenda buffer."
   (insert (save-window-excursion
-            (org-agenda nil "d")
-            (prog1 (buffer-string)
-              (kill-buffer)))))
+	    (org-agenda nil "d")
+	    (prog1 (buffer-string)
+	      (kill-buffer)))))
 
   (defun goto-dashboard ()
     "this sends you to the dashboard buffer"
@@ -219,18 +219,17 @@
 ;; Do not automatically save
 (setq auto-save-default nil)
 
-(recentf-mode)
-  ;;;;; = recentf - recently opened files
-;; Maintains a list of recently opened files
-;; Where to save the recentf file - in the .cache
-(setq recentf-save-file (expand-file-name "recentf" rr-cache-dir))
-;; Remove duplicates on mode change
-(setq recentf-auto-cleanup 'mode)
-;; Max number of files saved
-(setq recentf-max-saved-items 500)
-;; Max number of files served in files menu
-(setq recentf-max-menu-items 50)
-(add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
+(use-package recentf
+  :init
+  (setq
+   recentf-save-file "~/.cache/emacs/recentf"
+   recentf-max-saved-items 10000
+   recentf-max-menu-items 5000
+   )
+  (recentf-mode 1)
+  (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
+  (run-at-time nil (* 5 60) 'recentf-save-list)
+  )
 
 ;;;;; = saveplace - last position in file
 ;; Save point position in files between sessions.
@@ -381,7 +380,7 @@ Version 2016-06-19"
     (previous-buffer)
     (setq *my-previous-buffer* nil)
     (run-at-time "1 sec" nil (lambda ()
-                               (setq *my-previous-buffer* t)))))
+			       (setq *my-previous-buffer* t)))))
 
 (defvar *my-next-buffer* t
   "can we switch?")
@@ -393,7 +392,7 @@ Version 2016-06-19"
     (next-buffer)
     (setq *my-next-buffer* nil)
     (run-at-time "1 sec" nil (lambda ()
-                               (setq *my-next-buffer* t)))))
+			       (setq *my-next-buffer* t)))))
 
 (global-set-key [triple-wheel-right] 'my-previous-buffer)
 (global-set-key [triple-wheel-left] 'my-next-buffer)
@@ -1530,7 +1529,7 @@ targets."
 	      (if is-word (org-emphasize type))))))))
 
 (use-package org-view-mode
-             :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
+	     :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
 
 (general-define-key
 :keymaps 'org-mode-map
@@ -1581,13 +1580,13 @@ after it is inserted."
   (let* ((doi
 	  (read-from-minibuffer "doi: "))
 	 (cmd
-          (concat
-           "curl -LH \"Accept: application/x-bibtex\" "
-           "https://doi.org/"
-           doi))
+	  (concat
+	   "curl -LH \"Accept: application/x-bibtex\" "
+	   "https://doi.org/"
+	   doi))
 	 (bibtex
-          (shell-command-to-string
-           (concat cmd " 2>/dev/null"))))
+	  (shell-command-to-string
+	   (concat cmd " 2>/dev/null"))))
     (insert-for-yank bibtex)))
 
 (use-package org-cite-overlay

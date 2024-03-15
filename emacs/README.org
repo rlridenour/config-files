@@ -360,7 +360,7 @@ World clock settings.
 (calendar)
 #+end_src
 
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
 (defun my-calendar ()
 (interactive)
 (calendar)
@@ -570,9 +570,9 @@ Use rainbow delimiters.
 (defun dashboard-insert-agenda (&rest _)
   "Insert a copy of org-agenda buffer."
   (insert (save-window-excursion
-            (org-agenda nil "d")
-            (prog1 (buffer-string)
-              (kill-buffer)))))
+	    (org-agenda nil "d")
+	    (prog1 (buffer-string)
+	      (kill-buffer)))))
 
   (defun goto-dashboard ()
     "this sends you to the dashboard buffer"
@@ -628,7 +628,7 @@ Backup files are in ~/Users/rlridenour/.cache/emacs/backup/~.
 
 Provide easy access to recently opened files.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (recentf-mode)
     ;;;;; = recentf - recently opened files
   ;; Maintains a list of recently opened files
@@ -641,9 +641,25 @@ Provide easy access to recently opened files.
   ;; Max number of files served in files menu
   (setq recentf-max-menu-items 50)
   (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
-
-
 #+end_src
+
+#+begin_src emacs-lisp
+  (use-package recentf
+    :init
+    (setq
+     recentf-save-file "~/.cache/emacs/recentf"
+     recentf-max-saved-items 10000
+     recentf-max-menu-items 5000
+     )
+    (recentf-mode 1)
+    (add-to-list 'recentf-exclude "~/.config/emacs/bookmarks")
+    (run-at-time nil (* 5 60) 'recentf-save-list)
+    )
+#+end_src
+
+
+
+
 
 Open files to the last edited position.
 
@@ -865,7 +881,7 @@ Use trackpad to switch buffers, from [[https://kitchingroup.cheme.cmu.edu/blog/2
     (previous-buffer)
     (setq *my-previous-buffer* nil)
     (run-at-time "1 sec" nil (lambda ()
-                               (setq *my-previous-buffer* t)))))
+			       (setq *my-previous-buffer* t)))))
 
 (defvar *my-next-buffer* t
   "can we switch?")
@@ -877,7 +893,7 @@ Use trackpad to switch buffers, from [[https://kitchingroup.cheme.cmu.edu/blog/2
     (next-buffer)
     (setq *my-next-buffer* nil)
     (run-at-time "1 sec" nil (lambda ()
-                               (setq *my-next-buffer* t)))))
+			       (setq *my-next-buffer* t)))))
 
 (global-set-key [triple-wheel-right] 'my-previous-buffer)
 (global-set-key [triple-wheel-left] 'my-next-buffer)
@@ -2453,7 +2469,7 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 
 #+begin_src emacs-lisp
 (use-package org-view-mode
-             :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
+	     :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
 #+end_src
 
 
@@ -2518,13 +2534,13 @@ after it is inserted."
   (let* ((doi
 	  (read-from-minibuffer "doi: "))
 	 (cmd
-          (concat
-           "curl -LH \"Accept: application/x-bibtex\" "
-           "https://doi.org/"
-           doi))
+	  (concat
+	   "curl -LH \"Accept: application/x-bibtex\" "
+	   "https://doi.org/"
+	   doi))
 	 (bibtex
-          (shell-command-to-string
-           (concat cmd " 2>/dev/null"))))
+	  (shell-command-to-string
+	   (concat cmd " 2>/dev/null"))))
     (insert-for-yank bibtex)))
 #+end_src
 
