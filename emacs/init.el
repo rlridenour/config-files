@@ -78,13 +78,14 @@
 (setq browse-url-browser-function 'browse-url-default-macosx-browser)
 
 (setq world-clock-list
-    '(
-      ("America/Chicago" "Oklahoma City")
-      ("Pacific/Honolulu" "Honolulu")
-      ("America/New_York" "New York")
-      ("Etc/UTC" "UTC")))
+      '(
+	("America/Chicago" "Oklahoma City")
+	("America/Los_Angeles" "Seattle")
+	("Pacific/Honolulu" "Honolulu")
+	("America/New_York" "New York")
+	("Etc/UTC" "UTC")))
 
-  (setq world-clock-time-format "%a, %d %b %H:%M %p %Z")
+(setq world-clock-time-format "%a, %d %b %R %Z")
 
 (defun my-calendar ()
 (interactive)
@@ -166,22 +167,31 @@
 )
 
 (use-package dashboard
-    :config
-    (dashboard-setup-startup-hook)
-    (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
-    (setq dashboard-week-agenda nil)
-    (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
-    (setq dashboard-center-content t)
-    (setq dashboard-set-footer nil)
-    (setq dashboard-banner-logo-title nil)
-    (setq dashboard-set-heading-icons t)
-    (setq dashboard-set-file-icons nil)
-    (setq dashboard-set-navigator nil)
-    (setq dashboard-projects-backend 'project-el)
-    (setq dashboard-items '((agenda . 5)
-			    (recents  . 5)
-			    (bookmarks . 10)
-			    (projects . 5))))
+  :config
+  (dashboard-setup-startup-hook)
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+  (setq dashboard-week-agenda nil)
+  (setq dashboard-startup-banner "/Users/rlridenour/.config/doom/logo-emacs.png")
+  (setq dashboard-center-content t)
+  (setq dashboard-set-footer nil)
+  (setq dashboard-banner-logo-title nil)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons nil)
+  (setq dashboard-set-navigator nil)
+  (setq dashboard-projects-backend 'project-el)
+  (setq dashboard-items '((agenda . 5)
+			  (recents  . 5)
+			  (bookmarks . 10)
+			  (projects . 5)))
+  (setq dashboard-startupify-list '(dashboard-insert-banner
+				    dashboard-insert-newline
+				    dashboard-insert-banner-title
+				    dashboard-insert-newline
+				    dashboard-insert-navigator
+				    dashboard-insert-newline
+				    dashboard-insert-init-info
+				    dashboard-insert-items
+				    dashboard-insert-newline)))
 
 (defun dashboard-insert-agenda (&rest _)
   "Insert a copy of org-agenda buffer."
@@ -190,15 +200,15 @@
 	    (prog1 (buffer-string)
 	      (kill-buffer)))))
 
-  (defun goto-dashboard ()
-    "this sends you to the dashboard buffer"
-    (interactive)
-    (let ((goto-dashboard-buffer (get-buffer "*dashboard*")))
-      (switch-to-buffer goto-dashboard-buffer))
-    (dashboard-refresh-buffer))
+(defun goto-dashboard ()
+  "this sends you to the dashboard buffer"
+  (interactive)
+  (let ((goto-dashboard-buffer (get-buffer "*dashboard*")))
+    (switch-to-buffer goto-dashboard-buffer))
+  (dashboard-refresh-buffer))
 
-  (general-define-key
-   "s-d" #'goto-dashboard)
+(general-define-key
+ "s-d" #'goto-dashboard)
 
 (use-package rainbow-mode)
 

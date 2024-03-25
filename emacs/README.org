@@ -328,14 +328,15 @@ Open links in default Mac browser.
 World clock settings.
 
 #+begin_src emacs-lisp
-(setq world-clock-list
-    '(
-      ("America/Chicago" "Oklahoma City")
-      ("Pacific/Honolulu" "Honolulu")
-      ("America/New_York" "New York")
-      ("Etc/UTC" "UTC")))
+  (setq world-clock-list
+	'(
+	  ("America/Chicago" "Oklahoma City")
+	  ("America/Los_Angeles" "Seattle")
+	  ("Pacific/Honolulu" "Honolulu")
+	  ("America/New_York" "New York")
+	  ("Etc/UTC" "UTC")))
 
-  (setq world-clock-time-format "%a, %d %b %H:%M %p %Z")
+  (setq world-clock-time-format "%a, %d %b %R %Z")
 #+end_src
 
 ** Calendar and Diary
@@ -565,14 +566,23 @@ Use rainbow delimiters.
     (setq dashboard-items '((agenda . 5)
 			    (recents  . 5)
 			    (bookmarks . 10)
-			    (projects . 5))))
+			    (projects . 5)))
+    (setq dashboard-startupify-list '(dashboard-insert-banner
+				      dashboard-insert-newline
+				      dashboard-insert-banner-title
+				      dashboard-insert-newline
+				      dashboard-insert-navigator
+				      dashboard-insert-newline
+				      dashboard-insert-init-info
+				      dashboard-insert-items
+				      dashboard-insert-newline)))
 
-(defun dashboard-insert-agenda (&rest _)
-  "Insert a copy of org-agenda buffer."
-  (insert (save-window-excursion
-	    (org-agenda nil "d")
-	    (prog1 (buffer-string)
-	      (kill-buffer)))))
+  (defun dashboard-insert-agenda (&rest _)
+    "Insert a copy of org-agenda buffer."
+    (insert (save-window-excursion
+	      (org-agenda nil "d")
+	      (prog1 (buffer-string)
+		(kill-buffer)))))
 
   (defun goto-dashboard ()
     "this sends you to the dashboard buffer"
