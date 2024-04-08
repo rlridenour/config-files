@@ -2221,6 +2221,56 @@ after it is inserted."
 
 ;; (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 
+(require 'mu4e)
+(setq
+ mue4e-headers-skip-duplicates t
+ mu4e-headers-leave-behavior 'apply
+ mu4e-headers-date-format "%Y-%m-%d"
+ mu4e-view-show-images t
+ mu4e-view-show-addresses t
+ mu4e-compose-format-flowed t
+ mu4e-compose-dont-reply-to-self t
+ mu4e-compose-reply-ignore-address '("no-?reply")
+ mu4e-compose-signature-auto-include nil
+ mu4e-date-format "%y-%m-%d"
+ mu4e-change-filenames-when-moving t
+ mu4e-attachments-dir "~/Downloads"
+ mu4e-get-mail-command "mbsync -a"
+ mu4e-view-use-gnus t
+ mu4e-html2text-command "w3m -T text/html"
+ mu4e-update-interval (* 10 60) ;;this setting allows to re-sync and re-index mail by pressing U refresh mbsync  every 10 minutes
+
+ mu43-use-fancy-chars t
+ mu4e-maildir       "~/Maildir"   ;; top-level Maildir
+ mu4e-refile-folder "/Archive"
+ mu4e-sent-folder   "/Sent"
+ mu4e-drafts-folder "/Drafts"
+ mu4e-trash-folder  "/Trash"
+ mu4e-reply-to-address "rlridenour@fastmail.com"
+ user-mail-address "rlridenour@fastmail.com"
+ user-full-name "Randy Ridenour")
+
+(setq mu4e-maildir-shortcuts
+  '( (:maildir "/inbox"     :key  ?i)
+     (:maildir "/archive"   :key  ?a)
+     (:maildir "/sent"      :key  ?s)
+    ))
+
+(fset 'my-move-to-trash "mTrash")
+(define-key mu4e-headers-mode-map (kbd "d") 'my-move-to-trash)
+(define-key mu4e-view-mode-map (kbd "d") 'my-move-to-trash)
+
+(setq
+ message-send-mail-function   'smtpmail-send-it
+ smtpmail-default-smtp-server "smtp.fastmail.com"
+ smtpmail-smtp-server         "smtp.fastmail.com"
+ smtpmail-smtp-service        587)
+
+;; Show emails as plain text, if possible
+(with-eval-after-load "mm-decode"
+ (add-to-list 'mm-discouraged-alternatives "text/html")
+ (add-to-list 'mm-discouraged-alternatives "text/richtext"))
+
 (use-package mastodon
   :config
   (mastodon-discover)
