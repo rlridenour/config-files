@@ -874,7 +874,6 @@ These are functions to cycle through both user and Emacs buffers, from [[http://
    "s-}" #'xah-next-emacs-buffer
    "s-{" #'xah-previous-emacs-buffer
    "C-<tab>" #'xah-next-user-buffer
-   "M-<tab>" #'xah-next-emacs-buffer
    )
 #+end_src
 
@@ -3621,10 +3620,21 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
       message-send-mail-function 'message-send-mail-with-sendmail)
 #+end_src
 
+** Emacs Everywhere
+
+#+begin_src emacs-lisp
+(use-package emacs-everywhere)
+#+end_src
 
 
+** Casual
 
+For help with calc.
 
+#+begin_src emacs-lisp
+(use-package casual
+  :bind (:map calc-mode-map ("C-o" . 'casual-main-menu)))
+#+end_src
 
 
 

@@ -377,7 +377,6 @@ Version 2016-06-19"
  "s-}" #'xah-next-emacs-buffer
  "s-{" #'xah-previous-emacs-buffer
  "C-<tab>" #'xah-next-user-buffer
- "M-<tab>" #'xah-next-emacs-buffer
  )
 
 (defvar *my-previous-buffer* t
@@ -2272,6 +2271,11 @@ after it is inserted."
 (with-eval-after-load "mm-decode"
  (add-to-list 'mm-discouraged-alternatives "text/html")
  (add-to-list 'mm-discouraged-alternatives "text/richtext"))
+
+(use-package emacs-everywhere)
+
+(use-package casual
+  :bind (:map calc-mode-map ("C-o" . 'casual-main-menu)))
 
 (use-package mastodon
   :config
