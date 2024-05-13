@@ -10,6 +10,9 @@ end
 
 set -Ux EDITOR emacsclient -c
 
+# Set up fzf key bindings
+fzf --fish | source
+
 set normal (set_color normal)
 set magenta (set_color magenta)
 set yellow (set_color yellow)
