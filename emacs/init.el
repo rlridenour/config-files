@@ -1464,7 +1464,7 @@ targets."
 	;; Change correct multiple answer options to "*"
 	(beginning-of-buffer)
 (let ((case-fold-search nil))
-	(while (re-search-forward "X" nil t)
+	(while (re-search-forward "\[X\]" nil t)
 	  (replace-match "*")))
 	;; Mark short answer responses with "**"
 	(beginning-of-buffer)
