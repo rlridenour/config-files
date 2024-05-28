@@ -139,7 +139,12 @@
  "<f9>" #'modus-themes-toggle)
 
 (use-package doom-modeline
-  :init (doom-modeline-mode 1))
+  :init (doom-modeline-mode 1)
+:config
+(setq doom-modeline-enable-word-count t)
+(setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
+(setq display-time-day-and-date t)
+)
 
 (set-face-attribute 'mode-line nil
 :foreground "black" :background "wheat3" :box '(:line-width 1 :color "black"))
