@@ -472,11 +472,16 @@ Add extra padding between elements. See [[https://protesilaos.com/codelog/2023-1
 #+end_src
 
 
-Use mood-line for the modeline. It's fast and simple.
+Use doom-modeline for the modeline and display the date.
 
 #+begin_src emacs-lisp
 (use-package doom-modeline
-  :init (doom-modeline-mode 1))
+  :init (doom-modeline-mode 1)
+:config
+(setq doom-modeline-enable-word-count t)
+(setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
+(setq display-time-day-and-date t)
+)
 #+end_src
 
 Change color for active window.
@@ -1577,6 +1582,16 @@ Count words in region or buffer.
 #+end_src
 
 
+Wordcount Mode
+
+#+begin_src emacs-lisp :tangle no
+(use-package wc-mode)
+#+end_src
+
+
+
+
+
 Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/][Bozhidar Batsov]]
 
 #+begin_src emacs-lisp
@@ -2396,7 +2411,7 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 	;; Change correct multiple answer options to "*"
 	(beginning-of-buffer)
 (let ((case-fold-search nil))
-	(while (re-search-forward "X" nil t)
+	(while (re-search-forward "\[X\]" nil t)
 	  (replace-match "*")))
 	;; Mark short answer responses with "**"
 	(beginning-of-buffer)
