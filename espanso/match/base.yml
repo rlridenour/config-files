@@ -87,10 +87,11 @@ matches:
   - trigger: ":gi"
     replace: "Good introduction."
 
-    
+  - trigger: ":awk"
+    replace: "Awkward — consider rephrasing."
+
+  - trigger: ":sva"
+    replace: "Subject verb agreement."
 
     
-
-    
-
   # And much more! For more information, visit the docs: https://espanso.org/docs/
