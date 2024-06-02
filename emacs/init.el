@@ -2460,7 +2460,7 @@ after it is inserted."
   (:color teal :quit-key "q" :title "Hydras")
   ("System"
    (("t" hydra-toggle/body)
-    ("b" hydra-buffers/body)
+    ("b" hydra-buffer/body)
     ("h" hydra-hugo/body)
     ("p" powerthesaurus-hydra/body))
    "Unicode"
