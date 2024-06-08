@@ -221,6 +221,10 @@
  "C-+" #'text-scale-increase
  "C--" #'text-scale-decrease)
 
+(global-set-key (kbd "<pinch>") 'ignore)
+(global-set-key (kbd "<C-wheel-up>") 'ignore)
+(global-set-key (kbd "<C-wheel-down>") 'ignore)
+
 ;; Where to save to backup file - in the backup dir
 (setq backup-directory-alist (list (cons "."  rr-backup-dir)))
 ;; Always backup by copying

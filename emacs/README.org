@@ -618,6 +618,15 @@ Use rainbow delimiters.
    "C--" #'text-scale-decrease)
 #+end_src
 
+Disable changing text size with mouse and trackpad
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "<pinch>") 'ignore)
+(global-set-key (kbd "<C-wheel-up>") 'ignore)
+(global-set-key (kbd "<C-wheel-down>") 'ignore)
+#+end_src
+
+
 
 * Files and Buffers
 :PROPERTIES:
