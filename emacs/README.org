@@ -1921,6 +1921,23 @@ Use deadgrep to search with ripgrep.
 
 
 
+** Multiple Cursors
+
+#+begin_src emacs-lisp
+(use-package iedit)
+
+(use-package multiple-cursors
+  :ensure t
+  :config
+  (global-unset-key (kbd "M-<down-mouse-1>"))
+  (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this))
+#+end_src
+
+
+
 ** Editing Keybindings
 
 #+begin_src emacs-lisp
@@ -3651,12 +3668,12 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
 #+end_src
 
 
-** Casual
+** Casual-calc
 
 For help with calc.
 
 #+begin_src emacs-lisp
-(use-package casual
+(use-package casual-calc
   :bind (:map calc-mode-map ("C-o" . 'casual-main-menu)))
 #+end_src
 

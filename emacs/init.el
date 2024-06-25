@@ -1022,6 +1022,17 @@ targets."
 ;; "C-s" #'consult-isearch
 ;; "C-r" #'consult-isearch-reverse
 
+(use-package iedit)
+
+(use-package multiple-cursors
+  :ensure t
+  :config
+  (global-unset-key (kbd "M-<down-mouse-1>"))
+  (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
+  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this))
+
 (general-define-key
  "<s-up>" #'beginning-of-buffer
  "<s-down>" #'end-of-buffer
@@ -2283,7 +2294,7 @@ after it is inserted."
 
 (use-package emacs-everywhere)
 
-(use-package casual
+(use-package casual-calc
   :bind (:map calc-mode-map ("C-o" . 'casual-main-menu)))
 
 (use-package mastodon
