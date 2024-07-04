@@ -3702,7 +3702,7 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
 
 For help with calc.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package casual-calc
     :bind (:map calc-mode-map ("C-o" . 'casual-main-menu)))
 #+end_src

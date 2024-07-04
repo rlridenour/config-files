@@ -2310,9 +2310,6 @@ after it is inserted."
 
 (use-package emacs-everywhere)
 
-(use-package casual-calc
-  :bind (:map calc-mode-map ("C-o" . 'casual-main-menu)))
-
 (use-package mastodon
   :config
   (mastodon-discover)
