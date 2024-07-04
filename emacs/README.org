@@ -221,6 +221,22 @@ Boostrap ~straight.el~.
     (load bootstrap-file nil 'nomessage))
 #+end_src
 
+
+#+begin_src emacs-lisp
+  ;;; Install org from upstream repo before using org-babel, or we would
+    ;;; get whatever old version is distributed with Emacs.
+  (straight-use-package '(org
+			  :type git
+			  :repo "https://code.orgmode.org/bzg/org-mode.git"
+			  :local-repo "org"
+			  :depth full
+			  :pre-build (straight-recipes-org-elpa--build)
+			  :build (:not autoloads)
+			  :files (:defaults "lisp/*.el" ("etc/styles/" "etc/styles/*"))))
+#+end_src
+
+
+
 Replace use-package with straight-use-package
 
 #+begin_src emacs-lisp
@@ -343,8 +359,8 @@ World clock settings.
 
 #+begin_src emacs-lisp :tangle no
   (setq diary-file "~/Library/Mobile Documents/com~apple~CloudDocs/org/diary/diary")
-(add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
-(add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
+  (add-hook 'diary-list-entries-hook 'diary-include-other-diary-files)
+  (add-hook 'diary-mark-entries-hook 'diary-mark-included-diary-files)
   (setq display-time-day-and-date t)
   (diary)
   (setq appt-display-diary nil)
@@ -354,18 +370,18 @@ World clock settings.
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
-(setq calendar-view-diary-initially-flag t
-       diary-number-of-entries 7
-       diary-display-function #'diary-fancy-display)
- (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
-(calendar)
+  (setq calendar-view-diary-initially-flag t
+	diary-number-of-entries 7
+	diary-display-function #'diary-fancy-display)
+  (add-hook 'calendar-today-visible-hook 'calendar-mark-today)
+  (calendar)
 #+end_src
 
 #+begin_src emacs-lisp
-(defun my-calendar ()
-(interactive)
-(calendar)
-)
+  (defun my-calendar ()
+    (interactive)
+    (calendar)
+    )
 #+end_src
 
 
@@ -406,8 +422,8 @@ Make help buffers active when created, so pressing "q" will immediately close th
   (column-number-mode)
   (global-visual-line-mode 1)
   (global-hl-line-mode)
-(setq hl-line-sticky-flag nil)
-(setq global-hl-line-sticky-flag nil)
+  (setq hl-line-sticky-flag nil)
+  (setq global-hl-line-sticky-flag nil)
 #+end_src
 
 Highlight line at point.
@@ -466,29 +482,29 @@ Add some space between lines.
 Add extra padding between elements. See [[https://protesilaos.com/codelog/2023-11-15-spacious-padding-extra-ui-dev/][Emacs: ‘spacious-padding’ covers more User Interface elements | Protesilaos Stavrou]]
 
 #+begin_src emacs-lisp :tangle no
-(use-package spacious-padding
-:config
-(spacious-padding-mode 1))
+  (use-package spacious-padding
+    :config
+    (spacious-padding-mode 1))
 #+end_src
 
 
 Use doom-modeline for the modeline and display the date.
 
 #+begin_src emacs-lisp
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-:config
-(setq doom-modeline-enable-word-count t)
-(setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
-(setq display-time-day-and-date t)
-)
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :config
+    (setq doom-modeline-enable-word-count t)
+    (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
+    (setq display-time-day-and-date t)
+    )
 #+end_src
 
 Change color for active window.
 
 #+begin_src emacs-lisp
-(set-face-attribute 'mode-line nil
-:foreground "black" :background "wheat3" :box '(:line-width 1 :color "black"))
+  (set-face-attribute 'mode-line nil
+		      :foreground "black" :background "wheat3" :box '(:line-width 1 :color "black"))
 #+end_src
 
 
@@ -501,9 +517,9 @@ Change color for active window.
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
-(use-package mini-echo
-:config
-(mini-echo-mode))
+  (use-package mini-echo
+    :config
+    (mini-echo-mode))
 #+end_src
 
 
@@ -521,7 +537,7 @@ Flash modeline instead of warning bell.
 Disable warning bell
 
 #+begin_src emacs-lisp
-(setq ring-bell-function 'ignore)
+  (setq ring-bell-function 'ignore)
 #+end_src
 
 
@@ -548,7 +564,7 @@ Use rainbow delimiters.
     (set-face-foreground 'rainbow-delimiters-depth-7-face "#ccc")  ; light gray
     (set-face-foreground 'rainbow-delimiters-depth-8-face "#999")  ; medium gray
     (set-face-foreground 'rainbow-delimiters-depth-9-face "#666")  ; dark gray
-)
+    )
 #+end_src
 
 
@@ -621,9 +637,9 @@ Use rainbow delimiters.
 Disable changing text size with mouse and trackpad
 
 #+begin_src emacs-lisp
-(global-set-key (kbd "<pinch>") 'ignore)
-(global-set-key (kbd "<C-wheel-up>") 'ignore)
-(global-set-key (kbd "<C-wheel-down>") 'ignore)
+  (global-set-key (kbd "<pinch>") 'ignore)
+  (global-set-key (kbd "<C-wheel-up>") 'ignore)
+  (global-set-key (kbd "<C-wheel-down>") 'ignore)
 #+end_src
 
 
@@ -894,32 +910,32 @@ These are functions to cycle through both user and Emacs buffers, from [[http://
 Use trackpad to switch buffers, from [[https://kitchingroup.cheme.cmu.edu/blog/2014/08/31/Using-Mac-gestures-in-Emacs/][Using Mac gestures in Emacs]].
 
 #+begin_src emacs-lisp
-(defvar *my-previous-buffer* t
-  "can we switch?")
+  (defvar *my-previous-buffer* t
+    "can we switch?")
 
-(defun my-previous-buffer ()
-  (interactive)
-  (message "custom prev: *my-previous-buffer*=%s" *my-previous-buffer*)
-  (when *my-previous-buffer*
-    (previous-buffer)
-    (setq *my-previous-buffer* nil)
-    (run-at-time "1 sec" nil (lambda ()
-			       (setq *my-previous-buffer* t)))))
+  (defun my-previous-buffer ()
+    (interactive)
+    (message "custom prev: *my-previous-buffer*=%s" *my-previous-buffer*)
+    (when *my-previous-buffer*
+      (previous-buffer)
+      (setq *my-previous-buffer* nil)
+      (run-at-time "1 sec" nil (lambda ()
+				 (setq *my-previous-buffer* t)))))
 
-(defvar *my-next-buffer* t
-  "can we switch?")
+  (defvar *my-next-buffer* t
+    "can we switch?")
 
-(defun my-next-buffer ()
-  (interactive)
-  (message "custom prev: *my-next-buffer*=%s" *my-next-buffer*)
-  (when *my-next-buffer*
-    (next-buffer)
-    (setq *my-next-buffer* nil)
-    (run-at-time "1 sec" nil (lambda ()
-			       (setq *my-next-buffer* t)))))
+  (defun my-next-buffer ()
+    (interactive)
+    (message "custom prev: *my-next-buffer*=%s" *my-next-buffer*)
+    (when *my-next-buffer*
+      (next-buffer)
+      (setq *my-next-buffer* nil)
+      (run-at-time "1 sec" nil (lambda ()
+				 (setq *my-next-buffer* t)))))
 
-(global-set-key [triple-wheel-right] 'my-previous-buffer)
-(global-set-key [triple-wheel-left] 'my-next-buffer)
+  (global-set-key [triple-wheel-right] 'my-previous-buffer)
+  (global-set-key [triple-wheel-left] 'my-next-buffer)
 #+end_src
 
 
@@ -1179,14 +1195,14 @@ Functions for handling windows.
 #+end_src
 
 #+begin_src emacs-lisp
-    (vertico-multiform-mode)
+  (vertico-multiform-mode)
 #+end_src
 
-  ,#+begin_src emacs-lisp
-    ;; Persist history over Emacs restarts. Vertico sorts by history position.
-    (use-package savehist
-      :init
-      (savehist-mode))
+,#+begin_src emacs-lisp
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+:init
+(savehist-mode))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1387,43 +1403,43 @@ Functions for handling windows.
 #+end_src
 
 #+begin_src emacs-lisp
-(defun embark-which-key-indicator ()
-  "An embark indicator that displays keymaps using which-key.
-The which-key help message will show the type and value of the
-current target followed by an ellipsis if there are further
-targets."
-  (lambda (&optional keymap targets prefix)
-    (if (null keymap)
-	(which-key--hide-popup-ignore-command)
-      (which-key--show-keymap
-       (if (eq (plist-get (car targets) :type) 'embark-become)
-	   "Become"
-	 (format "Act on %s '%s'%s"
-		 (plist-get (car targets) :type)
-		 (embark--truncate-target (plist-get (car targets) :target))
-		 (if (cdr targets) "…" "")))
-       (if prefix
-	   (pcase (lookup-key keymap prefix 'accept-default)
-	     ((and (pred keymapp) km) km)
-	     (_ (key-binding prefix 'accept-default)))
-	 keymap)
-       nil nil t (lambda (binding)
-		   (not (string-suffix-p "-argument" (cdr binding))))))))
+  (defun embark-which-key-indicator ()
+    "An embark indicator that displays keymaps using which-key.
+  The which-key help message will show the type and value of the
+  current target followed by an ellipsis if there are further
+  targets."
+    (lambda (&optional keymap targets prefix)
+      (if (null keymap)
+	  (which-key--hide-popup-ignore-command)
+	(which-key--show-keymap
+	 (if (eq (plist-get (car targets) :type) 'embark-become)
+	     "Become"
+	   (format "Act on %s '%s'%s"
+		   (plist-get (car targets) :type)
+		   (embark--truncate-target (plist-get (car targets) :target))
+		   (if (cdr targets) "…" "")))
+	 (if prefix
+	     (pcase (lookup-key keymap prefix 'accept-default)
+	       ((and (pred keymapp) km) km)
+	       (_ (key-binding prefix 'accept-default)))
+	   keymap)
+	 nil nil t (lambda (binding)
+		     (not (string-suffix-p "-argument" (cdr binding))))))))
 
-(setq embark-indicators
-  '(embark-which-key-indicator
-    embark-highlight-indicator
-    embark-isearch-highlight-indicator))
+  (setq embark-indicators
+	'(embark-which-key-indicator
+	embark-highlight-indicator
+	embark-isearch-highlight-indicator))
 
-(defun embark-hide-which-key-indicator (fn &rest args)
-  "Hide the which-key indicator immediately when using the completing-read prompter."
-  (which-key--hide-popup-ignore-command)
-  (let ((embark-indicators
-	 (remq #'embark-which-key-indicator embark-indicators)))
+  (defun embark-hide-which-key-indicator (fn &rest args)
+    "Hide the which-key indicator immediately when using the completing-read prompter."
+    (which-key--hide-popup-ignore-command)
+    (let ((embark-indicators
+	   (remq #'embark-which-key-indicator embark-indicators)))
       (apply fn args)))
 
-(advice-add #'embark-completing-read-prompter
-	    :around #'embark-hide-which-key-indicator)
+  (advice-add #'embark-completing-read-prompter
+	      :around #'embark-hide-which-key-indicator)
 #+end_src
 
 #+begin_src emacs-lisp
@@ -1565,8 +1581,7 @@ Use single space after sentences.
 #+end_src
 
 Use ~F8~ to insert YYYYMMDD date string and ~C-c d~ to insert Month, Day Year.
-
-#+begin_src emacs-lisp
+  s-lisp
   (defun insert-date-string ()
     "Insert current date yyyymmdd."
     (interactive)
@@ -1575,50 +1590,50 @@ Use ~F8~ to insert YYYYMMDD date string and ~C-c d~ to insert Month, Day Year.
   (defun insert-standard-date ()
     "Inserts standard date time string."
     (interactive)
-    (insert (format-time-string "%B %e, %Y")))
+    (insert (format-time-string "%B %e,
 #+end_src
 
 
-Count words in region or buffer.
+  Count words in region or buffer.
 
-#+begin_src emacs-lisp
-  (defun rlr-count-words (&optional begin end)
-    "count words between BEGIN and END (region); if no region defined, count words in buffer"
-    (interactive "r")
-    (let ((b (if mark-active begin (point-min)))
-	  (e (if mark-active end (point-max))))
-      (message "Word count: %s" (how-many "\\w+" b e))))
-#+end_src
-
-
-Wordcount Mode
-
-#+begin_src emacs-lisp :tangle no
-(use-package wc-mode)
-#+end_src
+  #+begin_src emacs-lisp
+    (defun rlr-count-words (&optional begin end)
+      "count words between BEGIN and END (region); if no region defined, count words in buffer"
+      (interactive "r")
+      (let ((b (if mark-active begin (point-min)))
+	    (e (if mark-active end (point-max))))
+	(message "Word count: %s" (how-many "\\w+" b e))))
+  #+end_src
 
 
+  Wordcount Mode
+
+  #+begin_src emacs-lisp :tangle no
+    (use-package wc-mode)
+  #+end_src
 
 
 
-Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/][Bozhidar Batsov]]
 
-#+begin_src emacs-lisp
-  (defun move-line-up ()
-    "Move up the current line."
-    (interactive)
-    (transpose-lines 1)
-    (forward-line -2)
-    (indent-according-to-mode))
 
-  (defun move-line-down ()
-    "Move down the current line."
-    (interactive)
-    (forward-line 1)
-    (transpose-lines 1)
-    (forward-line -1)
-    (indent-according-to-mode))
-#+end_src
+  Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/][Bozhidar Batsov]]
+
+  #+begin_src emacs-lisp
+    (defun move-line-up ()
+      "Move up the current line."
+      (interactive)
+      (transpose-lines 1)
+      (forward-line -2)
+      (indent-according-to-mode))
+
+    (defun move-line-down ()
+      "Move down the current line."
+      (interactive)
+      (forward-line 1)
+      (transpose-lines 1)
+      (forward-line -1)
+      (indent-according-to-mode))
+  #+end_src
 
 
 
@@ -1781,8 +1796,8 @@ Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-o
 ** Expand-region
 
 #+begin_src emacs-lisp
-(use-package expand-region
-  :bind ("C-=" . er/expand-region))
+  (use-package expand-region
+    :bind ("C-=" . er/expand-region))
 #+end_src
 
 
@@ -1834,8 +1849,8 @@ Use f7 to check word, shift-f7 to check entire buffer.
 Display suggestions in grid.
 
 #+begin_src emacs-lisp
-(add-to-list 'vertico-multiform-categories
-	     '(jinx grid (vertico-grid-annotate . 20)))
+  (add-to-list 'vertico-multiform-categories
+	       '(jinx grid (vertico-grid-annotate . 20)))
 #+end_src
 
 
@@ -1924,16 +1939,16 @@ Use deadgrep to search with ripgrep.
 ** Multiple Cursors
 
 #+begin_src emacs-lisp
-(use-package iedit)
+  (use-package iedit)
 
-(use-package multiple-cursors
-  :ensure t
-  :config
-  (global-unset-key (kbd "M-<down-mouse-1>"))
-  (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
-  (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this))
+  (use-package multiple-cursors
+    :ensure t
+    :config
+    (global-unset-key (kbd "M-<down-mouse-1>"))
+    (global-set-key (kbd "M-<mouse-1>") 'mc/add-cursor-on-click)
+    (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+    (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+    (global-set-key (kbd "C-<") 'mc/mark-previous-like-this))
 #+end_src
 
 
@@ -1979,7 +1994,7 @@ Use deadgrep to search with ripgrep.
 
 #+begin_src emacs-lisp
   (use-package org
-    :straight (:type built-in)
+    ;; :straight (:type built-in)
     :init
     ;; (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
     (setq org-directory "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/")
@@ -1992,7 +2007,7 @@ Use deadgrep to search with ripgrep.
     (setq org-hide-emphasis-markers nil)
     ;; (setq org-footnote-section nil)
     (setq org-html-validation-link nil)
-(setq org-time-stamp-rounding-minutes '(0 15))
+    (setq org-time-stamp-rounding-minutes '(0 15))
     (setq org-todo-keyword-faces
 	  '(("DONE" . "green4") ("TODO" . org-warning)))
     (setq org-agenda-files '("/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/"))
@@ -2039,13 +2054,14 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 
   (require 'ox-arara)
 
+  (require 'ox-beamer)
 
   (with-eval-after-load 'ox-latex
     (add-to-list 'org-latex-classes
 		 '("org-article"
 		   "\\documentclass{article}
-			    [NO-DEFAULT-PACKAGES]
-			    [NO-PACKAGES]"
+				[NO-DEFAULT-PACKAGES]
+				[NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -2054,8 +2070,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-handout"
 		   "\\documentclass{pdfhandout}
-			    [NO-DEFAULT-PACKAGES]
-			    [NO-PACKAGES]"
+				[NO-DEFAULT-PACKAGES]
+				[NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -2064,8 +2080,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (add-to-list 'org-latex-classes
 		 '("org-beamer"
 		   "\\documentclass{beamer}
-			    [NO-DEFAULT-PACKAGES]
-			    [NO-PACKAGES]"
+				[NO-DEFAULT-PACKAGES]
+				[NO-PACKAGES]"
 		   ("\\section{%s}" . "\\section*{%s}")
 		   ("\\subsection{%s}" . "\\subsection*{%s}")
 		   ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -2085,7 +2101,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 		   (apostrophe        :utf-8 "’" :html "&rsquo;")))
     )
 
-		      ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
+			  ;;; Org-Footnote Assistant (https://github.com/lazzalazza/org-footnote-assistant)
 
 
 
@@ -2095,6 +2111,8 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     :after (org)
     :config
     (org-footnote-assistant-mode 1))
+
+
 
 
   (defun
@@ -2160,6 +2178,14 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (make-slides)
     (find-file "*-data.org" t))
 
+  (defun rlr/create-frametitle ()
+    "Convert title to frametitle."
+    (interactive)
+    (goto-char 1)
+    (while (ignore-errors
+	     (re-search-forward "begin{frame}.*]"))
+      (insert "\n \\frametitle"))
+    )
 
   (defun lecture-notes ()
     "publish org data file as beamer notes"
@@ -2167,6 +2193,10 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
     (save-buffer)
     (find-file "*-notes.org" t)
     (org-beamer-export-to-latex)
+    (kill-buffer)
+    (find-file "*-notes.tex" t)
+    (rlr/create-frametitle)
+    (save-buffer)
     (kill-buffer)
     (make-notes)
     (find-file "*-data.org" t))
@@ -2290,7 +2320,7 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 	'(
 	  ("t" "Todo" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org" "Inbox")
 	   "** TODO %?\n  %i\n  %a")
-("e" "Event" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/events.org" "Future")
+	  ("e" "Event" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/events.org" "Future")
 	   "** %? %T")
 	  ("b" "Bookmark" entry (file+headline "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org" "Bookmarks")
 	   "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
@@ -2329,11 +2359,11 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 	  org-agenda-window-setup "current-window"
 	  org-agenda-include-diary nil
 	  org-agenda-start-on-weekday nil)
-(setq org-agenda-time-grid
-  '((daily today require-timed remove-match)
-    ()
-    "......"
-    ""))
+    (setq org-agenda-time-grid
+	  '((daily today require-timed remove-match)
+	    ()
+	    "......"
+	    ""))
 
     (setq org-agenda-custom-commands
 	  '(("c" "Super view"
@@ -2369,36 +2399,36 @@ Variable-pitch and mixed-pitch modes can be toggled on and off using the toggle 
 Display agenda for the day.
 
 #+begin_src emacs-lisp
-(setq org-agenda-custom-commands
-    '(("d" "Agenda for today" agenda ""
-	((org-agenda-overriding-header "Today's agenda")
-	 (org-agenda-span 'day)
-	))))
+  (setq org-agenda-custom-commands
+	'(("d" "Agenda for today" agenda ""
+	   ((org-agenda-overriding-header "Today's agenda")
+	    (org-agenda-span 'day)
+	    ))))
 #+end_src
 
 #+begin_src emacs-lisp
-(defun today-agenda ()
-  "Display today's agenda"
-  (interactive)
-  (org-agenda nil "d")
-  )
+  (defun today-agenda ()
+    "Display today's agenda"
+    (interactive)
+    (org-agenda nil "d")
+    )
 
 #+end_src
 
 Start org agenda
 
 #+begin_src emacs-lisp
-(today-agenda)
+  (today-agenda)
 #+end_src
 
 Use Emacs appointment system for notifications.
 
 #+begin_src emacs-lisp
-(setq appt-time-msg-list nil)    ;; clear existing appt list
-;; (setq appt-message-warning-time '15)  ;; send first warning 15 minutes before appointment
-(org-agenda-to-appt) ;; generate the appt list from org agenda files on emacs launch
-(run-at-time "24:01" 3600 'org-agenda-to-appt) ;; update appt list hourly
-(add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt) ;; update appt list on agenda view
+  (setq appt-time-msg-list nil)    ;; clear existing appt list
+  ;; (setq appt-message-warning-time '15)  ;; send first warning 15 minutes before appointment
+  (org-agenda-to-appt) ;; generate the appt list from org agenda files on emacs launch
+  (run-at-time "24:01" 3600 'org-agenda-to-appt) ;; update appt list hourly
+  (add-hook 'org-finalize-agenda-hook 'org-agenda-to-appt) ;; update appt list on agenda view
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2436,9 +2466,9 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 	  (replace-match ""))
 	;; Change correct multiple answer options to "*"
 	(beginning-of-buffer)
-(let ((case-fold-search nil))
-	(while (re-search-forward "\[X\]" nil t)
-	  (replace-match "*")))
+	(let ((case-fold-search nil))
+	  (while (re-search-forward "\[X\]" nil t)
+	    (replace-match "*")))
 	;; Mark short answer responses with "**"
 	(beginning-of-buffer)
 	(while (re-search-forward "+" nil t)
@@ -2472,7 +2502,7 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 [[https://gist.github.com/jdtsmith/55e6a660dd4c0779a600ac81bf9bfc23][org-toggle-emphasis: easily toggle emphasis markers: =~*/_+]]
 
 #+begin_src emacs-lisp
-(defun my/org-toggle-emphasis (type)
+  (defun my/org-toggle-emphasis (type)
     "Toggle org emphasis TYPE (a character) at point."
     (cl-labels ((in-emph (re)
 		  "See if in org emphasis given by RE."
@@ -2495,9 +2525,9 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 	  (if (region-active-p)
 	      (if (in-emph type-re) (de-emphasize) (org-emphasize type))
 	    (if (eq (char-before) type) (backward-char))
-	    (if (in-emph type-re)	;nothing marked, in emph text?
+	    (if (in-emph type-re)       ;nothing marked, in emph text?
 		(de-emphasize)
-	      (setq add-bounds		; check other flavors
+	      (setq add-bounds          ; check other flavors
 		    (if (or (in-emph re) (in-emph other-re))
 			(cons (match-beginning 4) (match-end 4))
 		      (setq is-word t)
@@ -2507,8 +2537,8 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 		      (at-end (= (point) (cdr add-bounds))))
 		  (set-mark (car add-bounds))
 		  (goto-char (cdr add-bounds))
-		  (org-emphasize type)	;deletes marked region!
-		  (unless is-word	; delete extra spaces
+		  (org-emphasize type)  ;deletes marked region!
+		  (unless is-word       ; delete extra spaces
 		    (goto-char (car add-bounds))
 		    (when (eq (char-after) ?\s) (delete-char 1))
 		    (goto-char (+ 2 (cdr add-bounds)))
@@ -2520,21 +2550,21 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 
 
 #+begin_src emacs-lisp
-(use-package org-view-mode
-	     :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
+  (use-package org-view-mode
+    :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
 #+end_src
 
 
 
 #+begin_src emacs-lisp
-(general-define-key
-:keymaps 'org-mode-map
-  "s-i" (lambda () (interactive) (my/org-toggle-emphasis ?/))
-  "s-b" (lambda () (interactive) (my/org-toggle-emphasis ?*))
-  "s-e" (lambda () (interactive) (my/org-toggle-emphasis ?~))
-  "s-=" (lambda () (interactive) (my/org-toggle-emphasis ?=))
-  "s-_" (lambda () (interactive) (my/org-toggle-emphasis ?_))
-  "s-+" (lambda () (interactive) (my/org-toggle-emphasis ?+)))
+  (general-define-key
+   :keymaps 'org-mode-map
+   "s-i" (lambda () (interactive) (my/org-toggle-emphasis ?/))
+   "s-b" (lambda () (interactive) (my/org-toggle-emphasis ?*))
+   "s-e" (lambda () (interactive) (my/org-toggle-emphasis ?~))
+   "s-=" (lambda () (interactive) (my/org-toggle-emphasis ?=))
+   "s-_" (lambda () (interactive) (my/org-toggle-emphasis ?_))
+   "s-+" (lambda () (interactive) (my/org-toggle-emphasis ?+)))
 #+end_src
 
 ** Bibtex
@@ -2575,31 +2605,31 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 From [[https://gist.github.com/lgatto/f54888e7f16968f853346c67b232cae0][Create and yank bibtex entry from a DOI]]
 
 #+begin_src emacs-lisp
-(defun yank-bibtex-from-doi ()
-  "Create and yank bibtex entry from a DOI.
-This command expects a DOI, of the form e.g.
-10.1371/journal.pcbi.1004947 and will then grab the bibtex entry.
-No error handling is performed e.g. if the DOI is invalid.
-If you run this from a bibtex buffer, then run C-c C-q to reformat the entry
-after it is inserted."
-  (interactive)
-  (let* ((doi
-	  (read-from-minibuffer "doi: "))
-	 (cmd
-	  (concat
-	   "curl -LH \"Accept: application/x-bibtex\" "
-	   "https://doi.org/"
-	   doi))
-	 (bibtex
-	  (shell-command-to-string
-	   (concat cmd " 2>/dev/null"))))
-    (insert-for-yank bibtex)))
+  (defun yank-bibtex-from-doi ()
+    "Create and yank bibtex entry from a DOI.
+  This command expects a DOI, of the form e.g.
+  10.1371/journal.pcbi.1004947 and will then grab the bibtex entry.
+  No error handling is performed e.g. if the DOI is invalid.
+  If you run this from a bibtex buffer, then run C-c C-q to reformat the entry
+  after it is inserted."
+    (interactive)
+    (let* ((doi
+	    (read-from-minibuffer "doi: "))
+	   (cmd
+	    (concat
+	     "curl -LH \"Accept: application/x-bibtex\" "
+	     "https://doi.org/"
+	     doi))
+	   (bibtex
+	    (shell-command-to-string
+	     (concat cmd " 2>/dev/null"))))
+      (insert-for-yank bibtex)))
 #+end_src
 
 
 #+begin_src emacs-lisp
-(use-package org-cite-overlay
-:straight (org-cite-overlay :type git :host sourcehut :repo "swflint/org-cite-overlay"))
+  (use-package org-cite-overlay
+    :straight (org-cite-overlay :type git :host sourcehut :repo "swflint/org-cite-overlay"))
 #+end_src
 
 
@@ -3356,7 +3386,7 @@ Use [[dict.org]] for dictionary searches.
 Use the Mac OS dictionary. From [[https://github.com/xuchunyang/osx-dictionary.el][xuchunyang/osx-dictionary.el: Mac OS X Dictionary.app interface for Emacs]]
 
 #+begin_src emacs-lisp
-(use-package osx-dictionary)
+  (use-package osx-dictionary)
 
 #+end_src
 
@@ -3540,98 +3570,98 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
 ** Mu4e
 
 #+begin_src emacs-lisp
-(require 'mu4e)
-(setq
- mue4e-headers-skip-duplicates t
- mu4e-headers-leave-behavior 'apply
- mu4e-headers-date-format "%Y-%m-%d"
- mu4e-view-show-images t
- mu4e-view-show-addresses t
- mu4e-compose-format-flowed t
- mu4e-compose-dont-reply-to-self t
- mu4e-compose-reply-ignore-address '("no-?reply")
- mu4e-compose-signature-auto-include nil
- mu4e-date-format "%y-%m-%d"
- mu4e-change-filenames-when-moving t
- mu4e-attachments-dir "~/Downloads"
- mu4e-get-mail-command "mbsync -a"
- mu4e-view-use-gnus t
- mu4e-html2text-command "w3m -T text/html"
- mu4e-update-interval (* 10 60) ;;this setting allows to re-sync and re-index mail by pressing U refresh mbsync  every 10 minutes
+  (require 'mu4e)
+  (setq
+   mue4e-headers-skip-duplicates t
+   mu4e-headers-leave-behavior 'apply
+   mu4e-headers-date-format "%Y-%m-%d"
+   mu4e-view-show-images t
+   mu4e-view-show-addresses t
+   mu4e-compose-format-flowed t
+   mu4e-compose-dont-reply-to-self t
+   mu4e-compose-reply-ignore-address '("no-?reply")
+   mu4e-compose-signature-auto-include nil
+   mu4e-date-format "%y-%m-%d"
+   mu4e-change-filenames-when-moving t
+   mu4e-attachments-dir "~/Downloads"
+   mu4e-get-mail-command "mbsync -a"
+   mu4e-view-use-gnus t
+   mu4e-html2text-command "w3m -T text/html"
+   mu4e-update-interval (* 10 60) ;;this setting allows to re-sync and re-index mail by pressing U refresh mbsync  every 10 minutes
 
- mu43-use-fancy-chars t
- mu4e-maildir       "~/Maildir"   ;; top-level Maildir
- mu4e-refile-folder "/Archive"
- mu4e-sent-folder   "/Sent"
- mu4e-drafts-folder "/Drafts"
- mu4e-trash-folder  "/Trash"
- mu4e-reply-to-address "rlridenour@fastmail.com"
- user-mail-address "rlridenour@fastmail.com"
- user-full-name "Randy Ridenour")
+   mu43-use-fancy-chars t
+   mu4e-maildir       "~/Maildir"   ;; top-level Maildir
+   mu4e-refile-folder "/Archive"
+   mu4e-sent-folder   "/Sent"
+   mu4e-drafts-folder "/Drafts"
+   mu4e-trash-folder  "/Trash"
+   mu4e-reply-to-address "rlridenour@fastmail.com"
+   user-mail-address "rlridenour@fastmail.com"
+   user-full-name "Randy Ridenour")
 
-(setq mu4e-maildir-shortcuts
-  '( (:maildir "/inbox"     :key  ?i)
-     (:maildir "/archive"   :key  ?a)
-     (:maildir "/sent"      :key  ?s)
-    ))
+  (setq mu4e-maildir-shortcuts
+	'( (:maildir "/inbox"     :key  ?i)
+	 (:maildir "/archive"   :key  ?a)
+	 (:maildir "/sent"      :key  ?s)
+	 ))
 
-(fset 'my-move-to-trash "mTrash")
-(define-key mu4e-headers-mode-map (kbd "d") 'my-move-to-trash)
-(define-key mu4e-view-mode-map (kbd "d") 'my-move-to-trash)
+  (fset 'my-move-to-trash "mTrash")
+  (define-key mu4e-headers-mode-map (kbd "d") 'my-move-to-trash)
+  (define-key mu4e-view-mode-map (kbd "d") 'my-move-to-trash)
 
-(setq
- message-send-mail-function   'smtpmail-send-it
- smtpmail-default-smtp-server "smtp.fastmail.com"
- smtpmail-smtp-server         "smtp.fastmail.com"
- smtpmail-smtp-service        587)
+  (setq
+   message-send-mail-function   'smtpmail-send-it
+   smtpmail-default-smtp-server "smtp.fastmail.com"
+   smtpmail-smtp-server         "smtp.fastmail.com"
+   smtpmail-smtp-service        587)
 
-;; Show emails as plain text, if possible
-(with-eval-after-load "mm-decode"
- (add-to-list 'mm-discouraged-alternatives "text/html")
- (add-to-list 'mm-discouraged-alternatives "text/richtext"))
+  ;; Show emails as plain text, if possible
+  (with-eval-after-load "mm-decode"
+    (add-to-list 'mm-discouraged-alternatives "text/html")
+    (add-to-list 'mm-discouraged-alternatives "text/richtext"))
 #+end_src
 
 
 *** Old mu settings
 
 #+begin_src emacs-lisp :tangle no
-(use-package mu4e
-:load-path "/opt/homebrew/Cellar/mu/1.10.8/share/emacs/site-lisp/mu/mu4e")
+  (use-package mu4e
+    :load-path "/opt/homebrew/Cellar/mu/1.10.8/share/emacs/site-lisp/mu/mu4e")
 
-;; for sending mails
-(require 'smtpmail)
+  ;; for sending mails
+  (require 'smtpmail)
 #+end_src
 
 
 
 #+begin_src emacs-lisp :tangle no
-(setq
- mue4e-headers-skip-duplicates  t
- mu4e-view-show-images t
- mu4e-view-show-addresses t
- mu4e-compose-format-flowed nil
- mu4e-date-format "%y/%m/%d"
- mu4e-headers-date-format "%Y/%m/%d"
- mu4e-change-filenames-when-moving t
- mu4e-attachments-dir "~/Downloads"
+  (setq
+   mue4e-headers-skip-duplicates  t
+   mu4e-view-show-images t
+   mu4e-view-show-addresses t
+   mu4e-compose-format-flowed nil
+   mu4e-date-format "%y/%m/%d"
+   mu4e-headers-date-format "%Y/%m/%d"
+   mu4e-change-filenames-when-moving t
+   mu4e-attachments-dir "~/Downloads"
 
- mu4e-maildir       "~/Maildir"   ;; top-level Maildir
- ;; note that these folders below must start with /
- ;; the paths are relative to maildir root
- mu4e-refile-folder "/Archive"
- mu4e-sent-folder   "/Sent"
- mu4e-drafts-folder "/Drafts"
- mu4e-trash-folder  "/Trash")
+   mu4e-maildir       "~/Maildir"   ;; top-level Maildir
+   ;; note that these folders below must start with /
+   ;; the paths are relative to maildir root
+   mu4e-refile-folder "/Archive"
+   mu4e-sent-folder   "/Sent"
+   mu4e-drafts-folder "/Drafts"
+   mu4e-trash-folder  "/Trash")
 
-;; this setting allows to re-sync and re-index mail
-;; by pressing U
-(setq mu4e-get-mail-command  "mbsync -a")
+  ;; this setting allows to re-sync and re-index mail
+  ;; by pressing U
+  (setq mu4e-get-mail-command  "mbsync -a")
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
-(fset 'my-move-to-trash "mTrash")
-(define-key mu4e-headers-mode-map (kbd "d") 'my-move-to-trash)
-(define-key mu4e-view-mode-map (kbd "d") 'my-move-to-trash)
+  (fset 'my-move-to-trash "mTrash")
+  (define-key mu4e-headers-mode-map (kbd "d") 'my-move-to-trash)
+  (define-key mu4e-view-mode-map (kbd "d") 'my-move-to-trash)
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
@@ -3654,17 +3684,17 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
 #+end_src
 
 #+begin_src emacs-lisp :tangle no
-(setq sendmail-program "/opt/homebrew/bin/msmtp"
-      send-mail-function 'smtpmail-send-it
-      message-sendmail-f-is-evil t
-      message-sendmail-extra-arguments '("--read-envelope-from")
-      message-send-mail-function 'message-send-mail-with-sendmail)
+  (setq sendmail-program "/opt/homebrew/bin/msmtp"
+	send-mail-function 'smtpmail-send-it
+	message-sendmail-f-is-evil t
+	message-sendmail-extra-arguments '("--read-envelope-from")
+	message-send-mail-function 'message-send-mail-with-sendmail)
 #+end_src
 
 ** Emacs Everywhere
 
 #+begin_src emacs-lisp
-(use-package emacs-everywhere)
+  (use-package emacs-everywhere)
 #+end_src
 
 
@@ -3673,8 +3703,8 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
 For help with calc.
 
 #+begin_src emacs-lisp
-(use-package casual-calc
-  :bind (:map calc-mode-map ("C-o" . 'casual-main-menu)))
+  (use-package casual-calc
+    :bind (:map calc-mode-map ("C-o" . 'casual-main-menu)))
 #+end_src
 
 
@@ -3920,14 +3950,14 @@ Unset some keys.
 ** Major Mode Hydras
 
 #+begin_src emacs-lisp
-(major-mode-hydra-define dashboard-mode
-  (:quit-key "q")
-  ("Open"
-   (("m" consult-bookmark "bookmarks")
-    ("a" consult-org-agenda "consult-agenda")
-    ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
-    ("b" (find-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org") "web bookmarks")
-    )))
+  (major-mode-hydra-define dashboard-mode
+    (:quit-key "q")
+    ("Open"
+     (("m" consult-bookmark "bookmarks")
+      ("a" consult-org-agenda "consult-agenda")
+      ("t" (find-file "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/tasks.org") "open tasks")
+      ("b" (find-file "/Users/rlridenour/Library/Mobile Documents/com~apple~CloudDocs/org/bookmarks.org") "web bookmarks")
+      )))
 #+end_src
 
 
@@ -4249,7 +4279,7 @@ Set default directory.
 
 
 #+begin_src emacs-lisp
-;; (setq initial-buffer-choice 'my-calendar)
+  ;; (setq initial-buffer-choice 'my-calendar)
 #+end_src
 
 Reset garbage collection.
