@@ -291,8 +291,6 @@
 (setq savehist-file (expand-file-name "savehist" rr-cache-dir))
 (savehist-mode)
 
-(setq message-kill-buffer-on-exit t)
-
 (setq large-file-warning-threshold nil)
 
 (add-hook 'before-save-hook 'time-stamp)
@@ -309,18 +307,19 @@
 (add-hook 'find-file-not-found-functions #'make-parent-directory)
 
 (defun nuke-all-buffers ()
-  "Kill all the open buffers except the current one.
-    Leave *scratch*, *dashboard* and *Messages* alone too."
-  (interactive)
-  (mapc
-   (lambda (buffer)
-     (unless (or
-	      (string= (buffer-name buffer) "*scratch*")
-	      (string= (buffer-name buffer) "*Org Agenda*")
-	      (string= (buffer-name buffer) "*Messages*"))
-       (kill-buffer buffer)))
-   (buffer-list))
-  (delete-other-windows))
+    "Kill all the open buffers except the current one.
+      Leave *scratch*, *dashboard* and *Messages* alone too."
+    (interactive)
+    (mapc
+     (lambda (buffer)
+       (unless (or
+		(string= (buffer-name buffer) "*scratch*")
+		(string= (buffer-name buffer) "*Org Agenda*")
+		(string= (buffer-name buffer) "*Messages*"))
+	 (kill-buffer buffer)))
+     (buffer-list))
+    (delete-other-windows)
+)
 
 (use-package super-save
   :config
@@ -2405,7 +2404,7 @@ after it is inserted."
     ("t" toggle-window-split "toggle split")
     ("T" enlarge-window" grow taller" :exit nil)
     ("G" enlarge-window-horizontally "grow wider" :exit nil)
-    ("o" delete-other-windows "other windows"))
+    ("o" delete-other-windows "kill other windows"))
    "Frames"
    (("M" iconify-frame "minimize frame")
     ("d" delete-other-frames "delete other frames")

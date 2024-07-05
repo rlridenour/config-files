@@ -761,12 +761,6 @@ Save minibuffer history in the cache directory.
   (savehist-mode)
 #+end_src
 
-Kill message buffer on exit.
-
-#+begin_src emacs-lisp
-  (setq message-kill-buffer-on-exit t)
-#+end_src
-
 Don't need to confirm that I want to edit a large file.
 
 #+begin_src emacs-lisp
@@ -804,7 +798,7 @@ Don't display async shell command process buffers
 #+end_src
 
 
-Kills all open buffers except the current one. From https://github.com/ocodo/.emacs.d/blob/master/custom/handy-functions.el
+Kills all open buffers except scratch, dashboard and messages. From https://github.com/ocodo/.emacs.d/blob/master/custom/handy-functions.el
 
 #+begin_src emacs-lisp
   (defun nuke-all-buffers ()
@@ -819,7 +813,8 @@ Kills all open buffers except the current one. From https://github.com/ocodo/.em
 		(string= (buffer-name buffer) "*Messages*"))
 	 (kill-buffer buffer)))
      (buffer-list))
-    (delete-other-windows))
+    (delete-other-windows)
+)
 #+end_src
 
 Bbatsov's [[https://github.com/bbatsov/super-save][super-save]] saves buffers when idle or changing focus.
@@ -3840,7 +3835,7 @@ Unset some keys.
       ("t" toggle-window-split "toggle split")
       ("T" enlarge-window" grow taller" :exit nil)
       ("G" enlarge-window-horizontally "grow wider" :exit nil)
-      ("o" delete-other-windows "other windows"))
+      ("o" delete-other-windows "kill other windows"))
      "Frames"
      (("M" iconify-frame "minimize frame")
       ("d" delete-other-frames "delete other frames")
