@@ -2654,7 +2654,7 @@ From [[https://gist.github.com/lgatto/f54888e7f16968f853346c67b232cae0][Create a
 ** LaTeX
 
 #+begin_src emacs-lisp
-  (use-package tex-site
+  (use-package tex
     :straight auctex
     :defer t
     :init
@@ -2668,7 +2668,9 @@ From [[https://gist.github.com/lgatto/f54888e7f16968f853346c67b232cae0][Create a
 	  TeX-clean-confirm nil
 	  TeX-source-correlate-mode t
 	  TeX-source-correlate-method 'synctex))
+#+end_src
 
+#+begin_src emacs-lisp
   (setq TeX-view-program-selection '((output-pdf "PDF Viewer")))
 
   (setq TeX-view-program-list
