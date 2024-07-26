@@ -2355,8 +2355,8 @@ after it is inserted."
 (require 're-builder)
 (use-package casual-re-builder
   :general
-  (:keymaps reb-mode-map
-	    ("s-." . casual-re-builder-tmenu)))
+  (:keymaps 'reb-mode-map
+	    "s-." #'casual-re-builder-tmenu))
 
 (use-package mastodon
   :config

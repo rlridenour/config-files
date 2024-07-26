@@ -3755,8 +3755,8 @@ For help with calc.
   (require 're-builder)
   (use-package casual-re-builder
     :general
-    (:keymaps reb-mode-map
-	      ("s-." . casual-re-builder-tmenu)))
+    (:keymaps 'reb-mode-map
+	      "s-." #'casual-re-builder-tmenu))
 #+end_src
 
 
