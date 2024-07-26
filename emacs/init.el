@@ -109,6 +109,7 @@
 (use-package helpful)
 
 (use-package which-key
+  :straight (emacs-which-key :host github :repo "wesnel/emacs-which-key" :branch "wesnel/add-devil-support")
   :config
   (which-key-mode))
 
@@ -164,6 +165,8 @@
 (display-time-mode)
 
 (setq ring-bell-function 'ignore)
+
+(electric-pair-mode 1)
 
 (show-paren-mode)
 (setq show-paren-delay 0)
@@ -307,19 +310,19 @@
 (add-hook 'find-file-not-found-functions #'make-parent-directory)
 
 (defun nuke-all-buffers ()
-    "Kill all the open buffers except the current one.
+  "Kill all the open buffers except the current one.
       Leave *scratch*, *dashboard* and *Messages* alone too."
-    (interactive)
-    (mapc
-     (lambda (buffer)
-       (unless (or
-		(string= (buffer-name buffer) "*scratch*")
-		(string= (buffer-name buffer) "*Org Agenda*")
-		(string= (buffer-name buffer) "*Messages*"))
-	 (kill-buffer buffer)))
-     (buffer-list))
-    (delete-other-windows)
-)
+  (interactive)
+  (mapc
+   (lambda (buffer)
+     (unless (or
+	      (string= (buffer-name buffer) "*scratch*")
+	      (string= (buffer-name buffer) "*Org Agenda*")
+	      (string= (buffer-name buffer) "*Messages*"))
+       (kill-buffer buffer)))
+   (buffer-list))
+  (delete-other-windows)
+  )
 
 (use-package super-save
   :config
@@ -458,8 +461,8 @@ Version 2016-06-19"
  "C-x C-b" #'ibuffer
  "C-`" #'iterm-goto-filedir-or-home
  "s-o" #'find-file
- "M-s-k" #'kill-this-buffer
- "s-k" #'kill-buffer-and-window
+ "s-k" #'kill-this-buffer
+ "M-s-k" #'kill-buffer-and-window
  "s-K" #'nuke-all-buffers
  "s-r" #'consult-buffer
  "M-s-r" #'consult-buffer-other-window
@@ -741,6 +744,69 @@ Version 2016-06-19"
   :config
   (marginalia-mode))
 
+(use-package embark
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("C-:" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+  :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+  ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
+  ;; strategy, if you want to see the documentation from multiple providers.
+  ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+  ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+	       '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+		 nil
+		 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+
+(defun embark-which-key-indicator ()
+  "An embark indicator that displays keymaps using which-key.
+The which-key help message will show the type and value of the
+current target followed by an ellipsis if there are further
+targets."
+  (lambda (&optional keymap targets prefix)
+    (if (null keymap)
+	(which-key--hide-popup-ignore-command)
+      (which-key--show-keymap
+       (if (eq (plist-get (car targets) :type) 'embark-become)
+	   "Become"
+	 (format "Act on %s '%s'%s"
+		 (plist-get (car targets) :type)
+		 (embark--truncate-target (plist-get (car targets) :target))
+		 (if (cdr targets) "…" "")))
+       (if prefix
+	   (pcase (lookup-key keymap prefix 'accept-default)
+	     ((and (pred keymapp) km) km)
+	     (_ (key-binding prefix 'accept-default)))
+	 keymap)
+       nil nil t (lambda (binding)
+		   (not (string-suffix-p "-argument" (cdr binding))))))))
+
+(setq embark-indicators
+      '(embark-which-key-indicator
+      embark-highlight-indicator
+      embark-isearch-highlight-indicator))
+
+(defun embark-hide-which-key-indicator (fn &rest args)
+  "Hide the which-key indicator immediately when using the completing-read prompter."
+  (which-key--hide-popup-ignore-command)
+  (let ((embark-indicators
+	 (remq #'embark-which-key-indicator embark-indicators)))
+    (apply fn args)))
+
+(advice-add #'embark-completing-read-prompter
+	    :around #'embark-hide-which-key-indicator)
+
 (use-package corfu
   ;; Optional customizations
   ;; :custom
@@ -883,6 +949,10 @@ Version 2016-06-19"
   (forward-line -1)
   (indent-according-to-mode))
 
+(use-package devil
+  :config
+  (global-devil-mode))
+
 (use-package hungry-delete
   :defer t
   :config
@@ -897,14 +967,6 @@ Version 2016-06-19"
 
 (use-package unfill
   :defer t)
-
-(use-package smartparens
-  :init
-  (require 'smartparens-config)
-  :config
-  (smartparens-global-mode t) ;; These options can be t or nil.
-  (show-smartparens-global-mode t)
-  (setq sp-show-pair-from-inside t))
 
 (use-package expand-region
   :bind ("C-=" . er/expand-region))
@@ -998,7 +1060,7 @@ Version 2016-06-19"
  "s-j" #'crux-top-join-line
  "<S-return>" #'crux-smart-open-line
  "<C-S-return>" #'crux-smart-open-line-above
- "<f8>" #'insert-standard-date
+ "<C-d d>" #'insert-standard-date
 
  "M-y" #'consult-yank-pop
 
@@ -1961,17 +2023,6 @@ after it is inserted."
 
 (use-package writeroom-mode)
 
-(add-to-list 'treesit-language-source-alist
-             '(typst "https://github.com/uben0/tree-sitter-typst"))
-(treesit-install-language-grammar 'typst)
-
-(use-package typst-ts-mode
-  :straight (:type git :host sourcehut :repo "meow_king/typst-ts-mode" :files (:defaults "*.el"))
-  :custom
-  ;; (optional) If you want to ensure your typst tree sitter grammar version is greater than the minimum requirement
-  ;; Note this only check and compare file modification time
-  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory)))
-
 ;; Denote
 (use-package denote
   :config
@@ -2269,6 +2320,44 @@ after it is inserted."
 
 (use-package emacs-everywhere)
 
+(use-package casual-calc
+  :general
+  (:keymaps 'calc-mode-map
+	    "s-."  #'casual-calc-tmenu))
+
+(use-package casual-info
+  :general
+  (:keymaps 'Info-mode-map
+	    "s-." #'casual-info-tmenu))
+
+(use-package casual-dired
+  :general
+  (:keymaps 'dired-mode-map
+	    "s-." #'casual-dired-tmenu))
+
+(use-package casual-avy
+  :general
+  ("M-g a"  #'casual-avy-tmenu))
+
+(use-package casual-isearch
+  :general
+  (:keymaps 'isearch-mode-map
+	  "<f8>" #'casual-isearch-tmenu))
+
+;; (require 'ibuffer)
+(use-package casual-ibuffer
+  :general
+  (:keymaps 'ibuffer-mode-map
+	    "s-." #'casual-ibuffer-tmenu
+	    "F" #'casual-ibuffer-filter-tmenu
+	    "s" #'casual-ibuffer-sortby-tmenu))
+
+(require 're-builder)
+(use-package casual-re-builder
+  :general
+  (:keymaps reb-mode-map
+	    ("s-." . casual-re-builder-tmenu)))
+
 (use-package mastodon
   :config
   (mastodon-discover)
@@ -2302,7 +2391,7 @@ after it is inserted."
     ("f" auto-fill-mode "fill" :toggle t)
     ("l" display-line-numbers-mode "linum" :toggle t)
     ("m" mixed-pitch-mode "mixed-pitch" :toggle t)
-    ("p" smartparens-mode "smartparens" :toggle t)
+    ("p" electric-pair-mode "electric-pair" :toggle t)
     ("t" toggle-truncate-lines "truncate" :toggle t)
     ("s" whitespace-mode "whitespace" :toggle t))
    " "
@@ -2670,7 +2759,8 @@ after it is inserted."
  "3" #'rlr/find-file-right
  "b" #'consult-bookmark
  "c" #'org-capture
- "d" #'insert-date-string
+ "d s" #'insert-date-string
+ "d d" #'insert-standard-date
  "D" #'crux-delete-file-and-buffer
  ;; "h" #'consult-history
  "k" #'crux-kill-other-buffers

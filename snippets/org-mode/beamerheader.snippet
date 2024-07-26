@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: beamer header
 # key: beamer
+# group: beamer
 # --
 
 #+TITLE: ${1:Title}
@@ -29,9 +30,19 @@
 #+startup: beamer 
 :end:
 
-*** 
+*** Title :B_fullframe:
+:PROPERTIES:
+:BEAMER_env: fullframe
+:END:
+
 \maketitle
 
-# For a TOC slide, add "\tableofcontents" under a level 3 heading.
+
+# *** Table of Contents :B_fullframe:
+# :PROPERTIES:
+# :BEAMER_env: fullframe
+# :END:
+
+# \tableofcontents
 
 $0

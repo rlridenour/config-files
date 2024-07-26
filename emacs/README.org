@@ -174,6 +174,7 @@ Set directory for org files.
     "The directory for my org files.")
 #+end_src
 
+Set directory for agenda files.
 
 #+begin_src emacs-lisp
   (defconst rr-agenda-dir "/Users/rlridenour/Library/Mobile Documents/iCloud~com~appsonthemove~beorg/Documents/org/"
@@ -407,6 +408,7 @@ Make help buffers active when created, so pressing "q" will immediately close th
 
 #+begin_src emacs-lisp
   (use-package which-key
+    :straight (emacs-which-key :host github :repo "wesnel/emacs-which-key" :branch "wesnel/add-devil-support")
     :config
     (which-key-mode))
 #+end_src
@@ -540,7 +542,11 @@ Disable warning bell
   (setq ring-bell-function 'ignore)
 #+end_src
 
+Auto insert close bracket.
 
+#+begin_src emacs-lisp
+(electric-pair-mode 1)
+#+end_src
 
 Immediately highlight matching pairs of parentheses and quotes.
 
@@ -803,7 +809,7 @@ Kills all open buffers except scratch, dashboard and messages. From https://gith
 #+begin_src emacs-lisp
   (defun nuke-all-buffers ()
     "Kill all the open buffers except the current one.
-      Leave *scratch*, *dashboard* and *Messages* alone too."
+	Leave *scratch*, *dashboard* and *Messages* alone too."
     (interactive)
     (mapc
      (lambda (buffer)
@@ -814,7 +820,7 @@ Kills all open buffers except scratch, dashboard and messages. From https://gith
 	 (kill-buffer buffer)))
      (buffer-list))
     (delete-other-windows)
-)
+    )
 #+end_src
 
 Bbatsov's [[https://github.com/bbatsov/super-save][super-save]] saves buffers when idle or changing focus.
@@ -1005,8 +1011,8 @@ Keybindings for files and buffers.
    "C-x C-b" #'ibuffer
    "C-`" #'iterm-goto-filedir-or-home
    "s-o" #'find-file
-   "M-s-k" #'kill-this-buffer
-   "s-k" #'kill-buffer-and-window
+   "s-k" #'kill-this-buffer
+   "M-s-k" #'kill-buffer-and-window
    "s-K" #'nuke-all-buffers
    "s-r" #'consult-buffer
    "M-s-r" #'consult-buffer-other-window
@@ -1368,7 +1374,7 @@ Functions for handling windows.
     (marginalia-mode))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package embark
     :bind
     (("C-." . embark-act)         ;; pick some comfortable binding
@@ -1379,7 +1385,7 @@ Functions for handling windows.
     (setq prefix-help-command #'embark-prefix-help-command)
     ;; Show the Embark target at point via Eldoc.  You may adjust the Eldoc
     ;; strategy, if you want to see the documentation from multiple providers.
-    (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
+    ;; (add-hook 'eldoc-documentation-functions #'embark-eldoc-first-target)
     ;; (setq eldoc-documentation-strategy #'eldoc-documentation-compose-eagerly)
     :config
 
@@ -1390,14 +1396,14 @@ Functions for handling windows.
 		   (window-parameters (mode-line-format . none)))))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   ;; Consult users will also want the embark-consult package.
   (use-package embark-consult
     :hook
     (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (defun embark-which-key-indicator ()
     "An embark indicator that displays keymaps using which-key.
   The which-key help message will show the type and value of the
@@ -1576,12 +1582,12 @@ Use single space after sentences.
 #+end_src
 
 #+begin_src emacs-lisp
-(use-package ts)
+  (use-package ts)
 #+end_src
 
 
 
-Use ~F8~ to insert Month, Day Year and ~C-c d~ to insert YYYYMMDD date string.
+Use ~C-c d d~ to insert Month, Day Year and ~C-c d s~ to insert YYYYMMDD date string.
 
 #+begin_src emacs-lisp
   (defun insert-date-string ()
@@ -1596,55 +1602,63 @@ Use ~F8~ to insert Month, Day Year and ~C-c d~ to insert YYYYMMDD date string.
 #+end_src
 
 
-  Count words in region or buffer.
+Count words in region or buffer.
 
-  #+begin_src emacs-lisp
-    (defun rlr-count-words (&optional begin end)
-      "count words between BEGIN and END (region); if no region defined, count words in buffer"
-      (interactive "r")
-      (let ((b (if mark-active begin (point-min)))
-	    (e (if mark-active end (point-max))))
-	(message "Word count: %s" (how-many "\\w+" b e))))
-  #+end_src
-
-
-  Wordcount Mode
-
-  #+begin_src emacs-lisp :tangle no
-    (use-package wc-mode)
-  #+end_src
+#+begin_src emacs-lisp
+  (defun rlr-count-words (&optional begin end)
+    "count words between BEGIN and END (region); if no region defined, count words in buffer"
+    (interactive "r")
+    (let ((b (if mark-active begin (point-min)))
+	  (e (if mark-active end (point-max))))
+      (message "Word count: %s" (how-many "\\w+" b e))))
+#+end_src
 
 
+Wordcount Mode
+
+#+begin_src emacs-lisp :tangle no
+  (use-package wc-mode)
+#+end_src
 
 
 
-  Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/][Bozhidar Batsov]]
-
-  #+begin_src emacs-lisp
-    (defun move-line-up ()
-      "Move up the current line."
-      (interactive)
-      (transpose-lines 1)
-      (forward-line -2)
-      (indent-according-to-mode))
-
-    (defun move-line-down ()
-      "Move down the current line."
-      (interactive)
-      (forward-line 1)
-      (transpose-lines 1)
-      (forward-line -1)
-      (indent-according-to-mode))
-  #+end_src
 
 
+Move lines, from [[https://emacsredux.com/blog/2013/04/02/move-current-line-up-or-down/][Bozhidar Batsov]]
 
+#+begin_src emacs-lisp
+  (defun move-line-up ()
+    "Move up the current line."
+    (interactive)
+    (transpose-lines 1)
+    (forward-line -2)
+    (indent-according-to-mode))
+
+  (defun move-line-down ()
+    "Move down the current line."
+    (interactive)
+    (forward-line 1)
+    (transpose-lines 1)
+    (forward-line -1)
+    (indent-according-to-mode))
+#+end_src
+
+
+
+
+
+** Devil Mode
+
+
+#+begin_src emacs-lisp
+  (use-package devil
+    :config
+    (global-devil-mode))
+#+end_src
 
 
 ** Meow
-:PROPERTIES:
-:header-args: :tangle init.el
-:END:
+
 
 #+begin_src emacs-lisp :tangle no
   (use-package meow
@@ -1785,7 +1799,7 @@ Use ~F8~ to insert Month, Day Year and ~C-c d~ to insert YYYYMMDD date string.
 
 ** Smartparens
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package smartparens
     :init
     (require 'smartparens-config)
@@ -1974,7 +1988,7 @@ Use deadgrep to search with ripgrep.
    "s-j" #'crux-top-join-line
    "<S-return>" #'crux-smart-open-line
    "<C-S-return>" #'crux-smart-open-line-above
-   "<f8>" #'insert-standard-date
+   "<C-d d>" #'insert-standard-date
 
    "M-y" #'consult-yank-pop
 
@@ -3089,31 +3103,6 @@ Use Writeroom for distraction free editing.
   (use-package writeroom-mode)
 #+end_src
 
-
-
-** Typst
-
-
-
-
-#+begin_src emacs-lisp
-(add-to-list 'treesit-language-source-alist
-             '(typst "https://github.com/uben0/tree-sitter-typst"))
-(treesit-install-language-grammar 'typst)
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package typst-ts-mode
-  :straight (:type git :host sourcehut :repo "meow_king/typst-ts-mode" :files (:defaults "*.el"))
-  :custom
-  ;; (optional) If you want to ensure your typst tree sitter grammar version is greater than the minimum requirement
-  ;; Note this only check and compare file modification time
-  (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory)))
-#+end_src
-
-
-
-
 * Coding
 
 ** Common Lisp
@@ -3484,7 +3473,8 @@ Make output scroll to bottom in Eshell.
 
 
 
-Eat
+*** Eat
+
 [[https://codeberg.org/akib/emacs-eat][akib/emacs-eat: Emulate A Terminal, in a region, in a buffer and in Eshell - emacs-eat - Codeberg.org]]
 
 #+begin_src emacs-lisp
@@ -3725,13 +3715,108 @@ Toggle images, from [[https://readingworldmagazine.com/emacs/2022-01-24-how-to-u
 #+end_src
 
 
-** Casual-calc
+** Casual Suite
 
 For help with calc.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package casual-calc
-    :bind (:map calc-mode-map ("C-o" . 'casual-main-menu)))
+    :general
+    (:keymaps 'calc-mode-map
+	      "s-."  #'casual-calc-tmenu))
+
+  (use-package casual-info
+    :general
+    (:keymaps 'Info-mode-map
+	      "s-." #'casual-info-tmenu))
+
+  (use-package casual-dired
+    :general
+    (:keymaps 'dired-mode-map
+	      "s-." #'casual-dired-tmenu))
+
+  (use-package casual-avy
+    :general
+    ("M-g a"  #'casual-avy-tmenu))
+
+  (use-package casual-isearch
+    :general
+    (:keymaps 'isearch-mode-map
+	    "<f8>" #'casual-isearch-tmenu))
+
+  ;; (require 'ibuffer)
+  (use-package casual-ibuffer
+    :general
+    (:keymaps 'ibuffer-mode-map
+	      "s-." #'casual-ibuffer-tmenu
+	      "F" #'casual-ibuffer-filter-tmenu
+	      "s" #'casual-ibuffer-sortby-tmenu))
+
+  (require 're-builder)
+  (use-package casual-re-builder
+    :general
+    (:keymaps reb-mode-map
+	      ("s-." . casual-re-builder-tmenu)))
+#+end_src
+
+
+
+** Consult-Omni
+
+#+begin_src emacs-lisp :tangle no
+  (use-package consult-omni
+    :straight (consult-omni :type git :host github :repo "armindarvish/consult-omni" :branch "main" :files (:defaults "sources/*.el"))
+    :after consult
+    :custom
+     ;; General settings that apply to all sources
+    (consult-omni-show-preview t) ;;; show previews
+    (consult-omni-preview-key "C-o") ;;; set the preview key to C-o
+    :config
+    ;; Load Sources Core code
+    (require 'consult-omni-sources)
+    ;; Load Embark Actions
+    (require 'consult-omni-embark)
+
+    ;; Either load all source modules or a selected list
+
+    ;;; Select a list of modules you want to aload, otherwise all sources all laoded
+    ; (setq consult-omni-sources-modules-to-load (list 'consult-omni-wkipedia 'consult-omni-notes))
+    (consult-omni-sources-load-modules)
+    ;;; set multiple sources for consult-omni-multi command. Change these lists as needed for different interactive commands. Keep in mind that each source has to be a key in `consult-omni-sources-alist'.
+    (setq consult-omni-multi-sources '("calc"
+                                       ;; "File"
+                                       ;; "Buffer"
+                                       ;; "Bookmark"
+                                       "Apps"
+                                       ;; "gptel"
+                                       "Brave"
+                                       "Dictionary"
+                                       ;; "Google"
+                                       "Wikipedia"
+                                       "elfeed"
+                                       ;; "mu4e"
+                                       ;; "buffers text search"
+                                       "Notes Search"
+                                       "Org Agenda"
+                                       "GitHub"
+                                       ;; "YouTube"
+                                       "Invidious"))
+
+  ;; Per source customization
+
+    ;;; Set API KEYs. It is recommended to use a function that returns the string for better security.
+    ;; (setq consult-omni-google-customsearch-key "YOUR-GOOGLE-API-KEY-OR-FUNCTION")
+    ;; (setq consult-omni-google-customsearch-cx "YOUR-GOOGLE-CX-NUMBER-OR-FUNCTION")
+    ;; (setq consult-omni-brave-api-key "YOUR-BRAVE-API-KEY-OR-FUNCTION")
+    ;; (setq consult-omni-stackexchange-api-key "YOUR-STACKEXCHANGE-API-KEY-OR-FUNCTION")
+    ;; (setq consult-omni-pubmed-api-key "YOUR-PUBMED-API-KEY-OR-FUNCTION")
+    ;; (setq consult-omni-openai-api-key "YOUR-OPENAI-API-KEY-OR-FUNCTION")
+
+  ;;; Pick you favorite autosuggest command.
+    (setq consult-omni-default-autosuggest-command #'consult-omni-dynamic-brave-autosuggest) ;;or any other autosuggest source you define
+
+   ;;; Set your shorthand favorite interactive command
+    (setq consult-omni-default-interactive-command #'consult-omni-multi))
 #+end_src
 
 
@@ -3799,7 +3884,7 @@ Unset some keys.
       ("f" auto-fill-mode "fill" :toggle t)
       ("l" display-line-numbers-mode "linum" :toggle t)
       ("m" mixed-pitch-mode "mixed-pitch" :toggle t)
-      ("p" smartparens-mode "smartparens" :toggle t)
+      ("p" electric-pair-mode "electric-pair" :toggle t)
       ("t" toggle-truncate-lines "truncate" :toggle t)
       ("s" whitespace-mode "whitespace" :toggle t))
      " "
@@ -4243,7 +4328,8 @@ Open fish functions directory.
    "3" #'rlr/find-file-right
    "b" #'consult-bookmark
    "c" #'org-capture
-   "d" #'insert-date-string
+   "d s" #'insert-date-string
+   "d d" #'insert-standard-date
    "D" #'crux-delete-file-and-buffer
    ;; "h" #'consult-history
    "k" #'crux-kill-other-buffers
