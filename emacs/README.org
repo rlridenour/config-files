@@ -3371,9 +3371,43 @@ Make copying and moving files easier.
   ;; Yasnippet
   (use-package yasnippet
     :config
-    (setq yas-snippet-dirs '("~/.config/snippets"))
+    (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
     :config
     (yas-global-mode 1))
+#+end_src
+
+
+** Tempel
+
+#+begin_src emacs-lisp :tangle no
+(use-package tempel
+  ;; Require trigger prefix before template name when completing.
+  ;; :custom
+  ;; (tempel-trigger-prefix "<")
+  :bind (("M-+" . tempel-complete) ;; Alternative tempel-expand
+         ("M-*" . tempel-insert))
+  :init
+  ;; Setup completion at point
+  (defun tempel-setup-capf ()
+    ;; Add the Tempel Capf to `completion-at-point-functions'.
+    ;; `tempel-expand' only triggers on exact matches. Alternatively use
+    ;; `tempel-complete' if you want to see all matches, but then you
+    ;; should also configure `tempel-trigger-prefix', such that Tempel
+    ;; does not trigger too often when you don't expect it. NOTE: We add
+    ;; `tempel-expand' *before* the main programming mode Capf, such
+    ;; that it will be tried first.
+    (setq-local completion-at-point-functions
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
+  (add-hook 'prog-mode-hook 'tempel-setup-capf)
+  (add-hook 'text-mode-hook 'tempel-setup-capf)
+  ;; Optionally make the Tempel templates available to Abbrev,
+  ;; either locally or globally. `expand-abbrev' is bound to C-x '.
+  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  ;; (global-tempel-abbrev-mode)
+:config
+(setq tempel-path "~/.config/emacs/templates.el")
+)
 #+end_src
 
 
@@ -3387,8 +3421,6 @@ Make copying and moving files easier.
     :general
     ( "<f6>" #'yankpad-insert))
 #+end_src
-
-
 
 ** Dictionary
 
@@ -3723,17 +3755,17 @@ For help with calc.
   (use-package casual-calc
     :general
     (:keymaps 'calc-mode-map
-	      "s-."  #'casual-calc-tmenu))
+	    "s-."  #'casual-calc-tmenu))
 
   (use-package casual-info
     :general
     (:keymaps 'Info-mode-map
-	      "s-." #'casual-info-tmenu))
+	    "s-." #'casual-info-tmenu))
 
   (use-package casual-dired
     :general
     (:keymaps 'dired-mode-map
-	      "s-." #'casual-dired-tmenu))
+	    "s-." #'casual-dired-tmenu))
 
   (use-package casual-avy
     :general
@@ -3748,11 +3780,12 @@ For help with calc.
   (use-package casual-ibuffer
     :general
     (:keymaps 'ibuffer-mode-map
-	      "s-." #'casual-ibuffer-tmenu
-	      "F" #'casual-ibuffer-filter-tmenu
-	      "s" #'casual-ibuffer-sortby-tmenu))
+	    "s-." #'casual-ibuffer-tmenu
+	    "F" #'casual-ibuffer-filter-tmenu
+	    "s" #'casual-ibuffer-sortby-tmenu))
 
   (require 're-builder)
+  (setq reb-re-syntax 'string)
   (use-package casual-re-builder
     :general
     (:keymaps 'reb-mode-map
@@ -3784,23 +3817,23 @@ For help with calc.
     (consult-omni-sources-load-modules)
     ;;; set multiple sources for consult-omni-multi command. Change these lists as needed for different interactive commands. Keep in mind that each source has to be a key in `consult-omni-sources-alist'.
     (setq consult-omni-multi-sources '("calc"
-                                       ;; "File"
-                                       ;; "Buffer"
-                                       ;; "Bookmark"
-                                       "Apps"
-                                       ;; "gptel"
-                                       "Brave"
-                                       "Dictionary"
-                                       ;; "Google"
-                                       "Wikipedia"
-                                       "elfeed"
-                                       ;; "mu4e"
-                                       ;; "buffers text search"
-                                       "Notes Search"
-                                       "Org Agenda"
-                                       "GitHub"
-                                       ;; "YouTube"
-                                       "Invidious"))
+				       ;; "File"
+				       ;; "Buffer"
+				       ;; "Bookmark"
+				       "Apps"
+				       ;; "gptel"
+				       "Brave"
+				       "Dictionary"
+				       ;; "Google"
+				       "Wikipedia"
+				       "elfeed"
+				       ;; "mu4e"
+				       ;; "buffers text search"
+				       "Notes Search"
+				       "Org Agenda"
+				       "GitHub"
+				       ;; "YouTube"
+				       "Invidious"))
 
   ;; Per source customization
 

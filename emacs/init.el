@@ -2162,7 +2162,7 @@ after it is inserted."
 ;; Yasnippet
 (use-package yasnippet
   :config
-  (setq yas-snippet-dirs '("~/.config/snippets"))
+  (setq yas-snippet-dirs '("~/.config/emacs/snippets"))
   :config
   (yas-global-mode 1))
 
@@ -2323,17 +2323,17 @@ after it is inserted."
 (use-package casual-calc
   :general
   (:keymaps 'calc-mode-map
-	    "s-."  #'casual-calc-tmenu))
+	  "s-."  #'casual-calc-tmenu))
 
 (use-package casual-info
   :general
   (:keymaps 'Info-mode-map
-	    "s-." #'casual-info-tmenu))
+	  "s-." #'casual-info-tmenu))
 
 (use-package casual-dired
   :general
   (:keymaps 'dired-mode-map
-	    "s-." #'casual-dired-tmenu))
+	  "s-." #'casual-dired-tmenu))
 
 (use-package casual-avy
   :general
@@ -2348,11 +2348,12 @@ after it is inserted."
 (use-package casual-ibuffer
   :general
   (:keymaps 'ibuffer-mode-map
-	    "s-." #'casual-ibuffer-tmenu
-	    "F" #'casual-ibuffer-filter-tmenu
-	    "s" #'casual-ibuffer-sortby-tmenu))
+	  "s-." #'casual-ibuffer-tmenu
+	  "F" #'casual-ibuffer-filter-tmenu
+	  "s" #'casual-ibuffer-sortby-tmenu))
 
 (require 're-builder)
+(setq reb-re-syntax 'string)
 (use-package casual-re-builder
   :general
   (:keymaps 'reb-mode-map
