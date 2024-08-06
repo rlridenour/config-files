@@ -1449,6 +1449,11 @@ targets."
 (use-package org-view-mode
   :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
 
+(defun new-article (name)
+(interactive "sName: ")
+(find-file (s-concat name ".org"))
+(yas-expand-snippet (yas-lookup-snippet "pdf-article")))
+
 (general-define-key
  :keymaps 'org-mode-map
  "s-i" (lambda () (interactive) (my/org-toggle-emphasis ?/))
@@ -2409,11 +2414,17 @@ If DEST, a buffer, is provided, insert the markup there."
 (pretty-hydra-define hydra-new
   (:color teal :quit-key "q" title: "New")
   ("Denote"
-   (("b" hugo-draft-post "blog post")
-    ("c" org-capture "capture")
+   (("c" org-capture "capture")
     ("n" denote "note")
     ("v" denote-menu-list-notes "view notes")
     ("j" denote-journal-extras-new-or-existing-entry "journal"))
+   "Writing"
+   (("b" hugo-draft-post "blog post")
+    ("a" new-article "article"))
+   "Teaching"
+   (("l" new-lecture "lecture")
+    ("h" new-handout "handout")
+    ("s" new-syllabus "syllabus"))
    ))
 
 (pretty-hydra-define hydra-logic
@@ -2630,7 +2641,12 @@ If DEST, a buffer, is provided, insert the markup there."
 
 (major-mode-hydra-define dired-mode
   (:quit-key "q")
-  ("Tools"
+  ("New"
+   (("a" new-article "article")
+    ("l" new-lecture "lecture")
+    ("h" new-handout "handout")
+    ("s" new-syllabus "syllabus"))
+   "Tools"
    (("d" crux-open-with "Open in default program")
     ("h" dired-omit-mode "Show hidden files")
     ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")

@@ -1,18 +1,15 @@
 # -*- mode: snippet -*-
-# name: beamer header white
-# key: beamerwhite
+# name: beamer-data
 # group: beamer
 # --
 #+TITLE: ${1:Title}
-#+AUTHOR: ${2:Dr.} Ridenour
+#+SUBTITLE: ${2:Subtitle}
+#+AUTHOR: ${3:Dr.} Ridenour
 #+DATE: `(format-time-string "%B %e, %Y")`
+#+BEAMER_HEADER: \institute{Department of Philosophy}
+#+BEAMER_THEME: basicwhite[school,sections]
 #+OPTIONS:   H:3
-#+LaTeX_CLASS: beamer
-#+BEAMER_THEME: white
-#+LaTeX_CLASS_options: [aspectratio=169,12pt]
-#+LATEX_HEADER: \usepackage{fancyvrb}
-#+BEAMER_HEADER:      \institute[OBU]{Oklahoma Baptist University}
 
-$0
+* $0
 
 

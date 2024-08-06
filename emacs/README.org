@@ -2448,6 +2448,16 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
 #+end_src
 
 
+Start new article.
+
+#+begin_src emacs-lisp
+(defun new-article (name)
+(interactive "sName: ")
+(find-file (s-concat name ".org"))
+(yas-expand-snippet (yas-lookup-snippet "pdf-article")))
+#+end_src
+
+
 
 #+begin_src emacs-lisp
   (general-define-key
@@ -2979,6 +2989,8 @@ Use Writeroom for distraction free editing.
 #+begin_src emacs-lisp
   (use-package writeroom-mode)
 #+end_src
+
+
 
 * Coding
 
@@ -3973,11 +3985,17 @@ Unset some keys.
   (pretty-hydra-define hydra-new
     (:color teal :quit-key "q" title: "New")
     ("Denote"
-     (("b" hugo-draft-post "blog post")
-      ("c" org-capture "capture")
+     (("c" org-capture "capture")
       ("n" denote "note")
       ("v" denote-menu-list-notes "view notes")
       ("j" denote-journal-extras-new-or-existing-entry "journal"))
+     "Writing"
+     (("b" hugo-draft-post "blog post")
+      ("a" new-article "article"))
+     "Teaching"
+     (("l" new-lecture "lecture")
+      ("h" new-handout "handout")
+      ("s" new-syllabus "syllabus"))
      ))
 #+end_src
 
@@ -4228,7 +4246,12 @@ Unset some keys.
 #+begin_src emacs-lisp
   (major-mode-hydra-define dired-mode
     (:quit-key "q")
-    ("Tools"
+    ("New"
+     (("a" new-article "article")
+      ("l" new-lecture "lecture")
+      ("h" new-handout "handout")
+      ("s" new-syllabus "syllabus"))
+     "Tools"
      (("d" crux-open-with "Open in default program")
       ("h" dired-omit-mode "Show hidden files")
       ("p" diredp-copy-abs-filenames-as-kill "Copy filename and path")
