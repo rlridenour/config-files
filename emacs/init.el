@@ -114,6 +114,9 @@
 
 (use-package helpful)
 
+(setq project-vc-ignores '("*.aux" "*.bbl" "*.bcf" "*.blg" "*.fdb_latexmk" "*.fls" "*.log" "*.out" "*.run.xml" "*.run.xml" "*.synctex.gz" "auto/" "*.pdf"))
+(setq project-vc-extra-root-markers '(".proj"))
+
 (use-package which-key
   :straight (emacs-which-key :host github :repo "wesnel/emacs-which-key" :branch "wesnel/add-devil-support")
   :config

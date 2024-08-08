@@ -418,6 +418,15 @@ Make help buffers active when created, so pressing "q" will immediately close th
   (use-package helpful)
 #+end_src
 
+** Projects
+
+[[https://grtcdr.tn/posts/2023-03-01.html][Delightful project.el features]]
+
+#+begin_src emacs-lisp
+(setq project-vc-ignores '("*.aux" "*.bbl" "*.bcf" "*.blg" "*.fdb_latexmk" "*.fls" "*.log" "*.out" "*.run.xml" "*.run.xml" "*.synctex.gz" "auto/" "*.pdf"))
+(setq project-vc-extra-root-markers '(".proj"))
+#+end_src
+
 
 
 
@@ -429,6 +438,7 @@ Make help buffers active when created, so pressing "q" will immediately close th
     :config
     (which-key-mode))
 #+end_src
+
 
 
 * Appearance
