@@ -2353,53 +2353,6 @@ Org-noter
   (use-package org-noter)
 #+end_src
 
-Function for converting Org mode files to QTI file for importing into Canvas using [[https://www.nyit.edu/its/canvas_exam_converter][Canvas Exam Converter | Information Technology Services | New York Tech]]
-
-#+begin_src emacs-lisp
-  (defun convert-qti-nyit ()
-    (interactive)
-    ;; Copy all to a temp buffer and set to text mode.
-    (let ((old-buffer (current-buffer)))
-      (with-temp-buffer
-	(insert-buffer-substring old-buffer)
-	(text-mode)
-	;; convert multiple correct answer and essay questions
-	(beginning-of-buffer)
-	(while (re-search-forward "-" nil t)
-	  (replace-match ""))
-	;; Change correct multiple answer options to "*"
-	(beginning-of-buffer)
-	(let ((case-fold-search nil))
-	  (while (re-search-forward "\[X\]" nil t)
-	    (replace-match "*")))
-	;; Mark short answer responses with "**"
-	(beginning-of-buffer)
-	(while (re-search-forward "+" nil t)
-	  (replace-match "*"))
-	;; remove whitespace at beginning of lines
-	(beginning-of-buffer)
-	(while (re-search-forward "^\s-*" nil t)
-	  (replace-match ""))
-	(beginning-of-buffer)
-	(while (re-search-forward "\\([0-9]\\)" nil t)
-	  (replace-match "\n\\1"))
-	;; move correct answer symbol to beginning of line
-	(beginning-of-buffer)
-	(while (re-search-forward "\\(^.*\\)\\(\*$\\)" nil t)
-	  (replace-match "\*\\1"))
-	(delete-trailing-whitespace)
-	;; delete empty line at end and beginning
-	(end-of-buffer)
-	(delete-char -1)
-	(beginning-of-buffer)
-	(kill-line)
-	;; Copy result to clipboard
-	(clipboard-kill-ring-save (point-min) (point-max))
-	)
-      )
-    (browse-url "https://www.nyit.edu/its/canvas_exam_converter")
-    )
-#+end_src
 
 
 [[https://gist.github.com/jdtsmith/55e6a660dd4c0779a600ac81bf9bfc23][org-toggle-emphasis: easily toggle emphasis markers: =~*/_+]]
@@ -2456,18 +2409,6 @@ Function for converting Org mode files to QTI file for importing into Canvas usi
   (use-package org-view-mode
     :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
 #+end_src
-
-
-Start new article.
-
-#+begin_src emacs-lisp
-(defun new-article (name)
-(interactive "sName: ")
-(find-file (s-concat name ".org"))
-(yas-expand-snippet (yas-lookup-snippet "pdf-article")))
-#+end_src
-
-
 
 #+begin_src emacs-lisp
   (general-define-key

@@ -1360,50 +1360,6 @@ targets."
 
 (use-package gnuplot)
 
-(defun convert-qti-nyit ()
-  (interactive)
-  ;; Copy all to a temp buffer and set to text mode.
-  (let ((old-buffer (current-buffer)))
-    (with-temp-buffer
-      (insert-buffer-substring old-buffer)
-      (text-mode)
-      ;; convert multiple correct answer and essay questions
-      (beginning-of-buffer)
-      (while (re-search-forward "-" nil t)
-	(replace-match ""))
-      ;; Change correct multiple answer options to "*"
-      (beginning-of-buffer)
-      (let ((case-fold-search nil))
-	(while (re-search-forward "\[X\]" nil t)
-	  (replace-match "*")))
-      ;; Mark short answer responses with "**"
-      (beginning-of-buffer)
-      (while (re-search-forward "+" nil t)
-	(replace-match "*"))
-      ;; remove whitespace at beginning of lines
-      (beginning-of-buffer)
-      (while (re-search-forward "^\s-*" nil t)
-	(replace-match ""))
-      (beginning-of-buffer)
-      (while (re-search-forward "\\([0-9]\\)" nil t)
-	(replace-match "\n\\1"))
-      ;; move correct answer symbol to beginning of line
-      (beginning-of-buffer)
-      (while (re-search-forward "\\(^.*\\)\\(\*$\\)" nil t)
-	(replace-match "\*\\1"))
-      (delete-trailing-whitespace)
-      ;; delete empty line at end and beginning
-      (end-of-buffer)
-      (delete-char -1)
-      (beginning-of-buffer)
-      (kill-line)
-      ;; Copy result to clipboard
-      (clipboard-kill-ring-save (point-min) (point-max))
-      )
-    )
-  (browse-url "https://www.nyit.edu/its/canvas_exam_converter")
-  )
-
 (defun my/org-toggle-emphasis (type)
   "Toggle org emphasis TYPE (a character) at point."
   (cl-labels ((in-emph (re)
@@ -1451,11 +1407,6 @@ targets."
 
 (use-package org-view-mode
   :straight (org-view-mode :type git :host github :repo "amno1/org-view-mode"))
-
-(defun new-article (name)
-(interactive "sName: ")
-(find-file (s-concat name ".org"))
-(yas-expand-snippet (yas-lookup-snippet "pdf-article")))
 
 (general-define-key
  :keymaps 'org-mode-map
