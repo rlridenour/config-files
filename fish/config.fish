@@ -54,5 +54,5 @@ set fish_greeting
 test -e {$HOME}/.iterm2_shell_integration.fish; and source {$HOME}/.iterm2_shell_integration.fish
 set -g fish_user_paths "/usr/local/opt/node@10/bin" $fish_user_paths
 set -g fish_user_paths "/usr/local/opt/node@8/bin" $fish_user_paths
-set -gx HOMEBREW_GITHUB_API_TOKEN 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
+
 
